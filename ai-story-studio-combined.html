@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- SEO & Branding -->
+    <title>Ai Story Studio - AI Content & 4K Video Generation</title>
+    <meta name="description" content="Explore the Ai Story Studio showcase, generate storyboards, and create stunning 4K videos with the power of Gemini 2.5 Pro and Flow Artificial Intelligence, all in one place.">
+    <meta name="keywords" content="Ai Story Studio, AI video generator, 4K video, Gemini 2.5 Pro, Flow AI, artificial intelligence, creative content, storyboard generator, video editor">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://example.com/">
+    <meta property="og:title" content="Ai Story Studio - AI Content & 4K Video Generation">
+    <meta property="og:description" content="Explore, get inspired, and create stunning 4K videos with Gemini 2.5 Pro, all in one unified application.">
+    <meta property="og:image" content="https://placehold.co/1200x630/1e293b/ffffff?text=Ai+Story+Studio">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://example.com/">
+    <meta property="twitter:title" content="Ai Story Studio - AI Content & 4K Video Generation">
+    <meta property="twitter:description" content="Explore, get inspired, and create stunning 4K videos with Gemini 2.5 Pro, all in one unified application.">
+    <meta property="twitter:image" content="https://placehold.co/1200x600/1e293b/ffffff?text=Ai+Story+Studio">
+
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self'; 
+        script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com; 
+        style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; 
+        font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com;
+        connect-src 'self' https://generativelanguage.googleapis.com http://localhost:3000;
+        img-src 'self' https://placehold.co;
+        video-src 'self' https://placehold.co;
+    ">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #111827; /* Dark Gray Background */
+            color: #f3f4f6;
+        }
+        .glass-panel {
+            background: rgba(31, 41, 55, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .tool-btn, .upload-btn, .generate-video-btn, .creative-tool-btn {
+            background-color: #374151;
+            transition: all 0.2s ease-in-out;
+        }
+        .tool-btn:hover, .tool-btn.active, .upload-btn:hover, .creative-tool-btn:hover {
+            background-color: #4f46e5; /* Indigo 600 */
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(79, 70, 229, 0.5);
+        }
+        .generate-video-btn {
+            background: linear-gradient(to right, #8b5cf6, #4f46e5);
+        }
+        .generate-video-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.6);
+        }
+        .timeline-handle { cursor: ew-resize; }
+        .modal {
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            transition: opacity 0.3s ease;
+        }
+        .modal-content { transition: transform 0.3s ease; }
+        .loader {
+            border: 4px solid #4b5563;
+            border-top: 4px solid #6366f1;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        /* Showcase-specific styles */
+        .showcase-section {
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+        .filter-btn {
+            transition: all 0.2s ease-in-out;
+        }
+        .filter-btn.active {
+            background-color: #0284c7; /* Sky 600 */
+            color: #ffffff;
+        }
+        .content-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+        .pick-of-the-week-badge { background-image: linear-gradient(to right, #ec4899, #d946ef); }
+        .ai-suggested-badge { background-image: linear-gradient(to right, #22c55e, #14b8a6); }
+        .cta-button {
+            background-image: linear-gradient(to right, #f59e0b, #ef4444, #ec4899);
+            background-size: 200% auto;
+            transition: all 0.3s ease-in-out;
+        }
+        .cta-button:hover {
+            background-position: right center;
+            transform: scale(1.05);
+        }
+        #storyboard-generator, #character-generator {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <main class="min-h-screen">
+        <!-- Video Editor Section -->
+        <section class="text-white p-4 sm:p-6 lg:p-8">
+            <header class="text-center mb-8 relative">
+                <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-indigo-600">
+                    Ai Story Studio
+                </h1>
+                <p class="mt-3 text-lg text-gray-300 max-w-2xl mx-auto">
+                    The All-in-One AI-Powered 4K Video Editor & Creative Showcase
+                </p>
+            </header>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Left Panel: Tools & AI Features -->
+                <div class="lg:col-span-1 space-y-8">
+                    <!-- Text-to-Video Generation -->
+                    <section class="glass-panel p-6 rounded-2xl border-2 border-indigo-500 shadow-2xl">
+                        <h2 class="text-2xl font-bold mb-4 border-b border-indigo-400 pb-2 flex items-center"><i class="fas fa-magic-sparkles mr-3"></i>Text-to-Video Engine</h2>
+                        <p class="text-sm text-gray-300 mb-4">Describe the video you want to create. This engine uses <strong class="text-indigo-300">Gemini 2.5 Pro</strong> to generate a complete, full-sensory video plan.</p>
+                        <textarea id="text-to-video-prompt" rows="6" class="w-full p-3 bg-gray-900/50 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition" placeholder="e.g., A cinematic trailer for a sci-fi movie..."></textarea>
+                        <div class="mt-4">
+                            <label for="video-duration-slider" class="block text-sm font-medium text-gray-300 mb-2">Video Duration: <span id="duration-display" class="font-bold text-indigo-300">120s</span></label>
+                            <input type="range" id="video-duration-slider" min="10" max="600" value="120" class="w-full">
+                        </div>
+                        <button id="generate-text-to-video-btn" class="generate-video-btn w-full mt-4 p-4 rounded-lg flex items-center justify-center text-lg font-bold">
+                            <i class="fas fa-video mr-2"></i>Generate 4K Video
+                        </button>
+                    </section>
+                    
+                    <!-- AI Creative Tools -->
+                    <section class="glass-panel p-6 rounded-2xl">
+                        <h2 class="text-2xl font-bold mb-4 border-b border-gray-600 pb-2">AI Creative Tools</h2>
+                        <div class="space-y-4">
+                            <button id="suggest-music-btn" class="creative-tool-btn w-full p-4 rounded-lg flex items-center justify-center text-md font-bold">
+                                <i class="fas fa-music mr-3"></i>✨ Suggest Music & SFX
+                            </button>
+                            <button id="suggest-edits-btn" class="creative-tool-btn w-full p-4 rounded-lg flex items-center justify-center text-md font-bold">
+                                <i class="fas fa-wand-magic-sparkles mr-3"></i>✨ Get Editing Suggestions
+                            </button>
+                        </div>
+                    </section>
+
+                    <!-- Media Library Section -->
+                    <section class="glass-panel p-6 rounded-2xl">
+                        <h2 class="text-2xl font-bold mb-4 border-b border-gray-600 pb-2">Media Library</h2>
+                        <div class="grid grid-cols-2 gap-4 mb-4">
+                            <button id="upload-device-btn" class="upload-btn p-4 rounded-lg flex flex-col items-center justify-center text-center">
+                                <i class="fas fa-upload text-2xl mb-2"></i>
+                                <span class="text-sm font-medium">Upload from Device</span>
+                            </button>
+                            <input type="file" id="video-upload-input" class="hidden" accept="video/*" multiple>
+                            <button id="browse-ai-library-btn" class="upload-btn p-4 rounded-lg flex flex-col items-center justify-center text-center">
+                                <i class="fas fa-robot text-2xl mb-2"></i>
+                                <span class="text-sm font-medium">Browse AI Library</span>
+                            </button>
+                        </div>
+                        <div id="media-bin" class="mt-4 bg-gray-900/50 p-2 rounded-lg min-h-[120px] border border-dashed border-gray-600">
+                            <p id="media-bin-placeholder" class="text-center text-gray-400 p-4">Your project media will appear here.</p>
+                            <div id="media-bin-grid" class="grid grid-cols-3 gap-2"></div>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- Right Panel: Video Preview & Timeline -->
+                <div class="lg:col-span-2 glass-panel p-4 sm:p-6 rounded-2xl">
+                    <div id="video-preview-container" class="bg-black rounded-lg mb-6 aspect-video flex items-center justify-center">
+                        <video id="video-preview" class="w-full h-full rounded-lg" controls>
+                             <source src="https://placehold.co/1920x1080.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                    <div class="flex items-center justify-center space-x-6 mb-4">
+                        <button class="text-2xl hover:text-indigo-400 transition"><i class="fas fa-backward-step"></i></button>
+                        <button class="text-4xl hover:text-indigo-400 transition"><i class="fas fa-play-circle"></i></button>
+                        <button class="text-2xl hover:text-indigo-400 transition"><i class="fas fa-forward-step"></i></button>
+                    </div>
+                    <div class="bg-gray-800 p-2 rounded-lg">
+                        <div id="timeline-container" class="relative h-20 bg-gray-700 rounded">
+                            <div class="absolute top-0 left-1/4 w-0.5 h-full bg-red-500 z-10">
+                                <div class="absolute -top-2 -left-2 w-4 h-4 bg-red-500 rounded-full"></div>
+                            </div>
+                            <div class="timeline-handle absolute top-0 left-0 h-full w-4 bg-indigo-500/50 rounded-l-lg"></div>
+                            <div class="timeline-handle absolute top-0 right-0 h-full w-4 bg-indigo-500/50 rounded-r-lg"></div>
+                        </div>
+                    </div>
+                    <div id="video-plan-container" class="mt-6 hidden">
+                        <h3 class="text-xl font-bold text-white mb-2">AI Video Generation Plan:</h3>
+                        <div id="video-plan-result" class="p-4 bg-gray-900/70 rounded-lg prose prose-invert max-w-none border border-gray-700 h-64 overflow-y-auto"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Showcase Section -->
+        <section class="showcase-section py-16">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <section id="storyboard-generator" class="mb-12 p-6 sm:p-8 rounded-2xl shadow-lg border border-slate-200">
+                    <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 text-center mb-2">Storyboard & Video Idea Generator</h2>
+                    <p class="text-center text-slate-600 mb-6">Powered by Gemini & Flow AI</p>
+                    <div class="max-w-3xl mx-auto">
+                        <div class="mb-4">
+                            <label for="idea-input" class="block text-lg font-semibold text-slate-700 mb-2">Enter your video or story idea:</label>
+                            <textarea id="idea-input" rows="4" class="w-full p-3 border border-slate-300 rounded-lg shadow-sm focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition" placeholder="e.g., A detective discovers a secret society in a futuristic city."></textarea>
+                        </div>
+                        <button id="generate-storyboard-btn" class="w-full cta-button text-white font-bold text-lg py-3 px-6 rounded-lg shadow-md hover:shadow-lg flex items-center justify-center">
+                            Generate Storyboard & Ideas
+                        </button>
+                        <div id="storyboard-result-container" class="mt-8 hidden">
+                            <h3 class="text-xl font-bold text-slate-800 mb-4">Generated Concept:</h3>
+                            <div id="storyboard-result" class="p-4 sm:p-6 bg-slate-50 rounded-lg prose prose-slate max-w-none border border-slate-200"></div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- NEW: AI Character Generator -->
+                <section id="character-generator" class="mb-12 p-6 sm:p-8 rounded-2xl shadow-lg border border-slate-200">
+                    <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 text-center mb-2">AI Character Generator</h2>
+                    <p class="text-center text-slate-600 mb-6">Create detailed character profiles from a simple idea.</p>
+                    <div class="max-w-3xl mx-auto">
+                        <div class="mb-4">
+                            <label for="character-input" class="block text-lg font-semibold text-slate-700 mb-2">Enter your character concept:</label>
+                            <textarea id="character-input" rows="3" class="w-full p-3 border border-slate-300 rounded-lg shadow-sm focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition" placeholder="e.g., A grizzled space detective who has lost their partner."></textarea>
+                        </div>
+                        <button id="generate-character-btn" class="w-full cta-button text-white font-bold text-lg py-3 px-6 rounded-lg shadow-md hover:shadow-lg flex items-center justify-center">
+                            ✨ Generate Character Profile
+                        </button>
+                        <div id="character-result-container" class="mt-8 hidden">
+                            <h3 class="text-xl font-bold text-slate-800 mb-4">Generated Profile:</h3>
+                            <div id="character-result" class="p-4 sm:p-6 bg-slate-50 rounded-lg prose prose-slate max-w-none border border-slate-200"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="gallery" aria-labelledby="gallery-heading">
+                    <h2 id="gallery-heading" class="text-2xl sm:text-3xl font-bold text-slate-900 text-center mb-8">Curated Showcase</h2>
+                    <div id="filter-container" class="flex flex-wrap justify-center gap-2 sm:gap-4 mb-10">
+                        <button data-filter="all" class="filter-btn active text-sm sm:text-base font-semibold py-2 px-4 rounded-full bg-white text-slate-700 border border-slate-300 hover:bg-slate-100">Show All</button>
+                        <button data-filter="video" class="filter-btn text-sm sm:text-base font-semibold py-2 px-4 rounded-full bg-white text-slate-700 border border-slate-300 hover:bg-slate-100">Featured Videos</button>
+                        <button data-filter="pick" class="filter-btn text-sm sm:text-base font-semibold py-2 px-4 rounded-full bg-white text-slate-700 border border-slate-300 hover:bg-slate-100">Pick of the Week</button>
+                        <button data-filter="senses" class="filter-btn text-sm sm:text-base font-semibold py-2 px-4 rounded-full bg-white text-slate-700 border border-slate-300 hover:bg-slate-100">AI Senses (DJ)</button>
+                        <button id="suggest-idea-btn" class="filter-btn text-sm sm:text-base font-semibold py-2 px-4 rounded-full bg-green-500 text-white border border-green-600 hover:bg-green-600 flex items-center">
+                            <i class="fas fa-lightbulb mr-2"></i> Suggest a New Idea
+                        </button>
+                    </div>
+                    <div id="content-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        <!-- Cards will be dynamically inserted here -->
+                    </div>
+                </section>
+            </div>
+        </section>
+    </main>
+
+    <footer class="text-center p-6 text-gray-400 text-sm">
+        <div class="flex justify-center items-center space-x-6 mb-4">
+            <a href="#" class="hover:text-white transition">Official Guidelines</a>
+            <a href="#" class="hover:text-white transition">Terms & Conditions</a>
+            <a href="#" class="hover:text-white transition">About</a>
+            <a href="#" class="hover:text-white transition">Contact Us</a>
+        </div>
+        <p>&copy; 2024 Ai Story Studio. All Rights Reserved.</p>
+    </footer>
+
+    <!-- Modal -->
+    <div id="modal-container" class="modal fixed inset-0 z-50 flex items-center justify-center p-4 hidden opacity-0">
+        <!-- Modal content will be dynamically injected -->
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Global Variables ---
+            const BACKEND_URL = 'http://localhost:3000';
+            let pollingInterval = null;
+
+            // --- DOM Elements (Editor) ---
+            const videoEditorModalContainer = document.getElementById('modal-container');
+            const videoPreviewContainer = document.getElementById('video-preview-container');
+            const videoPlanContainer = document.getElementById('video-plan-container');
+            const videoPlanResult = document.getElementById('video-plan-result');
+            const textToVideoPrompt = document.getElementById('text-to-video-prompt');
+            const generateTextToVideoBtn = document.getElementById('generate-text-to-video-btn');
+            const durationSlider = document.getElementById('video-duration-slider');
+            const durationDisplay = document.getElementById('duration-display');
+            const uploadDeviceBtn = document.getElementById('upload-device-btn');
+            const videoUploadInput = document.getElementById('video-upload-input');
+            const browseAiLibraryBtn = document.getElementById('browse-ai-library-btn');
+            const mediaBinGrid = document.getElementById('media-bin-grid');
+            const mediaBinPlaceholder = document.getElementById('media-bin-placeholder');
+            const suggestMusicBtn = document.getElementById('suggest-music-btn');
+            const suggestEditsBtn = document.getElementById('suggest-edits-btn');
+
+            // --- DOM Elements (Showcase) ---
+            const ideaInput = document.getElementById('idea-input');
+            const generateStoryboardBtn = document.getElementById('generate-storyboard-btn');
+            const storyboardResultContainer = document.getElementById('storyboard-result-container');
+            const storyboardResult = document.getElementById('storyboard-result');
+            const grid = document.getElementById('content-grid');
+            const filterContainer = document.getElementById('filter-container');
+            const suggestIdeaBtn = document.getElementById('suggest-idea-btn');
+            
+            // --- DOM Elements (Character Generator) ---
+            const characterInput = document.getElementById('character-input');
+            const generateCharacterBtn = document.getElementById('generate-character-btn');
+            const characterResultContainer = document.getElementById('character-result-container');
+            const characterResult = document.getElementById('character-result');
+
+            // --- Showcase Data & Logic ---
+            const galleryData = [
+                { id: 1, category: 'video', title: "The Lumina Spire's Secret", description: "Opening with a sweeping drone shot over alien flora..." },
+                { id: 2, category: 'video', title: "Whispers of the Quantum Wild", description: "Experience a surreal 4K animated short..." },
+                { id: 3, category: 'video', title: "Urban Echoes: A City's Dream", description: "A gritty, atmospheric 4K film noir piece..." },
+                { id: 4, category: 'video', title: "The Great Coral Symphony", description: "Dive into a vibrant 4K underwater spectacle..." },
+                { id: 5, category: 'pick', title: "The Shifting Sands of Aethelgard", description: "This week's pick is an mesmerizing AI-generated virtual experience...", metadata: { Genre: 'Epic Fantasy', Creator: 'DuneDreamerAI', Rating: '4.9/5 ★' }},
+                { id: 6, category: 'senses', title: 'Subterranean Synth-Lounge', description: "Designed for focused creative flow...", metadata: { Visuals: 'Deep, cavernous underground club...', Auditory: 'Deep, resonant bass lines...', Atmosphere: 'Cool, damp air...'}}
+            ];
+
+            const createCard = (item) => {
+                const card = document.createElement('div');
+                card.className = 'content-card bg-white rounded-xl shadow-sm border border-slate-200 p-6 flex flex-col cursor-pointer transition-all duration-200';
+                let badgeHtml = '';
+                if(item.category === 'pick') {
+                    badgeHtml = `<div class="pick-of-the-week-badge text-xs font-bold text-white uppercase tracking-wider py-1 px-3 rounded-full mb-3 self-start">Pick of the Week</div>`;
+                } else if (item.category === 'ai') {
+                    badgeHtml = `<div class="ai-suggested-badge text-xs font-bold text-white uppercase tracking-wider py-1 px-3 rounded-full mb-3 self-start">AI Suggested</div>`;
+                }
+                card.innerHTML = `${badgeHtml}<h3 class="text-xl font-bold mb-2 text-slate-800">${item.title}</h3><p class="text-slate-600 flex-grow">${item.description.substring(0, 100)}...</p><div class="mt-4 text-sky-600 font-semibold text-sm">View Details &rarr;</div>`;
+                card.addEventListener('click', () => openShowcaseModal(item));
+                return card;
+            };
+
+            const renderCards = (filter = 'all') => {
+                grid.innerHTML = '';
+                const filteredData = filter === 'all' ? galleryData.filter(item => item.category !== 'ai') : galleryData.filter(item => item.category === filter);
+                filteredData.forEach(item => grid.appendChild(createCard(item)));
+            };
+
+            const openShowcaseModal = async (item) => {
+                const modalHtml = `
+                    <div class="modal-backdrop absolute inset-0"></div>
+                    <div class="modal-content relative bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto transform scale-95 text-slate-800">
+                        <div class="p-6 sm:p-8">
+                            <button class="modal-close-btn absolute top-4 right-4 text-slate-500 hover:text-slate-800 transition-colors">
+                                <i class="fas fa-times text-2xl"></i>
+                            </button>
+                            <h2 class="modal-title text-2xl font-bold mb-4 text-slate-900">${item.title}</h2>
+                            <div class="modal-body prose prose-slate max-w-none">
+                                <div class="flex justify-center items-center p-8"><div class="loader"></div></div>
+                            </div>
+                        </div>
+                    </div>`;
+                openModal(item.title, modalHtml);
+
+                const prompt = `
+                    As a world-class creative director, take the following video concept and expand it into a full sensory experience. Describe in detail the visuals, cinematography, sound design, color palette, and the overall mood and feeling it should evoke.
+                    Concept Title: '${item.title}'
+                    Concept Description: '${item.description}'
+                    Format the response in clean HTML with clear headings for each sensory category (e.g., <h4>Visuals & Cinematography</h4>).
+                `;
+
+                const fullSensesHtml = await callGeminiApi(prompt);
+                const modalBodyElement = videoEditorModalContainer.querySelector('.modal-body');
+                if (modalBodyElement) {
+                    modalBodyElement.innerHTML = fullSensesHtml;
+                }
+            };
+
+            const openModal = (title, content) => {
+                videoEditorModalContainer.innerHTML = content;
+                const titleEl = videoEditorModalContainer.querySelector('.modal-title');
+                if(titleEl) titleEl.textContent = title;
+                videoEditorModalContainer.classList.remove('hidden');
+                setTimeout(() => {
+                    videoEditorModalContainer.classList.add('opacity-100');
+                    const modalContent = videoEditorModalContainer.querySelector('.modal-content');
+                    if(modalContent) modalContent.classList.remove('scale-95');
+                }, 10);
+            };
+
+            const closeModal = () => {
+                videoEditorModalContainer.classList.remove('opacity-100');
+                const modalContent = videoEditorModalContainer.querySelector('.modal-content');
+                if (modalContent) modalContent.classList.add('scale-95');
+                setTimeout(() => videoEditorModalContainer.classList.add('hidden'), 300);
+            };
+
+            const callGeminiApi = async (prompt) => {
+                 try {
+                    let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
+                    const payload = { contents: chatHistory };
+                    const apiKey = "";
+                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+                    const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                    if (!response.ok) throw new Error(`API Error: ${response.statusText}`);
+                    const result = await response.json();
+                    if (result.candidates?.[0]?.content?.parts?.[0]?.text) {
+                        return result.candidates[0].content.parts[0].text;
+                    }
+                    throw new Error("No content received from API.");
+                } catch (error) {
+                    console.error("Gemini API call failed:", error);
+                    return `Title: Error\nDescription: Could not generate content.`;
+                }
+            };
+            
+            const addMediaToBin = (file) => {
+                mediaBinPlaceholder.classList.add('hidden');
+                const thumb = document.createElement('div');
+                thumb.className = 'media-thumbnail rounded-lg aspect-video bg-black flex items-center justify-center';
+                thumb.title = file.name;
+
+                if (file instanceof Blob) {
+                    thumb.innerHTML = `<i class="fas fa-film text-4xl text-gray-500"></i><div class="overlay"><i class="fas fa-play text-white text-2xl"></i></div>`;
+                } else {
+                    thumb.innerHTML = `<i class="fas fa-robot text-4xl text-cyan-400"></i><div class="overlay"><i class="fas fa-plus-circle text-white text-3xl"></i></div>`;
+                }
+                mediaBinGrid.appendChild(thumb);
+            };
+
+            const createAiLibraryContent = () => {
+                const aiClips = [
+                    { title: 'Cyberpunk Cityscape', thumb: 'https://placehold.co/400x225/1e293b/ffffff?text=Cyberpunk' },
+                    { title: 'Enchanted Forest', thumb: 'https://placehold.co/400x225/166534/ffffff?text=Forest' },
+                    { title: 'Cosmic Nebula', thumb: 'https://placehold.co/400x225/4c1d95/ffffff?text=Nebula' },
+                ];
+                let content = '<div class="grid grid-cols-2 sm:grid-cols-3 gap-4">';
+                aiClips.forEach(clip => {
+                    content += `<div class="media-thumbnail rounded-lg aspect-video" data-ai-clip="${clip.title}"><img src="${clip.thumb}" alt="${clip.title}" class="w-full h-full object-cover rounded-lg"><div class="overlay"><i class="fas fa-plus-circle text-white text-3xl"></i></div></div>`;
+                });
+                content += '</div>';
+                return content;
+            };
+
+            const pollJobStatus = (jobId) => {
+                const statusElement = document.getElementById('generation-status');
+                statusElement.textContent = 'Step 2/3: Job sent to render engine...';
+                pollingInterval = setInterval(async () => {
+                    try {
+                        const response = await fetch(`${BACKEND_URL}/check-job-status/${jobId}`);
+                        if (!response.ok) throw new Error('Server status check failed.');
+                        const data = await response.json();
+                        if (data.status === 'completed') {
+                            clearInterval(pollingInterval);
+                            statusElement.textContent = 'Step 3/3: Render Complete!';
+                            const videoUrl = data.videoUrl || `https://placehold.co/1920x1080.mp4?text=Render_Complete!`;
+                            videoPreviewContainer.innerHTML = `<video id="video-preview" class="w-full h-full rounded-lg" controls autoplay><source src="${videoUrl}" type="video/mp4"></video>`;
+                        }
+                    } catch (error) {
+                        console.error('Polling error:', error);
+                        clearInterval(pollingInterval);
+                        statusElement.textContent = 'Error checking job status.';
+                    }
+                }, 15000);
+            };
+
+            const handleTextToVideo = async () => {
+                const userInput = textToVideoPrompt.value;
+                const duration = durationSlider.value;
+                if (!userInput.trim()) return alert("Please enter a video description.");
+                if (pollingInterval) clearInterval(pollingInterval);
+                generateTextToVideoBtn.innerHTML = '<div class="loader"></div><span class="ml-3">Generating...</span>';
+                generateTextToVideoBtn.disabled = true;
+                videoPlanContainer.classList.remove('hidden');
+                videoPlanResult.innerHTML = '<div class="flex justify-center items-center p-4"><div class="loader"></div></div>';
+                videoPreviewContainer.innerHTML = `<div class="w-full h-full flex flex-col items-center justify-center bg-black rounded-lg"><div class="loader"></div><p id="generation-status" class="mt-4 text-lg">Step 1/3: Generating plan...</p></div>`;
+                try {
+                    const response = await fetch(`${BACKEND_URL}/generate-video-plan`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ prompt: userInput, duration: duration }),
+                    });
+                    if (!response.ok) throw new Error((await response.json()).error || 'Backend error.');
+                    const data = await response.json();
+                    videoPlanResult.innerHTML = data.plan;
+                    pollJobStatus(data.jobId);
+                } catch (error) {
+                    console.error("Text-to-Video failed:", error);
+                    const errorMessage = error instanceof TypeError ? '<strong>Connection Failed.</strong><br>Could not connect to the backend server. Please ensure your Node.js server is running.' : error.message;
+                    videoPlanResult.innerHTML = `<div class="text-red-500 p-4">${errorMessage}</div>`;
+                    videoPreviewContainer.innerHTML = `<div class="text-red-500 p-4 text-center">${errorMessage}</div>`;
+                } finally {
+                    generateTextToVideoBtn.innerHTML = '<i class="fas fa-video mr-2"></i>Generate 4K Video';
+                    generateTextToVideoBtn.disabled = false;
+                }
+            };
+            
+            const handleSuggestIdea = async () => {
+                const originalText = suggestIdeaBtn.innerHTML;
+                suggestIdeaBtn.innerHTML = '<div class="loader" style="border-top-color: #fff; width: 20px; height: 20px;"></div>';
+                suggestIdeaBtn.disabled = true;
+                const prompt = "You are a creative director. Generate a single, compelling, and concise concept for a short video or virtual experience. Provide a title and a short description. Format it exactly like this: Title: [Your Title Here]\nDescription: [Your Description Here]";
+                const responseText = await callGeminiApi(prompt);
+                
+                const titleMatch = responseText.match(/Title: (.*)/);
+                const descMatch = responseText.match(/Description: (.*)/);
+
+                if (titleMatch && descMatch) {
+                    const newItem = {
+                        id: Date.now(),
+                        category: 'ai',
+                        title: titleMatch[1],
+                        description: descMatch[1]
+                    };
+                    const newCard = createCard(newItem);
+                    grid.prepend(newCard);
+                } else {
+                    alert("The AI returned an unexpected format. Please try again.");
+                }
+
+                suggestIdeaBtn.innerHTML = originalText;
+                suggestIdeaBtn.disabled = false;
+            };
+
+            const handleMusicSuggestion = async () => {
+                const videoPlan = videoPlanResult.innerText;
+                if (!videoPlan.trim() || videoPlanContainer.classList.contains('hidden')) {
+                    openModal('Music & SFX Suggestion', '<div class="modal-backdrop absolute inset-0"></div><div class="modal-content relative glass-panel rounded-2xl shadow-2xl w-full max-w-2xl p-6"><p class="text-amber-400">Please generate a video plan first.</p></div>');
+                    return;
+                }
+                const modalContent = `<div class="modal-backdrop absolute inset-0"></div><div class="modal-content relative glass-panel rounded-2xl shadow-2xl w-full max-w-2xl"><div class="p-6 sm:p-8"><button class="modal-close-btn absolute top-4 right-4 text-gray-400"><i class="fas fa-times text-2xl"></i></button><h2 class="modal-title text-2xl font-bold mb-4 text-white">AI Music & SFX Supervisor</h2><div id="music-suggestion-result" class="p-4 bg-gray-900/70 rounded-lg prose prose-invert max-w-none border"><div class="flex justify-center p-4"><div class="loader"></div></div></div></div></div>`;
+                openModal('AI Music & SFX Supervisor', modalContent);
+                const prompt = `You are an expert Music Supervisor... Video Production Plan: --- ${videoPlan} ---`;
+                const musicSuggestionHtml = await callGeminiApi(prompt);
+                document.getElementById('music-suggestion-result').innerHTML = musicSuggestionHtml;
+            };
+
+            const handleEditSuggestion = async () => {
+                const videoPlan = videoPlanResult.innerText;
+                if (!videoPlan.trim() || videoPlanContainer.classList.contains('hidden')) {
+                     openModal('Editing Suggestion', '<div class="modal-backdrop absolute inset-0"></div><div class="modal-content relative glass-panel rounded-2xl shadow-2xl w-full max-w-2xl p-6"><p class="text-amber-400">Please generate a video plan first.</p></div>');
+                    return;
+                }
+                const modalContent = `<div class="modal-backdrop absolute inset-0"></div><div class="modal-content relative glass-panel rounded-2xl shadow-2xl w-full max-w-2xl"><div class="p-6 sm:p-8"><button class="modal-close-btn absolute top-4 right-4 text-gray-400"><i class="fas fa-times text-2xl"></i></button><h2 class="modal-title text-2xl font-bold mb-4 text-white">AI Editing Assistant</h2><div id="edit-suggestion-result" class="p-4 bg-gray-900/70 rounded-lg prose prose-invert max-w-none border"><div class="flex justify-center p-4"><div class="loader"></div></div></div></div></div>`;
+                openModal('AI Editing Assistant', modalContent);
+                const prompt = `You are an expert Video Editor... Video Production Plan: --- ${videoPlan} ---`;
+                const editSuggestionHtml = await callGeminiApi(prompt);
+                document.getElementById('edit-suggestion-result').innerHTML = editSuggestionHtml;
+            };
+            
+            const generateStoryboard = async () => {
+                const idea = ideaInput.value;
+                if (!idea.trim()) return;
+                generateStoryboardBtn.innerHTML = '<div class="loader" style="border-top-color: #fff;"></div><span class="ml-2">Generating...</span>';
+                generateStoryboardBtn.disabled = true;
+                storyboardResultContainer.classList.remove('hidden');
+                storyboardResult.innerHTML = '<div class="flex justify-center items-center p-4"><div class="loader"></div></div>';
+                const prompt = `As an expert AI Storyboard Assistant... User Idea: "${idea}"`;
+                const resultHtml = await callGeminiApi(prompt);
+                storyboardResult.innerHTML = resultHtml;
+                generateStoryboardBtn.innerHTML = 'Generate Storyboard & Ideas';
+                generateStoryboardBtn.disabled = false;
+            };
+
+            const handleCharacterGeneration = async () => {
+                const concept = characterInput.value;
+                if (!concept.trim()) {
+                    characterResult.innerHTML = `<p class="text-amber-600">Please enter a character concept first.</p>`;
+                    characterResultContainer.classList.remove('hidden');
+                    return;
+                }
+                generateCharacterBtn.innerHTML = '<div class="loader" style="border-top-color: #fff;"></div><span class="ml-2">Generating...</span>';
+                generateCharacterBtn.disabled = true;
+                characterResultContainer.classList.remove('hidden');
+                characterResult.innerHTML = '<div class="flex justify-center items-center p-4"><div class="loader"></div></div>';
+                
+                const prompt = `
+                    You are a master character designer and writer. Take the following basic concept and generate a detailed character profile.
+
+                    Character Concept: "${concept}"
+
+                    Your output must be structured in HTML with the following sections:
+                    1.  <h4>Appearance:</h4> <p>A detailed physical description.</p>
+                    2.  <h4>Backstory:</h4> <p>A summary of their history and what made them who they are.</p>
+                    3.  <h4>Personality:</h4> <p>Describe their key traits, flaws, and quirks.</p>
+                    4.  <h4>Motivations:</h4> <p>What drives them? What are their primary goals?</p>
+                `;
+                const resultHtml = await callGeminiApi(prompt);
+                characterResult.innerHTML = resultHtml;
+                generateCharacterBtn.innerHTML = '✨ Generate Character Profile';
+                generateCharacterBtn.disabled = false;
+            };
+
+            // --- Event Listeners ---
+            generateTextToVideoBtn.addEventListener('click', handleTextToVideo);
+            durationSlider.addEventListener('input', (e) => { durationDisplay.textContent = `${e.target.value}s`; });
+            uploadDeviceBtn.addEventListener('click', () => videoUploadInput.click());
+            videoUploadInput.addEventListener('change', (e) => { for (const file of e.target.files) addMediaToBin(file); });
+            browseAiLibraryBtn.addEventListener('click', () => {
+                const content = createAiLibraryContent();
+                openModal('Browse AI Media Library', `<div class="modal-backdrop absolute inset-0"></div><div class="modal-content relative glass-panel rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto transform scale-95"><div class="p-6 sm:p-8"><button class="modal-close-btn absolute top-4 right-4 text-gray-400 hover:text-white transition-colors"><i class="fas fa-times text-2xl"></i></button><h2 class="modal-title text-2xl font-bold mb-4 text-white">Browse AI Media Library</h2><div class="modal-body">${content}</div></div></div>`);
+            });
+            suggestMusicBtn.addEventListener('click', handleMusicSuggestion);
+            suggestEditsBtn.addEventListener('click', handleEditSuggestion);
+            suggestIdeaBtn.addEventListener('click', handleSuggestIdea);
+            
+            generateStoryboardBtn.addEventListener('click', generateStoryboard);
+            generateCharacterBtn.addEventListener('click', handleCharacterGeneration); // New listener
+            
+            filterContainer.addEventListener('click', (e) => {
+                if (e.target.tagName === 'BUTTON' && e.target.dataset.filter) {
+                    document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+                    e.target.classList.add('active');
+                    renderCards(e.target.dataset.filter);
+                }
+            });
+
+            videoEditorModalContainer.addEventListener('click', (e) => {
+                if (e.target.closest('.modal-close-btn') || e.target.classList.contains('modal-backdrop')) closeModal();
+                if (e.target.closest('.media-thumbnail')) {
+                    const clipTitle = e.target.closest('.media-thumbnail').dataset.aiClip;
+                    if (clipTitle) {
+                        addMediaToBin({name: `${clipTitle}.mp4`});
+                        closeModal();
+                    }
+                }
+            });
+
+            // --- Initial Render ---
+            renderCards();
+        });
+    </script>
+</body>
+</html>
