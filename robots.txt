@@ -1,0 +1,9 @@
+# This file tells search engine crawlers which pages to index.
+# We want them to index everything, so we allow all crawlers ('User-agent: *').
+User-agent: *
+Allow: /
+
+# Provide the location of the sitemap to help crawlers find all pages.
+# IMPORTANT: Replace 'https://www.ai-story-studio.com' with your actual domain name once you have it.
+Sitemap: https://www.ai-story-studio.com/sitemap.xml
+
