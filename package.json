@@ -17,3 +17,151 @@
     "express": "^4.19.2"
   }
 }
+  "name": "ai-story-studio-backend",
+  "version": "1.0.0",
+  "description": "Backend server for the Ai Story Studio application.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@google-cloud/vertexai": "^0.3.0",
+    "axios": "^1.7.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2"
+  }
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  }
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yourusername/your-repo.git"
+  }
+  "bugs": {
+    "url": "https://github.com/yourusername/your-repo/issues"
+  },    "name": "ai-story-studio-backend",
+  "version": "1.0.0",
+  "description": "Backend server for the Ai Story Studio application.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@google-cloud/vertexai": "^0.3.0",
+    "axios": "^1.7.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yourusername/your-repo.git"
+  },    "name": "ai-story-studio-backend",
+  "version": "1.0.0",
+  "description": "Backend server for the Ai Story Studio application.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@google-cloud/vertexai": "^0.3.0",
+    "axios": "^1.7.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yourusername/your-repo.git"
+  },      
+  "bugs": {
+    "url": "https://github.com/yourusername/your-repo/issues"
+  },
+  "name": "ai-story-studio-backend",
+  "version": "1.0.0",
+  "description": "Backend server for the Ai Story Studio application.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@google-cloud/vertexai": "^0.3.0",
+    "axios": "^1.7.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  },    
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yourusername/your-repo.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/your-repo/issues"
+  },
+  "homepage": "https://github.com/yourusername/your-repo#readme",
+  "keywords": [
+    "ai",
+    "story",
+    "backend",
+    "nodejs",
+    "express"
+  ],  
+  "keywords": [
+    "ai",
+    "story",
+    "backend",
+    "nodejs",
+    "express"
+  ],  
+  "keywords": [
+    "ai",
+    "story",
+    "backend",
+    "nodejs",
+    "express
+  ],
+
+  "keywords": [
+    "ai",
+    "story",
+    "backend",
+    "nodejs",
+    "express"
+  ],
+  "homepage": "https://github.com/yourusername/your-repo#readme"
+
+  
