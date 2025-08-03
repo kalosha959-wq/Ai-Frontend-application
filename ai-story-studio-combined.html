@@ -1,26 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+
     <!-- SEO & Branding -->
     <title>Ai Story Studio - AI Content & 4K Video Generation</title>
-    <meta name="description" content="Explore the Ai Story Studio showcase, generate storyboards, and create stunning 4K videos with the power of Gemini 2.5 Pro and Flow Artificial Intelligence, all in one place.">
-    <meta name="keywords" content="Ai Story Studio, AI video generator, 4K video, Gemini 2.5 Pro, Flow AI, artificial intelligence, creative content, storyboard generator, video editor">
+    <meta name="description"
+        content="Explore the Ai Story Studio showcase, generate storyboards, and create stunning 4K videos with the power of Gemini 2.5 Pro and Flow Artificial Intelligence, all in one place.">
+    <meta name="keywords"
+        content="Ai Story Studio, AI video generator, 4K video, Gemini 2.5 Pro, Flow AI, artificial intelligence, creative content, storyboard generator, video editor">
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://example.com/">
     <meta property="og:title" content="Ai Story Studio - AI Content & 4K Video Generation">
-    <meta property="og:description" content="Explore, get inspired, and create stunning 4K videos with Gemini 2.5 Pro, all in one unified application.">
+    <meta property="og:description"
+        content="Explore, get inspired, and create stunning 4K videos with Gemini 2.5 Pro, all in one unified application.">
     <meta property="og:image" content="https://placehold.co/1200x630/1e293b/ffffff?text=Ai+Story+Studio">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://example.com/">
     <meta property="twitter:title" content="Ai Story Studio - AI Content & 4K Video Generation">
-    <meta property="twitter:description" content="Explore, get inspired, and create stunning 4K videos with Gemini 2.5 Pro, all in one unified application.">
+    <meta property="twitter:description"
+        content="Explore, get inspired, and create stunning 4K videos with Gemini 2.5 Pro, all in one unified application.">
     <meta property="twitter:image" content="https://placehold.co/1200x600/1e293b/ffffff?text=Ai+Story+Studio">
 
     <meta http-equiv="Content-Security-Policy" content="
@@ -32,7 +37,7 @@
         img-src 'self' https://placehold.co;
         video-src 'self' https://placehold.co;
     ">
-    
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -41,37 +46,58 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #111827; /* Dark Gray Background */
+            background-color: #111827;
+            /* Dark Gray Background */
             color: #f3f4f6;
         }
+
         .glass-panel {
             background: rgba(31, 41, 55, 0.6);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
-        .tool-btn, .upload-btn, .generate-video-btn, .creative-tool-btn {
+
+        .tool-btn,
+        .upload-btn,
+        .generate-video-btn,
+        .creative-tool-btn {
             background-color: #374151;
             transition: all 0.2s ease-in-out;
         }
-        .tool-btn:hover, .tool-btn.active, .upload-btn:hover, .creative-tool-btn:hover {
-            background-color: #4f46e5; /* Indigo 600 */
+
+        .tool-btn:hover,
+        .tool-btn.active,
+        .upload-btn:hover,
+        .creative-tool-btn:hover {
+            background-color: #4f46e5;
+            /* Indigo 600 */
             transform: scale(1.05);
             box-shadow: 0 0 15px rgba(79, 70, 229, 0.5);
         }
+
         .generate-video-btn {
             background: linear-gradient(to right, #8b5cf6, #4f46e5);
         }
+
         .generate-video-btn:hover {
             transform: scale(1.02);
             box-shadow: 0 0 20px rgba(139, 92, 246, 0.6);
         }
-        .timeline-handle { cursor: ew-resize; }
+
+        .timeline-handle {
+            cursor: ew-resize;
+        }
+
         .modal {
             background-color: rgba(0, 0, 0, 0.7);
             backdrop-filter: blur(5px);
             transition: opacity 0.3s ease;
         }
-        .modal-content { transition: transform 0.3s ease; }
+
+        .modal-content {
+            transition: transform 0.3s ease;
+        }
+
         .loader {
             border: 4px solid #4b5563;
             border-top: 4px solid #6366f1;
@@ -80,39 +106,64 @@
             height: 32px;
             animation: spin 1s linear infinite;
         }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
         /* Showcase-specific styles */
         .showcase-section {
             background-color: #f8fafc;
             color: #1e293b;
         }
+
         .filter-btn {
             transition: all 0.2s ease-in-out;
         }
+
         .filter-btn.active {
-            background-color: #0284c7; /* Sky 600 */
+            background-color: #0284c7;
+            /* Sky 600 */
             color: #ffffff;
         }
+
         .content-card:hover {
             transform: translateY(-4px);
             box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
         }
-        .pick-of-the-week-badge { background-image: linear-gradient(to right, #ec4899, #d946ef); }
-        .ai-suggested-badge { background-image: linear-gradient(to right, #22c55e, #14b8a6); }
+
+        .pick-of-the-week-badge {
+            background-image: linear-gradient(to right, #ec4899, #d946ef);
+        }
+
+        .ai-suggested-badge {
+            background-image: linear-gradient(to right, #22c55e, #14b8a6);
+        }
+
         .cta-button {
             background-image: linear-gradient(to right, #f59e0b, #ef4444, #ec4899);
             background-size: 200% auto;
             transition: all 0.3s ease-in-out;
         }
+
         .cta-button:hover {
             background-position: right center;
             transform: scale(1.05);
         }
-        #storyboard-generator, #character-generator {
+
+        #storyboard-generator,
+        #character-generator {
             background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
         }
     </style>
 </head>
+
 <body class="antialiased">
     <!-- Navigation Bar -->
     <nav class="bg-gray-900/95 backdrop-blur-md border-b border-gray-700 sticky top-0 z-50">
@@ -123,23 +174,27 @@
                     <i class="fas fa-video text-indigo-500 text-2xl mr-3"></i>
                     <span class="text-xl font-bold text-white">AI Story Studio</span>
                 </div>
-                
+
                 <!-- Navigation Links -->
                 <div class="hidden md:flex items-center space-x-6">
-                    <button id="tutorial-btn" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                    <button id="tutorial-btn"
+                        class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">
                         <i class="fas fa-play-circle mr-2"></i>Video Tutorial
                     </button>
-                    <button id="features-btn" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                    <button id="features-btn"
+                        class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">
                         <i class="fas fa-star mr-2"></i>Features
                     </button>
-                    <button id="pricing-btn" class="bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:from-purple-700 hover:to-indigo-700 transition-all">
+                    <button id="pricing-btn"
+                        class="bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:from-purple-700 hover:to-indigo-700 transition-all">
                         <i class="fas fa-crown mr-2"></i>Upgrade to Pro
                     </button>
-                    <button id="signin-btn" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors border border-gray-600 hover:border-gray-500">
+                    <button id="signin-btn"
+                        class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors border border-gray-600 hover:border-gray-500">
                         <i class="fas fa-user mr-2"></i>Sign In
                     </button>
                 </div>
-                
+
                 <!-- Mobile menu button -->
                 <div class="md:hidden">
                     <button id="mobile-menu-btn" class="text-gray-300 hover:text-white p-2">
@@ -148,7 +203,7 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- Mobile menu -->
         <div id="mobile-menu" class="md:hidden hidden bg-gray-800 border-t border-gray-700">
             <div class="px-2 pt-2 pb-3 space-y-1">
@@ -172,34 +227,38 @@
         <!-- Video Editor Section -->
         <section class="text-white p-4 sm:p-6 lg:p-8">
             <header class="text-center mb-8 relative">
-                <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-indigo-600">
+                <h1
+                    class="text-4xl sm:text-5xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-indigo-600">
                     Ai Story Studio
                 </h1>
                 <p class="mt-3 text-lg text-gray-300 max-w-2xl mx-auto">
                     The All-in-One AI-Powered 4K Video Editor & Creative Showcase
                 </p>
-                
+
                 <!-- Video Tutorial Section -->
                 <div id="tutorial-section" class="mt-8 mb-8 glass-panel p-6 rounded-2xl max-w-4xl mx-auto">
                     <div class="flex items-center justify-center mb-4">
                         <i class="fas fa-graduation-cap text-indigo-400 text-2xl mr-3"></i>
                         <h2 class="text-2xl font-bold text-white">Learn How to Create Amazing AI Videos</h2>
                     </div>
-                    
+
                     <!-- Tutorial Video Player -->
                     <div class="relative bg-gray-900 rounded-lg overflow-hidden mb-4" style="aspect-ratio: 16/9;">
-                        <div id="tutorial-video-placeholder" class="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-purple-900/50 to-indigo-900/50">
+                        <div id="tutorial-video-placeholder"
+                            class="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-purple-900/50 to-indigo-900/50">
                             <div class="text-center">
                                 <i class="fas fa-play-circle text-6xl text-indigo-400 mb-4"></i>
                                 <h3 class="text-xl font-bold text-white mb-2">Master AI Video Creation</h3>
-                                <p class="text-gray-300 mb-4">Watch our comprehensive tutorial to unlock the full potential of AI Story Studio</p>
-                                <button id="play-tutorial-btn" class="bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-6 py-3 rounded-lg font-bold hover:from-purple-700 hover:to-indigo-700 transition-all">
+                                <p class="text-gray-300 mb-4">Watch our comprehensive tutorial to unlock the full
+                                    potential of AI Story Studio</p>
+                                <button id="play-tutorial-btn"
+                                    class="bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-6 py-3 rounded-lg font-bold hover:from-purple-700 hover:to-indigo-700 transition-all">
                                     <i class="fas fa-play mr-2"></i>Watch Tutorial (3 min)
                                 </button>
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- Tutorial Features -->
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
                         <div class="bg-gray-800/50 p-4 rounded-lg">
@@ -226,26 +285,37 @@
                 <div class="lg:col-span-1 space-y-8">
                     <!-- Text-to-Video Generation -->
                     <section class="glass-panel p-6 rounded-2xl border-2 border-indigo-500 shadow-2xl">
-                        <h2 class="text-2xl font-bold mb-4 border-b border-indigo-400 pb-2 flex items-center"><i class="fas fa-magic-sparkles mr-3"></i>Text-to-Video Engine</h2>
-                        <p class="text-sm text-gray-300 mb-4">Describe the video you want to create. This engine uses <strong class="text-indigo-300">Gemini 2.5 Pro</strong> to generate a complete, full-sensory video plan.</p>
-                        <textarea id="text-to-video-prompt" rows="6" class="w-full p-3 bg-gray-900/50 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition" placeholder="e.g., A cinematic trailer for a sci-fi movie..."></textarea>
+                        <h2 class="text-2xl font-bold mb-4 border-b border-indigo-400 pb-2 flex items-center"><i
+                                class="fas fa-magic-sparkles mr-3"></i>Text-to-Video Engine</h2>
+                        <p class="text-sm text-gray-300 mb-4">Describe the video you want to create. This engine uses
+                            <strong class="text-indigo-300">Gemini 2.5 Pro</strong> to generate a complete, full-sensory
+                            video plan.</p>
+                        <textarea id="text-to-video-prompt" rows="6"
+                            class="w-full p-3 bg-gray-900/50 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
+                            placeholder="e.g., A cinematic trailer for a sci-fi movie..."></textarea>
                         <div class="mt-4">
-                            <label for="video-duration-slider" class="block text-sm font-medium text-gray-300 mb-2">Video Duration: <span id="duration-display" class="font-bold text-indigo-300">120s</span></label>
-                            <input type="range" id="video-duration-slider" min="10" max="600" value="120" class="w-full">
+                            <label for="video-duration-slider"
+                                class="block text-sm font-medium text-gray-300 mb-2">Video Duration: <span
+                                    id="duration-display" class="font-bold text-indigo-300">120s</span></label>
+                            <input type="range" id="video-duration-slider" min="10" max="600" value="120"
+                                class="w-full">
                         </div>
-                        <button id="generate-text-to-video-btn" class="generate-video-btn w-full mt-4 p-4 rounded-lg flex items-center justify-center text-lg font-bold">
+                        <button id="generate-text-to-video-btn"
+                            class="generate-video-btn w-full mt-4 p-4 rounded-lg flex items-center justify-center text-lg font-bold">
                             <i class="fas fa-video mr-2"></i>Generate 4K Video
                         </button>
                     </section>
-                    
+
                     <!-- AI Creative Tools -->
                     <section class="glass-panel p-6 rounded-2xl">
                         <h2 class="text-2xl font-bold mb-4 border-b border-gray-600 pb-2">AI Creative Tools</h2>
                         <div class="space-y-4">
-                            <button id="suggest-music-btn" class="creative-tool-btn w-full p-4 rounded-lg flex items-center justify-center text-md font-bold">
+                            <button id="suggest-music-btn"
+                                class="creative-tool-btn w-full p-4 rounded-lg flex items-center justify-center text-md font-bold">
                                 <i class="fas fa-music mr-3"></i>✨ Suggest Music & SFX
                             </button>
-                            <button id="suggest-edits-btn" class="creative-tool-btn w-full p-4 rounded-lg flex items-center justify-center text-md font-bold">
+                            <button id="suggest-edits-btn"
+                                class="creative-tool-btn w-full p-4 rounded-lg flex items-center justify-center text-md font-bold">
                                 <i class="fas fa-wand-magic-sparkles mr-3"></i>✨ Get Editing Suggestions
                             </button>
                         </div>
@@ -255,18 +325,22 @@
                     <section class="glass-panel p-6 rounded-2xl">
                         <h2 class="text-2xl font-bold mb-4 border-b border-gray-600 pb-2">Media Library</h2>
                         <div class="grid grid-cols-2 gap-4 mb-4">
-                            <button id="upload-device-btn" class="upload-btn p-4 rounded-lg flex flex-col items-center justify-center text-center">
+                            <button id="upload-device-btn"
+                                class="upload-btn p-4 rounded-lg flex flex-col items-center justify-center text-center">
                                 <i class="fas fa-upload text-2xl mb-2"></i>
                                 <span class="text-sm font-medium">Upload from Device</span>
                             </button>
                             <input type="file" id="video-upload-input" class="hidden" accept="video/*" multiple>
-                            <button id="browse-ai-library-btn" class="upload-btn p-4 rounded-lg flex flex-col items-center justify-center text-center">
+                            <button id="browse-ai-library-btn"
+                                class="upload-btn p-4 rounded-lg flex flex-col items-center justify-center text-center">
                                 <i class="fas fa-robot text-2xl mb-2"></i>
                                 <span class="text-sm font-medium">Browse AI Library</span>
                             </button>
                         </div>
-                        <div id="media-bin" class="mt-4 bg-gray-900/50 p-2 rounded-lg min-h-[120px] border border-dashed border-gray-600">
-                            <p id="media-bin-placeholder" class="text-center text-gray-400 p-4">Your project media will appear here.</p>
+                        <div id="media-bin"
+                            class="mt-4 bg-gray-900/50 p-2 rounded-lg min-h-[120px] border border-dashed border-gray-600">
+                            <p id="media-bin-placeholder" class="text-center text-gray-400 p-4">Your project media will
+                                appear here.</p>
                             <div id="media-bin-grid" class="grid grid-cols-3 gap-2"></div>
                         </div>
                     </section>
@@ -274,29 +348,38 @@
 
                 <!-- Right Panel: Video Preview & Timeline -->
                 <div class="lg:col-span-2 glass-panel p-4 sm:p-6 rounded-2xl">
-                    <div id="video-preview-container" class="bg-black rounded-lg mb-6 aspect-video flex items-center justify-center">
+                    <div id="video-preview-container"
+                        class="bg-black rounded-lg mb-6 aspect-video flex items-center justify-center">
                         <video id="video-preview" class="w-full h-full rounded-lg" controls>
-                             <source src="https://placehold.co/1920x1080.mp4" type="video/mp4">
+                            <source src="https://placehold.co/1920x1080.mp4" type="video/mp4">
                             Your browser does not support the video tag.
                         </video>
                     </div>
                     <div class="flex items-center justify-center space-x-6 mb-4">
-                        <button class="text-2xl hover:text-indigo-400 transition"><i class="fas fa-backward-step"></i></button>
-                        <button class="text-4xl hover:text-indigo-400 transition"><i class="fas fa-play-circle"></i></button>
-                        <button class="text-2xl hover:text-indigo-400 transition"><i class="fas fa-forward-step"></i></button>
+                        <button class="text-2xl hover:text-indigo-400 transition"><i
+                                class="fas fa-backward-step"></i></button>
+                        <button class="text-4xl hover:text-indigo-400 transition"><i
+                                class="fas fa-play-circle"></i></button>
+                        <button class="text-2xl hover:text-indigo-400 transition"><i
+                                class="fas fa-forward-step"></i></button>
                     </div>
                     <div class="bg-gray-800 p-2 rounded-lg">
                         <div id="timeline-container" class="relative h-20 bg-gray-700 rounded">
                             <div class="absolute top-0 left-1/4 w-0.5 h-full bg-red-500 z-10">
                                 <div class="absolute -top-2 -left-2 w-4 h-4 bg-red-500 rounded-full"></div>
                             </div>
-                            <div class="timeline-handle absolute top-0 left-0 h-full w-4 bg-indigo-500/50 rounded-l-lg"></div>
-                            <div class="timeline-handle absolute top-0 right-0 h-full w-4 bg-indigo-500/50 rounded-r-lg"></div>
+                            <div class="timeline-handle absolute top-0 left-0 h-full w-4 bg-indigo-500/50 rounded-l-lg">
+                            </div>
+                            <div
+                                class="timeline-handle absolute top-0 right-0 h-full w-4 bg-indigo-500/50 rounded-r-lg">
+                            </div>
                         </div>
                     </div>
                     <div id="video-plan-container" class="mt-6 hidden">
                         <h3 class="text-xl font-bold text-white mb-2">AI Video Generation Plan:</h3>
-                        <div id="video-plan-result" class="p-4 bg-gray-900/70 rounded-lg prose prose-invert max-w-none border border-gray-700 h-64 overflow-y-auto"></div>
+                        <div id="video-plan-result"
+                            class="p-4 bg-gray-900/70 rounded-lg prose prose-invert max-w-none border border-gray-700 h-64 overflow-y-auto">
+                        </div>
                     </div>
                 </div>
             </div>
@@ -305,51 +388,78 @@
         <!-- Showcase Section -->
         <section class="showcase-section py-16">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <section id="storyboard-generator" class="mb-12 p-6 sm:p-8 rounded-2xl shadow-lg border border-slate-200">
-                    <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 text-center mb-2">Storyboard & Video Idea Generator</h2>
+                <section id="storyboard-generator"
+                    class="mb-12 p-6 sm:p-8 rounded-2xl shadow-lg border border-slate-200">
+                    <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 text-center mb-2">Storyboard & Video Idea
+                        Generator</h2>
                     <p class="text-center text-slate-600 mb-6">Powered by Gemini & Flow AI</p>
                     <div class="max-w-3xl mx-auto">
                         <div class="mb-4">
-                            <label for="idea-input" class="block text-lg font-semibold text-slate-700 mb-2">Enter your video or story idea:</label>
-                            <textarea id="idea-input" rows="4" class="w-full p-3 border border-slate-300 rounded-lg shadow-sm focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition" placeholder="e.g., A detective discovers a secret society in a futuristic city."></textarea>
+                            <label for="idea-input" class="block text-lg font-semibold text-slate-700 mb-2">Enter your
+                                video or story idea:</label>
+                            <textarea id="idea-input" rows="4"
+                                class="w-full p-3 border border-slate-300 rounded-lg shadow-sm focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition"
+                                placeholder="e.g., A detective discovers a secret society in a futuristic city."></textarea>
                         </div>
-                        <button id="generate-storyboard-btn" class="w-full cta-button text-white font-bold text-lg py-3 px-6 rounded-lg shadow-md hover:shadow-lg flex items-center justify-center">
+                        <button id="generate-storyboard-btn"
+                            class="w-full cta-button text-white font-bold text-lg py-3 px-6 rounded-lg shadow-md hover:shadow-lg flex items-center justify-center">
                             Generate Storyboard & Ideas
                         </button>
                         <div id="storyboard-result-container" class="mt-8 hidden">
                             <h3 class="text-xl font-bold text-slate-800 mb-4">Generated Concept:</h3>
-                            <div id="storyboard-result" class="p-4 sm:p-6 bg-slate-50 rounded-lg prose prose-slate max-w-none border border-slate-200"></div>
+                            <div id="storyboard-result"
+                                class="p-4 sm:p-6 bg-slate-50 rounded-lg prose prose-slate max-w-none border border-slate-200">
+                            </div>
                         </div>
                     </div>
                 </section>
-                
+
                 <!-- NEW: AI Character Generator -->
-                <section id="character-generator" class="mb-12 p-6 sm:p-8 rounded-2xl shadow-lg border border-slate-200">
-                    <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 text-center mb-2">AI Character Generator</h2>
-                    <p class="text-center text-slate-600 mb-6">Create detailed character profiles from a simple idea.</p>
+                <section id="character-generator"
+                    class="mb-12 p-6 sm:p-8 rounded-2xl shadow-lg border border-slate-200">
+                    <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 text-center mb-2">AI Character Generator
+                    </h2>
+                    <p class="text-center text-slate-600 mb-6">Create detailed character profiles from a simple idea.
+                    </p>
                     <div class="max-w-3xl mx-auto">
                         <div class="mb-4">
-                            <label for="character-input" class="block text-lg font-semibold text-slate-700 mb-2">Enter your character concept:</label>
-                            <textarea id="character-input" rows="3" class="w-full p-3 border border-slate-300 rounded-lg shadow-sm focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition" placeholder="e.g., A grizzled space detective who has lost their partner."></textarea>
+                            <label for="character-input" class="block text-lg font-semibold text-slate-700 mb-2">Enter
+                                your character concept:</label>
+                            <textarea id="character-input" rows="3"
+                                class="w-full p-3 border border-slate-300 rounded-lg shadow-sm focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition"
+                                placeholder="e.g., A grizzled space detective who has lost their partner."></textarea>
                         </div>
-                        <button id="generate-character-btn" class="w-full cta-button text-white font-bold text-lg py-3 px-6 rounded-lg shadow-md hover:shadow-lg flex items-center justify-center">
+                        <button id="generate-character-btn"
+                            class="w-full cta-button text-white font-bold text-lg py-3 px-6 rounded-lg shadow-md hover:shadow-lg flex items-center justify-center">
                             ✨ Generate Character Profile
                         </button>
                         <div id="character-result-container" class="mt-8 hidden">
                             <h3 class="text-xl font-bold text-slate-800 mb-4">Generated Profile:</h3>
-                            <div id="character-result" class="p-4 sm:p-6 bg-slate-50 rounded-lg prose prose-slate max-w-none border border-slate-200"></div>
+                            <div id="character-result"
+                                class="p-4 sm:p-6 bg-slate-50 rounded-lg prose prose-slate max-w-none border border-slate-200">
+                            </div>
                         </div>
                     </div>
                 </section>
 
                 <section id="gallery" aria-labelledby="gallery-heading">
-                    <h2 id="gallery-heading" class="text-2xl sm:text-3xl font-bold text-slate-900 text-center mb-8">Curated Showcase</h2>
+                    <h2 id="gallery-heading" class="text-2xl sm:text-3xl font-bold text-slate-900 text-center mb-8">
+                        Curated Showcase</h2>
                     <div id="filter-container" class="flex flex-wrap justify-center gap-2 sm:gap-4 mb-10">
-                        <button data-filter="all" class="filter-btn active text-sm sm:text-base font-semibold py-2 px-4 rounded-full bg-white text-slate-700 border border-slate-300 hover:bg-slate-100">Show All</button>
-                        <button data-filter="video" class="filter-btn text-sm sm:text-base font-semibold py-2 px-4 rounded-full bg-white text-slate-700 border border-slate-300 hover:bg-slate-100">Featured Videos</button>
-                        <button data-filter="pick" class="filter-btn text-sm sm:text-base font-semibold py-2 px-4 rounded-full bg-white text-slate-700 border border-slate-300 hover:bg-slate-100">Pick of the Week</button>
-                        <button data-filter="senses" class="filter-btn text-sm sm:text-base font-semibold py-2 px-4 rounded-full bg-white text-slate-700 border border-slate-300 hover:bg-slate-100">AI Senses (DJ)</button>
-                        <button id="suggest-idea-btn" class="filter-btn text-sm sm:text-base font-semibold py-2 px-4 rounded-full bg-green-500 text-white border border-green-600 hover:bg-green-600 flex items-center">
+                        <button data-filter="all"
+                            class="filter-btn active text-sm sm:text-base font-semibold py-2 px-4 rounded-full bg-white text-slate-700 border border-slate-300 hover:bg-slate-100">Show
+                            All</button>
+                        <button data-filter="video"
+                            class="filter-btn text-sm sm:text-base font-semibold py-2 px-4 rounded-full bg-white text-slate-700 border border-slate-300 hover:bg-slate-100">Featured
+                            Videos</button>
+                        <button data-filter="pick"
+                            class="filter-btn text-sm sm:text-base font-semibold py-2 px-4 rounded-full bg-white text-slate-700 border border-slate-300 hover:bg-slate-100">Pick
+                            of the Week</button>
+                        <button data-filter="senses"
+                            class="filter-btn text-sm sm:text-base font-semibold py-2 px-4 rounded-full bg-white text-slate-700 border border-slate-300 hover:bg-slate-100">AI
+                            Senses (DJ)</button>
+                        <button id="suggest-idea-btn"
+                            class="filter-btn text-sm sm:text-base font-semibold py-2 px-4 rounded-full bg-green-500 text-white border border-green-600 hover:bg-green-600 flex items-center">
                             <i class="fas fa-lightbulb mr-2"></i> Suggest a New Idea
                         </button>
                     </div>
@@ -407,7 +517,7 @@
             const grid = document.getElementById('content-grid');
             const filterContainer = document.getElementById('filter-container');
             const suggestIdeaBtn = document.getElementById('suggest-idea-btn');
-            
+
             // --- DOM Elements (Character Generator) ---
             const characterInput = document.getElementById('character-input');
             const generateCharacterBtn = document.getElementById('generate-character-btn');
@@ -420,15 +530,15 @@
                 { id: 2, category: 'video', title: "Whispers of the Quantum Wild", description: "Experience a surreal 4K animated short..." },
                 { id: 3, category: 'video', title: "Urban Echoes: A City's Dream", description: "A gritty, atmospheric 4K film noir piece..." },
                 { id: 4, category: 'video', title: "The Great Coral Symphony", description: "Dive into a vibrant 4K underwater spectacle..." },
-                { id: 5, category: 'pick', title: "The Shifting Sands of Aethelgard", description: "This week's pick is an mesmerizing AI-generated virtual experience...", metadata: { Genre: 'Epic Fantasy', Creator: 'DuneDreamerAI', Rating: '4.9/5 ★' }},
-                { id: 6, category: 'senses', title: 'Subterranean Synth-Lounge', description: "Designed for focused creative flow...", metadata: { Visuals: 'Deep, cavernous underground club...', Auditory: 'Deep, resonant bass lines...', Atmosphere: 'Cool, damp air...'}}
+                { id: 5, category: 'pick', title: "The Shifting Sands of Aethelgard", description: "This week's pick is an mesmerizing AI-generated virtual experience...", metadata: { Genre: 'Epic Fantasy', Creator: 'DuneDreamerAI', Rating: '4.9/5 ★' } },
+                { id: 6, category: 'senses', title: 'Subterranean Synth-Lounge', description: "Designed for focused creative flow...", metadata: { Visuals: 'Deep, cavernous underground club...', Auditory: 'Deep, resonant bass lines...', Atmosphere: 'Cool, damp air...' } }
             ];
 
             const createCard = (item) => {
                 const card = document.createElement('div');
                 card.className = 'content-card bg-white rounded-xl shadow-sm border border-slate-200 p-6 flex flex-col cursor-pointer transition-all duration-200';
                 let badgeHtml = '';
-                if(item.category === 'pick') {
+                if (item.category === 'pick') {
                     badgeHtml = `<div class="pick-of-the-week-badge text-xs font-bold text-white uppercase tracking-wider py-1 px-3 rounded-full mb-3 self-start">Pick of the Week</div>`;
                 } else if (item.category === 'ai') {
                     badgeHtml = `<div class="ai-suggested-badge text-xs font-bold text-white uppercase tracking-wider py-1 px-3 rounded-full mb-3 self-start">AI Suggested</div>`;
@@ -477,12 +587,12 @@
             const openModal = (title, content) => {
                 videoEditorModalContainer.innerHTML = content;
                 const titleEl = videoEditorModalContainer.querySelector('.modal-title');
-                if(titleEl) titleEl.textContent = title;
+                if (titleEl) titleEl.textContent = title;
                 videoEditorModalContainer.classList.remove('hidden');
                 setTimeout(() => {
                     videoEditorModalContainer.classList.add('opacity-100');
                     const modalContent = videoEditorModalContainer.querySelector('.modal-content');
-                    if(modalContent) modalContent.classList.remove('scale-95');
+                    if (modalContent) modalContent.classList.remove('scale-95');
                 }, 10);
             };
 
@@ -494,7 +604,7 @@
             };
 
             const callGeminiApi = async (prompt) => {
-                 try {
+                try {
                     let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
                     const payload = { contents: chatHistory };
                     const apiKey = "";
@@ -511,7 +621,7 @@
                     return `Title: Error\nDescription: Could not generate content.`;
                 }
             };
-            
+
             const addMediaToBin = (file) => {
                 mediaBinPlaceholder.classList.add('hidden');
                 const thumb = document.createElement('div');
@@ -592,14 +702,14 @@
                     generateTextToVideoBtn.disabled = false;
                 }
             };
-            
+
             const handleSuggestIdea = async () => {
                 const originalText = suggestIdeaBtn.innerHTML;
                 suggestIdeaBtn.innerHTML = '<div class="loader" style="border-top-color: #fff; width: 20px; height: 20px;"></div>';
                 suggestIdeaBtn.disabled = true;
                 const prompt = "You are a creative director. Generate a single, compelling, and concise concept for a short video or virtual experience. Provide a title and a short description. Format it exactly like this: Title: [Your Title Here]\nDescription: [Your Description Here]";
                 const responseText = await callGeminiApi(prompt);
-                
+
                 const titleMatch = responseText.match(/Title: (.*)/);
                 const descMatch = responseText.match(/Description: (.*)/);
 
@@ -636,7 +746,7 @@
             const handleEditSuggestion = async () => {
                 const videoPlan = videoPlanResult.innerText;
                 if (!videoPlan.trim() || videoPlanContainer.classList.contains('hidden')) {
-                     openModal('Editing Suggestion', '<div class="modal-backdrop absolute inset-0"></div><div class="modal-content relative glass-panel rounded-2xl shadow-2xl w-full max-w-2xl p-6"><p class="text-amber-400">Please generate a video plan first.</p></div>');
+                    openModal('Editing Suggestion', '<div class="modal-backdrop absolute inset-0"></div><div class="modal-content relative glass-panel rounded-2xl shadow-2xl w-full max-w-2xl p-6"><p class="text-amber-400">Please generate a video plan first.</p></div>');
                     return;
                 }
                 const modalContent = `<div class="modal-backdrop absolute inset-0"></div><div class="modal-content relative glass-panel rounded-2xl shadow-2xl w-full max-w-2xl"><div class="p-6 sm:p-8"><button class="modal-close-btn absolute top-4 right-4 text-gray-400"><i class="fas fa-times text-2xl"></i></button><h2 class="modal-title text-2xl font-bold mb-4 text-white">AI Editing Assistant</h2><div id="edit-suggestion-result" class="p-4 bg-gray-900/70 rounded-lg prose prose-invert max-w-none border"><div class="flex justify-center p-4"><div class="loader"></div></div></div></div></div>`;
@@ -645,7 +755,7 @@
                 const editSuggestionHtml = await callGeminiApi(prompt);
                 document.getElementById('edit-suggestion-result').innerHTML = editSuggestionHtml;
             };
-            
+
             const generateStoryboard = async () => {
                 const idea = ideaInput.value;
                 if (!idea.trim()) return;
@@ -671,7 +781,7 @@
                 generateCharacterBtn.disabled = true;
                 characterResultContainer.classList.remove('hidden');
                 characterResult.innerHTML = '<div class="flex justify-center items-center p-4"><div class="loader"></div></div>';
-                
+
                 const prompt = `
                     You are a master character designer and writer. Take the following basic concept and generate a detailed character profile.
 
@@ -701,10 +811,10 @@
             suggestMusicBtn.addEventListener('click', handleMusicSuggestion);
             suggestEditsBtn.addEventListener('click', handleEditSuggestion);
             suggestIdeaBtn.addEventListener('click', handleSuggestIdea);
-            
+
             generateStoryboardBtn.addEventListener('click', generateStoryboard);
             generateCharacterBtn.addEventListener('click', handleCharacterGeneration); // New listener
-            
+
             filterContainer.addEventListener('click', (e) => {
                 if (e.target.tagName === 'BUTTON' && e.target.dataset.filter) {
                     document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
@@ -718,7 +828,7 @@
                 if (e.target.closest('.media-thumbnail')) {
                     const clipTitle = e.target.closest('.media-thumbnail').dataset.aiClip;
                     if (clipTitle) {
-                        addMediaToBin({name: `${clipTitle}.mp4`});
+                        addMediaToBin({ name: `${clipTitle}.mp4` });
                         closeModal();
                     }
                 }
@@ -731,7 +841,8 @@
 
     <!-- Subscription Plans Modal -->
     <div id="pricing-modal" class="modal fixed inset-0 z-50 hidden">
-        <div class="modal-content max-w-6xl mx-auto mt-8 bg-gray-900 rounded-2xl shadow-2xl border border-gray-700 max-h-[90vh] overflow-y-auto">
+        <div
+            class="modal-content max-w-6xl mx-auto mt-8 bg-gray-900 rounded-2xl shadow-2xl border border-gray-700 max-h-[90vh] overflow-y-auto">
             <div class="p-8">
                 <div class="flex justify-between items-center mb-6">
                     <h2 class="text-3xl font-bold text-white">
@@ -741,13 +852,14 @@
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
-                
+
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <!-- Free Plan -->
                     <div class="bg-gray-800 rounded-xl p-6 border border-gray-700">
                         <div class="text-center mb-6">
                             <h3 class="text-xl font-bold text-white mb-2">Free</h3>
-                            <div class="text-3xl font-bold text-white mb-2">$0<span class="text-sm text-gray-400">/month</span></div>
+                            <div class="text-3xl font-bold text-white mb-2">$0<span
+                                    class="text-sm text-gray-400">/month</span></div>
                             <p class="text-gray-400">Perfect for getting started</p>
                         </div>
                         <ul class="space-y-3 mb-6">
@@ -768,21 +880,25 @@
                                 Community support
                             </li>
                         </ul>
-                        <button class="w-full bg-gray-700 text-white py-3 rounded-lg font-bold hover:bg-gray-600 transition-colors">
+                        <button
+                            class="w-full bg-gray-700 text-white py-3 rounded-lg font-bold hover:bg-gray-600 transition-colors">
                             Current Plan
                         </button>
                     </div>
-                    
+
                     <!-- Pro Plan -->
-                    <div class="bg-gradient-to-br from-purple-900 to-indigo-900 rounded-xl p-6 border-2 border-purple-500 relative">
+                    <div
+                        class="bg-gradient-to-br from-purple-900 to-indigo-900 rounded-xl p-6 border-2 border-purple-500 relative">
                         <div class="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                            <span class="bg-gradient-to-r from-purple-500 to-indigo-500 text-white px-4 py-1 rounded-full text-sm font-bold">
+                            <span
+                                class="bg-gradient-to-r from-purple-500 to-indigo-500 text-white px-4 py-1 rounded-full text-sm font-bold">
                                 MOST POPULAR
                             </span>
                         </div>
                         <div class="text-center mb-6 mt-4">
                             <h3 class="text-xl font-bold text-white mb-2">Pro</h3>
-                            <div class="text-3xl font-bold text-white mb-2">$29<span class="text-sm text-gray-400">/month</span></div>
+                            <div class="text-3xl font-bold text-white mb-2">$29<span
+                                    class="text-sm text-gray-400">/month</span></div>
                             <p class="text-gray-300">For serious creators</p>
                         </div>
                         <ul class="space-y-3 mb-6">
@@ -811,16 +927,18 @@
                                 Email support
                             </li>
                         </ul>
-                        <button class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-3 rounded-lg font-bold hover:from-purple-700 hover:to-indigo-700 transition-all">
+                        <button
+                            class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-3 rounded-lg font-bold hover:from-purple-700 hover:to-indigo-700 transition-all">
                             Upgrade to Pro
                         </button>
                     </div>
-                    
+
                     <!-- Enterprise Plan -->
                     <div class="bg-gray-800 rounded-xl p-6 border border-gray-700">
                         <div class="text-center mb-6">
                             <h3 class="text-xl font-bold text-white mb-2">Enterprise</h3>
-                            <div class="text-3xl font-bold text-white mb-2">$99<span class="text-sm text-gray-400">/month</span></div>
+                            <div class="text-3xl font-bold text-white mb-2">$99<span
+                                    class="text-sm text-gray-400">/month</span></div>
                             <p class="text-gray-400">For teams and agencies</p>
                         </div>
                         <ul class="space-y-3 mb-6">
@@ -845,7 +963,8 @@
                                 24/7 phone support
                             </li>
                         </ul>
-                        <button class="w-full bg-yellow-600 text-white py-3 rounded-lg font-bold hover:bg-yellow-700 transition-colors">
+                        <button
+                            class="w-full bg-yellow-600 text-white py-3 rounded-lg font-bold hover:bg-yellow-700 transition-colors">
                             Contact Sales
                         </button>
                     </div>
@@ -866,40 +985,49 @@
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
-                
+
                 <form id="signin-form" class="space-y-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-300 mb-2">Email</label>
-                        <input type="email" class="w-full p-3 bg-gray-800 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="your@email.com" required>
+                        <input type="email"
+                            class="w-full p-3 bg-gray-800 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                            placeholder="your@email.com" required>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-300 mb-2">Password</label>
-                        <input type="password" class="w-full p-3 bg-gray-800 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="••••••••" required>
+                        <input type="password"
+                            class="w-full p-3 bg-gray-800 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                            placeholder="••••••••" required>
                     </div>
                     <div class="flex items-center justify-between">
                         <label class="flex items-center">
-                            <input type="checkbox" class="rounded border-gray-600 text-indigo-600 focus:ring-indigo-500">
+                            <input type="checkbox"
+                                class="rounded border-gray-600 text-indigo-600 focus:ring-indigo-500">
                             <span class="ml-2 text-sm text-gray-300">Remember me</span>
                         </label>
                         <a href="#" class="text-sm text-indigo-400 hover:text-indigo-300">Forgot password?</a>
                     </div>
-                    <button type="submit" class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-3 rounded-lg font-bold hover:from-purple-700 hover:to-indigo-700 transition-all">
+                    <button type="submit"
+                        class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-3 rounded-lg font-bold hover:from-purple-700 hover:to-indigo-700 transition-all">
                         Sign In
                     </button>
                 </form>
-                
+
                 <div class="mt-6 text-center">
-                    <p class="text-gray-400">Don't have an account? 
-                        <button id="signup-btn" class="text-indigo-400 hover:text-indigo-300 font-medium">Sign up for free</button>
+                    <p class="text-gray-400">Don't have an account?
+                        <button id="signup-btn" class="text-indigo-400 hover:text-indigo-300 font-medium">Sign up for
+                            free</button>
                     </p>
                 </div>
-                
+
                 <div class="mt-6 pt-6 border-t border-gray-700">
                     <div class="grid grid-cols-2 gap-3">
-                        <button class="flex items-center justify-center px-4 py-2 border border-gray-600 rounded-lg text-gray-300 hover:bg-gray-800 transition-colors">
+                        <button
+                            class="flex items-center justify-center px-4 py-2 border border-gray-600 rounded-lg text-gray-300 hover:bg-gray-800 transition-colors">
                             <i class="fab fa-google mr-2"></i>Google
                         </button>
-                        <button class="flex items-center justify-center px-4 py-2 border border-gray-600 rounded-lg text-gray-300 hover:bg-gray-800 transition-colors">
+                        <button
+                            class="flex items-center justify-center px-4 py-2 border border-gray-600 rounded-lg text-gray-300 hover:bg-gray-800 transition-colors">
                             <i class="fab fa-github mr-2"></i>GitHub
                         </button>
                     </div>
@@ -910,7 +1038,8 @@
 
     <!-- Features Modal -->
     <div id="features-modal" class="modal fixed inset-0 z-50 hidden">
-        <div class="modal-content max-w-4xl mx-auto mt-8 bg-gray-900 rounded-2xl shadow-2xl border border-gray-700 max-h-[90vh] overflow-y-auto">
+        <div
+            class="modal-content max-w-4xl mx-auto mt-8 bg-gray-900 rounded-2xl shadow-2xl border border-gray-700 max-h-[90vh] overflow-y-auto">
             <div class="p-8">
                 <div class="flex justify-between items-center mb-6">
                     <h2 class="text-3xl font-bold text-white">
@@ -920,9 +1049,10 @@
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
-                
+
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="bg-gradient-to-br from-purple-900/30 to-indigo-900/30 p-6 rounded-xl border border-purple-500/30">
+                    <div
+                        class="bg-gradient-to-br from-purple-900/30 to-indigo-900/30 p-6 rounded-xl border border-purple-500/30">
                         <div class="text-center mb-4">
                             <i class="fas fa-brain text-purple-400 text-3xl mb-3"></i>
                             <h3 class="text-xl font-bold text-white">AI-Powered Creativity</h3>
@@ -934,8 +1064,9 @@
                             <li><i class="fas fa-check text-green-400 mr-2"></i>Character Development AI</li>
                         </ul>
                     </div>
-                    
-                    <div class="bg-gradient-to-br from-green-900/30 to-teal-900/30 p-6 rounded-xl border border-green-500/30">
+
+                    <div
+                        class="bg-gradient-to-br from-green-900/30 to-teal-900/30 p-6 rounded-xl border border-green-500/30">
                         <div class="text-center mb-4">
                             <i class="fas fa-video text-green-400 text-3xl mb-3"></i>
                             <h3 class="text-xl font-bold text-white">Professional Video Tools</h3>
@@ -947,8 +1078,9 @@
                             <li><i class="fas fa-check text-green-400 mr-2"></i>Real-time Rendering</li>
                         </ul>
                     </div>
-                    
-                    <div class="bg-gradient-to-br from-blue-900/30 to-cyan-900/30 p-6 rounded-xl border border-blue-500/30">
+
+                    <div
+                        class="bg-gradient-to-br from-blue-900/30 to-cyan-900/30 p-6 rounded-xl border border-blue-500/30">
                         <div class="text-center mb-4">
                             <i class="fas fa-palette text-blue-400 text-3xl mb-3"></i>
                             <h3 class="text-xl font-bold text-white">Creative Assets</h3>
@@ -960,8 +1092,9 @@
                             <li><i class="fas fa-check text-green-400 mr-2"></i>Advanced Effects</li>
                         </ul>
                     </div>
-                    
-                    <div class="bg-gradient-to-br from-orange-900/30 to-red-900/30 p-6 rounded-xl border border-orange-500/30">
+
+                    <div
+                        class="bg-gradient-to-br from-orange-900/30 to-red-900/30 p-6 rounded-xl border border-orange-500/30">
                         <div class="text-center mb-4">
                             <i class="fas fa-rocket text-orange-400 text-3xl mb-3"></i>
                             <h3 class="text-xl font-bold text-white">Performance & Export</h3>
@@ -974,9 +1107,10 @@
                         </ul>
                     </div>
                 </div>
-                
+
                 <div class="mt-8 text-center">
-                    <button id="features-upgrade-btn" class="bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-8 py-3 rounded-lg font-bold hover:from-purple-700 hover:to-indigo-700 transition-all">
+                    <button id="features-upgrade-btn"
+                        class="bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-8 py-3 rounded-lg font-bold hover:from-purple-700 hover:to-indigo-700 transition-all">
                         <i class="fas fa-crown mr-2"></i>Unlock All Features - Upgrade Now
                     </button>
                 </div>
@@ -1028,7 +1162,7 @@
                     </div>
                 </div>
             `;
-            
+
             // Simulate video loading
             setTimeout(() => {
                 placeholder.innerHTML = `
@@ -1072,4 +1206,5 @@
         });
     </script>
 </body>
+
 </html>

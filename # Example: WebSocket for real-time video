@@ -1,0 +1,9 @@
+# Example: WebSocket for real-time video progress
+import websockets
+import asyncio
+
+async def video_progress_handler(websocket, path):
+    # Send real-time rendering progress to frontend
+    for progress in range(0, 101, 10):
+        await websocket.send(f"Rendering: {progress}%")
+        await asyncio.sleep(1)

@@ -1,0 +1,9 @@
+# Example: Direct OpenAI integration
+import openai
+
+def generate_enhanced_script(prompt):
+    response = openai.chat.completions.create(
+        model="gpt-4",
+        messages=[{"role": "user", "content": f"Create a video script: {prompt}"}]
+    )
+    return response.choices[0].message.content

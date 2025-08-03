@@ -19,6 +19,14 @@ const vertex_ai = new VertexAI({
 app.use(cors());
 app.use(express.json());
 
+// Serve the frontend HTML file
+app.use(express.static('.'));
+
+// Default route to serve the main HTML file
+app.get('/', (req, res) => {
+    res.sendFile(__dirname + '/ai-story-studio-combined.html');
+});
+
 // 4. API endpoint to START the video generation
 app.post('/generate-video-plan', async (req, res) => {
     try {

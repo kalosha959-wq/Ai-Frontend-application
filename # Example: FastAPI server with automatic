@@ -1,0 +1,14 @@
+# Example: FastAPI server with automatic docs
+from fastapi import FastAPI
+from pydantic import BaseModel
+
+app = FastAPI(title="AI Story Studio API")
+
+class VideoRequest(BaseModel):
+    prompt: str
+    duration: int
+
+@app.post("/generate-video")
+async def generate_video(request: VideoRequest):
+    # AI video generation logic
+    return {"status": "success", "job_id": "..."}
