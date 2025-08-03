@@ -84,3 +84,52 @@ curl http://localhost:3000/check-job-status/demo-job-123456789
 - **Demo mode**: Test full user flows without external API dependencies
 - **API integration**: Verify real Gemini/Vertex AI calls with valid credentials
 - **Error scenarios**: Test API failures, invalid inputs, and network issues
+
+## Deployment Patterns
+
+### Production Environment Setup
+```bash
+# Set production environment variables
+GEMINI_API_KEY="AIzaSyD_your_actual_key"
+GCP_PROJECT_ID="your-production-project"
+GCP_LOCATION="us-central1"
+PORT=3000
+NODE_ENV=production
+```
+
+### Static File Serving
+- Frontend is a **single HTML file** - can be served statically
+- Backend serves API endpoints only - no static file serving needed
+- Consider CDN for `ai-story-studio-combined.html` in production
+
+### Google Cloud Prerequisites
+- **Vertex AI API** must be enabled in GCP project
+- **Service account** with Vertex AI permissions required
+- **Gemini API** key from Google AI Studio (separate from GCP)
+
+## CI/CD Considerations
+
+### Deployment Steps
+1. **Environment validation**: Ensure API keys are set (not demo values)
+2. **Dependency installation**: `npm ci` for production builds
+3. **Health checks**: Test `/generate-video-plan` endpoint after deployment
+4. **Rollback strategy**: Keep previous version available if API calls fail
+
+### Security Patterns
+- **Never commit .env**: File contains sensitive API keys
+- **Environment-specific configs**: Use different GCP projects for staging/production
+- **CSP headers**: Already configured in HTML meta tags for security
+- **CORS configuration**: Currently allows all origins - restrict in production
+
+### Monitoring & Alerts
+```bash
+# Health check endpoint pattern
+curl -f http://localhost:3000/generate-video-plan \
+  -H "Content-Type: application/json" \
+  -d '{"prompt": "health check", "duration": "5"}' || exit 1
+```
+
+## Development vs Production Modes
+- **Development**: Use demo mode for rapid iteration without API costs
+- **Staging**: Test with real APIs but separate GCP project
+- **Production**: Full API integration with monitoring and error handling
