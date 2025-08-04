@@ -291,6 +291,8 @@
                             <strong class="text-indigo-300">Gemini 2.5 Pro</strong> to generate a complete, full-sensory
                             video plan.
                         </p>
+                        <label for="text-to-video-prompt" class="block text-sm font-medium text-gray-300 mb-2">Video
+                            Description</label>
                         <textarea id="text-to-video-prompt" rows="6"
                             class="w-full p-3 bg-gray-900/50 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
                             placeholder="e.g., A cinematic trailer for a sci-fi movie..."></textarea>
@@ -989,20 +991,21 @@
 
                 <form id="signin-form" class="space-y-4">
                     <div>
-                        <label class="block text-sm font-medium text-gray-300 mb-2">Email</label>
-                        <input type="email"
+                        <label for="signin-email" class="block text-sm font-medium text-gray-300 mb-2">Email</label>
+                        <input type="email" id="signin-email"
                             class="w-full p-3 bg-gray-800 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                             placeholder="your@email.com" required>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-300 mb-2">Password</label>
-                        <input type="password"
+                        <label for="signin-password"
+                            class="block text-sm font-medium text-gray-300 mb-2">Password</label>
+                        <input type="password" id="signin-password"
                             class="w-full p-3 bg-gray-800 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                             placeholder="••••••••" required>
                     </div>
                     <div class="flex items-center justify-between">
-                        <label class="flex items-center">
-                            <input type="checkbox"
+                        <label for="signin-remember" class="flex items-center">
+                            <input type="checkbox" id="signin-remember"
                                 class="rounded border-gray-600 text-indigo-600 focus:ring-indigo-500">
                             <span class="ml-2 text-sm text-gray-300">Remember me</span>
                         </label>

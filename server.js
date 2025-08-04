@@ -22,6 +22,22 @@ app.use(express.json());
 // Serve the frontend HTML file
 app.use(express.static('.'));
 
+// Health check endpoint
+app.get('/health', (req, res) => {
+    res.json({
+        status: 'healthy',
+        timestamp: new Date().toISOString(),
+        uptime: process.uptime(),
+        version: '1.0.0',
+        environment: {
+            node: process.version,
+            platform: process.platform,
+            geminiMode: process.env.GEMINI_API_KEY === 'demo-mode' ? 'demo' : 'production',
+            gcpProject: process.env.GCP_PROJECT_ID || 'not-configured'
+        }
+    });
+});
+
 // Default route to serve the main HTML file
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/ai-story-studio-combined.html');
@@ -112,17 +128,30 @@ app.get('/check-job-status/:jobId', async (req, res) => {
 
         if (jobId.startsWith('demo-job-')) {
             // Demo mode - simulate video completion
-            const jobAge = Date.now() - parseInt(jobId.split('-')[2]);
-            if (jobAge > 10000) { // After 10 seconds, mark as complete
-                res.json({
-                    status: 'completed',
-                    videoUrl: 'https://example.com/demo-video.mp4',
-                    note: 'This is a demo response. Configure your GCP project for real video generation.'
-                });
-            } else {
-                res.json({ status: 'rendering' });
+            try {
+                const timestampStr = jobId.split('-')[2];
+                if (!timestampStr || isNaN(timestampStr)) {
+                    return res.status(400).json({ error: 'Invalid demo job ID format.' });
+                }
+
+                const jobAge = Date.now() - parseInt(timestampStr);
+                if (jobAge > 10000) { // After 10 seconds, mark as complete
+                    res.json({
+                        status: 'completed',
+                        videoUrl: 'https://placehold.co/1920x1080.mp4?text=Demo+Video+Generated',
+                        note: 'This is a demo response. Configure your GCP project for real video generation.'
+                    });
+                } else {
+                    res.json({
+                        status: 'rendering',
+                        progress: Math.min(Math.floor((jobAge / 10000) * 100), 99),
+                        note: 'Demo mode: simulating video generation...'
+                    });
+                }
+                return;
+            } catch (demoError) {
+                return res.status(400).json({ error: 'Invalid demo job ID.' });
             }
-            return;
         }
 
         const [operation] = await vertex_ai.operationsClient.getOperation({ name: jobId });
