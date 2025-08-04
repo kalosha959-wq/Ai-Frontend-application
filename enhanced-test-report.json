@@ -1,0 +1,528 @@
+{
+  "timestamp": "2025-08-03T14:00:26.787Z",
+  "summary": {
+    "total": 38,
+    "passed": 30,
+    "failed": 7,
+    "skipped": 1,
+    "warnings": 0,
+    "successRate": "81.1"
+  },
+  "results": [
+    {
+      "test": "Pricing Button",
+      "status": "PASS",
+      "details": {
+        "disabled": false,
+        "hidden": false,
+        "visible": false,
+        "hasText": true,
+        "tagName": "button",
+        "classes": "bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:from-purple-700 hover:to-indigo-700 transition-all"
+      },
+      "category": "navigation",
+      "timestamp": "2025-08-03T14:00:26.759Z"
+    },
+    {
+      "test": "Sign In Button",
+      "status": "PASS",
+      "details": {
+        "disabled": false,
+        "hidden": false,
+        "visible": false,
+        "hasText": true,
+        "tagName": "button",
+        "classes": "text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors border border-gray-600 hover:border-gray-500"
+      },
+      "category": "navigation",
+      "timestamp": "2025-08-03T14:00:26.759Z"
+    },
+    {
+      "test": "Tutorial Button",
+      "status": "PASS",
+      "details": {
+        "disabled": false,
+        "hidden": false,
+        "visible": false,
+        "hasText": true,
+        "tagName": "button",
+        "classes": "text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors"
+      },
+      "category": "navigation",
+      "timestamp": "2025-08-03T14:00:26.760Z"
+    },
+    {
+      "test": "Mobile Menu Button",
+      "status": "PASS",
+      "details": {
+        "disabled": false,
+        "hidden": false,
+        "visible": false,
+        "hasText": false,
+        "tagName": "button",
+        "classes": "text-gray-300 hover:text-white p-2"
+      },
+      "category": "navigation",
+      "timestamp": "2025-08-03T14:00:26.760Z"
+    },
+    {
+      "test": "Generate Video Button",
+      "status": "FAIL",
+      "details": "Element not found: #generate-video-btn",
+      "category": "video-generation",
+      "timestamp": "2025-08-03T14:00:26.760Z"
+    },
+    {
+      "test": "Suggest Idea Button",
+      "status": "PASS",
+      "details": {
+        "disabled": false,
+        "hidden": false,
+        "visible": false,
+        "hasText": true,
+        "tagName": "button",
+        "classes": "filter-btn text-sm sm:text-base font-semibold py-2 px-4 rounded-full bg-green-500 text-white border border-green-600 hover:bg-green-600 flex items-center"
+      },
+      "category": "ai-assistant",
+      "timestamp": "2025-08-03T14:00:26.761Z"
+    },
+    {
+      "test": "Upload Device Button",
+      "status": "PASS",
+      "details": {
+        "disabled": false,
+        "hidden": false,
+        "visible": false,
+        "hasText": true,
+        "tagName": "button",
+        "classes": "upload-btn p-4 rounded-lg flex flex-col items-center justify-center text-center"
+      },
+      "category": "content",
+      "timestamp": "2025-08-03T14:00:26.761Z"
+    },
+    {
+      "test": "Browse AI Library Button",
+      "status": "FAIL",
+      "details": "Element not found: #browse-library-btn",
+      "category": "content",
+      "timestamp": "2025-08-03T14:00:26.761Z"
+    },
+    {
+      "test": "Suggest Music Button",
+      "status": "PASS",
+      "details": {
+        "disabled": false,
+        "hidden": false,
+        "visible": false,
+        "hasText": true,
+        "tagName": "button",
+        "classes": "creative-tool-btn w-full p-4 rounded-lg flex items-center justify-center text-md font-bold"
+      },
+      "category": "ai-assistant",
+      "timestamp": "2025-08-03T14:00:26.762Z"
+    },
+    {
+      "test": "Suggest Edits Button",
+      "status": "PASS",
+      "details": {
+        "disabled": false,
+        "hidden": false,
+        "visible": false,
+        "hasText": true,
+        "tagName": "button",
+        "classes": "creative-tool-btn w-full p-4 rounded-lg flex items-center justify-center text-md font-bold"
+      },
+      "category": "ai-assistant",
+      "timestamp": "2025-08-03T14:00:26.762Z"
+    },
+    {
+      "test": "Generate Storyboard Button",
+      "status": "PASS",
+      "details": {
+        "disabled": false,
+        "hidden": false,
+        "visible": false,
+        "hasText": true,
+        "tagName": "button",
+        "classes": "w-full cta-button text-white font-bold text-lg py-3 px-6 rounded-lg shadow-md hover:shadow-lg flex items-center justify-center"
+      },
+      "category": "ai-assistant",
+      "timestamp": "2025-08-03T14:00:26.762Z"
+    },
+    {
+      "test": "Generate Character Button",
+      "status": "PASS",
+      "details": {
+        "disabled": false,
+        "hidden": false,
+        "visible": false,
+        "hasText": true,
+        "tagName": "button",
+        "classes": "w-full cta-button text-white font-bold text-lg py-3 px-6 rounded-lg shadow-md hover:shadow-lg flex items-center justify-center"
+      },
+      "category": "ai-assistant",
+      "timestamp": "2025-08-03T14:00:26.763Z"
+    },
+    {
+      "test": "Play Tutorial Button",
+      "status": "PASS",
+      "details": {
+        "disabled": false,
+        "hidden": false,
+        "visible": false,
+        "hasText": true,
+        "tagName": "button",
+        "classes": "bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-6 py-3 rounded-lg font-bold hover:from-purple-700 hover:to-indigo-700 transition-all"
+      },
+      "category": "tutorial",
+      "timestamp": "2025-08-03T14:00:26.764Z"
+    },
+    {
+      "test": "Features Button",
+      "status": "PASS",
+      "details": {
+        "disabled": false,
+        "hidden": false,
+        "visible": false,
+        "hasText": true,
+        "tagName": "button",
+        "classes": "text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors"
+      },
+      "category": "navigation",
+      "timestamp": "2025-08-03T14:00:26.764Z"
+    },
+    {
+      "test": "Features Upgrade Button",
+      "status": "PASS",
+      "details": {
+        "disabled": false,
+        "hidden": false,
+        "visible": false,
+        "hasText": true,
+        "tagName": "button",
+        "classes": "bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-8 py-3 rounded-lg font-bold hover:from-purple-700 hover:to-indigo-700 transition-all"
+      },
+      "category": "upgrade",
+      "timestamp": "2025-08-03T14:00:26.764Z"
+    },
+    {
+      "test": "Video Prompt Textarea",
+      "status": "FAIL",
+      "details": "Form element not found: #video-prompt",
+      "category": "forms",
+      "timestamp": "2025-08-03T14:00:26.764Z"
+    },
+    {
+      "test": "Duration Slider",
+      "status": "FAIL",
+      "details": "Form element not found: #duration-slider",
+      "category": "forms",
+      "timestamp": "2025-08-03T14:00:26.765Z"
+    },
+    {
+      "test": "Duration Display",
+      "status": "PASS",
+      "details": {
+        "tagName": "span",
+        "type": "not-specified",
+        "required": false,
+        "disabled": false,
+        "placeholder": "none",
+        "value": "empty",
+        "maxLength": "unlimited",
+        "accessible": true
+      },
+      "category": "forms",
+      "timestamp": "2025-08-03T14:00:26.765Z"
+    },
+    {
+      "test": "Idea Input",
+      "status": "PASS",
+      "details": {
+        "tagName": "textarea",
+        "type": "textarea",
+        "required": false,
+        "disabled": false,
+        "placeholder": "e.g., A detective discovers a secret society in a futuristic city.",
+        "value": "empty",
+        "maxLength": -1,
+        "accessible": true
+      },
+      "category": "forms",
+      "timestamp": "2025-08-03T14:00:26.765Z"
+    },
+    {
+      "test": "Character Input",
+      "status": "PASS",
+      "details": {
+        "tagName": "textarea",
+        "type": "textarea",
+        "required": false,
+        "disabled": false,
+        "placeholder": "e.g., A grizzled space detective who has lost their partner.",
+        "value": "empty",
+        "maxLength": -1,
+        "accessible": true
+      },
+      "category": "forms",
+      "timestamp": "2025-08-03T14:00:26.765Z"
+    },
+    {
+      "test": "Email Input",
+      "status": "PASS",
+      "details": {
+        "tagName": "input",
+        "type": "email",
+        "required": true,
+        "disabled": false,
+        "placeholder": "your@email.com",
+        "value": "empty",
+        "maxLength": -1,
+        "accessible": false
+      },
+      "category": "forms",
+      "timestamp": "2025-08-03T14:00:26.766Z"
+    },
+    {
+      "test": "Password Input",
+      "status": "PASS",
+      "details": {
+        "tagName": "input",
+        "type": "password",
+        "required": true,
+        "disabled": false,
+        "placeholder": "••••••••",
+        "value": "empty",
+        "maxLength": -1,
+        "accessible": false
+      },
+      "category": "forms",
+      "timestamp": "2025-08-03T14:00:26.766Z"
+    },
+    {
+      "test": "Pricing Modal",
+      "status": "PASS",
+      "details": {
+        "triggerExists": true,
+        "modalExists": true,
+        "hasCloseButton": false,
+        "hasOverlay": false,
+        "hasContent": true
+      },
+      "category": "modals",
+      "timestamp": "2025-08-03T14:00:26.767Z"
+    },
+    {
+      "test": "Sign In Modal",
+      "status": "PASS",
+      "details": {
+        "triggerExists": true,
+        "modalExists": true,
+        "hasCloseButton": false,
+        "hasOverlay": false,
+        "hasContent": true
+      },
+      "category": "modals",
+      "timestamp": "2025-08-03T14:00:26.768Z"
+    },
+    {
+      "test": "Features Modal",
+      "status": "PASS",
+      "details": {
+        "triggerExists": true,
+        "modalExists": true,
+        "hasCloseButton": false,
+        "hasOverlay": false,
+        "hasContent": true
+      },
+      "category": "modals",
+      "timestamp": "2025-08-03T14:00:26.768Z"
+    },
+    {
+      "test": "Tutorial Modal",
+      "status": "FAIL",
+      "details": {
+        "triggerExists": true,
+        "modalExists": false,
+        "hasCloseButton": false,
+        "hasOverlay": false,
+        "hasContent": false
+      },
+      "category": "modals",
+      "timestamp": "2025-08-03T14:00:26.769Z"
+    },
+    {
+      "test": "Alt Text for Images",
+      "status": "PASS",
+      "details": {
+        "totalImages": 0,
+        "withAltText": 0,
+        "withoutAltText": 0,
+        "decorativeImages": 0
+      },
+      "category": "accessibility",
+      "timestamp": "2025-08-03T14:00:26.769Z"
+    },
+    {
+      "test": "Form Labels",
+      "status": "FAIL",
+      "details": {
+        "totalInputs": 8,
+        "withLabels": 3,
+        "withoutLabels": 5
+      },
+      "category": "accessibility",
+      "timestamp": "2025-08-03T14:00:26.770Z"
+    },
+    {
+      "test": "Keyboard Navigation",
+      "status": "PASS",
+      "details": {
+        "totalFocusableElements": 53,
+        "withTabIndex": 0,
+        "skipLinks": 5
+      },
+      "category": "accessibility",
+      "timestamp": "2025-08-03T14:00:26.772Z"
+    },
+    {
+      "test": "ARIA Attributes",
+      "status": "PASS",
+      "details": {
+        "elementsWithAria": 1,
+        "roles": {},
+        "landmarks": 0
+      },
+      "category": "accessibility",
+      "timestamp": "2025-08-03T14:00:26.774Z"
+    },
+    {
+      "test": "Color Contrast",
+      "status": "PASS",
+      "details": {
+        "note": "Manual color contrast testing recommended",
+        "darkMode": false,
+        "contrastElements": 40
+      },
+      "category": "accessibility",
+      "timestamp": "2025-08-03T14:00:26.776Z"
+    },
+    {
+      "test": "Page Load Time",
+      "status": "PASS",
+      "details": {
+        "loadTimeMs": 2,
+        "acceptable": true,
+        "fast": true
+      },
+      "category": "performance",
+      "timestamp": "2025-08-03T14:00:26.778Z"
+    },
+    {
+      "test": "Resource Count",
+      "status": "PASS",
+      "details": {
+        "scripts": 3,
+        "stylesheets": 2,
+        "images": 0,
+        "totalElements": 340
+      },
+      "category": "performance",
+      "timestamp": "2025-08-03T14:00:26.778Z"
+    },
+    {
+      "test": "DOM Complexity",
+      "status": "PASS",
+      "details": {
+        "depth": 9,
+        "totalElements": 340,
+        "classNames": 293,
+        "ids": 51
+      },
+      "category": "performance",
+      "timestamp": "2025-08-03T14:00:26.780Z"
+    },
+    {
+      "test": "Homepage",
+      "status": "PASS",
+      "details": {
+        "status": 200,
+        "responseTime": "unknown",
+        "contentType": "text/html; charset=UTF-8",
+        "hasData": true
+      },
+      "category": "api",
+      "timestamp": "2025-08-03T14:00:26.782Z"
+    },
+    {
+      "test": "Video Generation",
+      "status": "PASS",
+      "details": {
+        "status": 200,
+        "responseTime": "unknown",
+        "contentType": "application/json; charset=utf-8",
+        "hasData": true
+      },
+      "category": "api",
+      "timestamp": "2025-08-03T14:00:26.783Z"
+    },
+    {
+      "test": "Job Status Check",
+      "status": "FAIL",
+      "details": "500: Request failed with status code 500",
+      "category": "api",
+      "timestamp": "2025-08-03T14:00:26.786Z"
+    },
+    {
+      "test": "Health Check",
+      "status": "SKIP",
+      "details": "Health endpoint not implemented",
+      "category": "api",
+      "timestamp": "2025-08-03T14:00:26.787Z"
+    }
+  ],
+  "categories": {
+    "buttons": {
+      "name": "Button Tests",
+      "total": 0,
+      "passed": 0,
+      "failed": 0
+    },
+    "forms": {
+      "name": "Form Element Tests",
+      "total": 7,
+      "passed": 5,
+      "failed": 2
+    },
+    "modals": {
+      "name": "Modal System Tests",
+      "total": 4,
+      "passed": 3,
+      "failed": 1
+    },
+    "api": {
+      "name": "API Endpoint Tests",
+      "total": 4,
+      "passed": 2,
+      "failed": 1
+    },
+    "accessibility": {
+      "name": "Accessibility Tests",
+      "total": 5,
+      "passed": 4,
+      "failed": 1
+    },
+    "performance": {
+      "name": "Performance Tests",
+      "total": 3,
+      "passed": 3,
+      "failed": 0
+    },
+    "security": {
+      "name": "Security Tests",
+      "total": 0,
+      "passed": 0,
+      "failed": 0
+    }
+  }
+}
