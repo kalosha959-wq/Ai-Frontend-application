@@ -1,0 +1,59 @@
+🚀 Starting AI Story Studio Button Tests...
+Browser Error: Unrecognized Content-Security-Policy directive 'video-src'.
+Browser Error: Refused to load media from 'https://placehold.co/1920x1080.mp4' because it violates the following Content Security Policy directive: "default-src 'self'". Note that 'media-src' was not explicitly set, so 'default-src' is used as a fallback.
+
+Browser Error: Failed to load resource: the server responded with a status of 404 (Not Found)
+✅ Page loaded successfully
+
+📋 Starting Comprehensive Button Tests...
+
+🧭 Navigation Bar Tests
+🔍 Testing: Pricing Button
+✅ Pricing Button - PASSED
+🔍 Testing: Sign In Button
+✅ Sign In Button - PASSED
+🔍 Testing: Tutorial Button
+✅ Tutorial Button - PASSED
+🔍 Testing: Mobile Menu Button
+❌ Mobile Menu Button - FAILED: Node is either not clickable or not an Element
+
+📱 Modal Interaction Tests
+🔍 Testing Modal: Pricing Modal
+✅ Pricing Modal - PASSED
+🔍 Testing Modal: Sign In Modal
+✅ Sign In Modal - PASSED
+🔍 Testing Modal: Features Modal
+✅ Features Modal - PASSED
+
+🎬 Video Generation Tests
+🔍 Testing: Generate Video Button
+✅ Generate Video Button - PASSED
+🔍 Testing: Suggest Idea Button
+✅ Suggest Idea Button - PASSED
+🔍 Testing: Upload Device Button
+Browser Error: Failed to load resource: the server responded with a status of 403 ()
+Browser Error: Gemini API call failed: JSHandle@error
+✅ Upload Device Button - PASSED
+🔍 Testing: Browse AI Library Button
+✅ Browse AI Library Button - PASSED
+
+🤖 AI Assistant Tests
+🔍 Testing: Suggest Music Button
+✅ Suggest Music Button - PASSED
+🔍 Testing: Suggest Edits Button
+✅ Suggest Edits Button - PASSED
+🔍 Testing: Generate Storyboard Button
+✅ Generate Storyboard Button - PASSED
+🔍 Testing: Generate Character Button
+✅ Generate Character Button - PASSED
+
+📚 Tutorial Tests
+🔍 Testing: Play Tutorial Button
+✅ Play Tutorial Button - PASSED
+
+📝 Form Tests
+🔍 Testing Form: Sign In Form
+❌ Sign In Form - FAILED: Node is either not clickable or not an Element
+🚨 Test suite failed: Node is either not clickable or not an Element
+
+🧹 Browser closed successfully
