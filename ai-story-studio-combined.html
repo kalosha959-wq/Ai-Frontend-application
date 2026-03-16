@@ -165,8 +165,14 @@
     </style>
 </head>
 
-<body class="antialiased">
-    <!-- Navigation Bar -->
+<body class="bg-slate-900 text-slate-50">
+  <!-- Environment Mode Banner -->
+  <div
+    id="env-mode-banner"
+    class="hidden w-full text-center text-sm py-2"
+  ></div>
+
+  <!-- Navigation Bar -->
     <nav class="bg-gray-900/95 backdrop-blur-md border-b border-gray-700 sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
@@ -1057,6 +1063,54 @@
             renderCards();
             loadProjectHistory();
         });
+
+        async function detectEnvModeAndShowBanner() {
+            const banner = document.getElementById('env-mode-banner');
+            if (!banner) return;
+
+            try {
+                const res = await fetch(BACKEND_URL + '/env-mode');
+                if (!res.ok) throw new Error('Failed to fetch env mode');
+                const data = await res.json();
+                const mode = data && data.mode ? data.mode : 'demo';
+
+                banner.classList.remove('hidden');
+
+                if (mode === 'production') {
+                    banner.textContent = 'Production Mode – real API calls are active.';
+                    banner.className = 'w-full text-center text-sm py-2 bg-emerald-500 text-emerald-950';
+                } else {
+                    banner.textContent = 'Demo Mode – using simulated plans and videos (no real API costs).';
+                    banner.className = 'w-full text-center text-sm py-2 bg-amber-400 text-amber-950';
+                }
+            } catch (err) {
+                console.error('Failed to detect env mode', err);
+            }
+        }
+
+        // --- Subscription Plans Modal ---
+        const pricingModal = document.getElementById('pricing-modal');
+        const closePricingModalBtn = document.getElementById('close-pricing-modal');
+
+        closePricingModalBtn.addEventListener('click', () => {
+            pricingModal.classList.add('hidden');
+        });
+
+        // --- Sign In Modal ---
+        const signinModal = document.getElementById('signin-modal');
+        const closeSigninModalBtn = document.getElementById('close-signin-modal');
+
+        closeSigninModalBtn.addEventListener('click', () => {
+            signinModal.classList.add('hidden');
+        });
+
+        // --- Tutorial Modal ---
+        const tutorialModal = document.getElementById('tutorial-modal');
+        const closeTutorialModalBtn = document.getElementById('close-tutorial-modal');
+
+        closeTutorialModalBtn.addEventListener('click', () => {
+            tutorialModal.classList.add('hidden');
+        });
     </script>
 
     <!-- Subscription Plans Modal -->
@@ -1273,37 +1327,6 @@
                 <div class="relative" style="padding-top: 56.25%;">
                     <iframe id="tutorial-video-iframe" src="" frameborder="0"
                         class="absolute top-0 left-0 w-full h-full rounded-2xl shadow-md"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope;
-                        <button
-                            class="flex items-center justify-center px-4 py-2 border border-gray-600 rounded-lg text-gray-300 hover:bg-gray-800 transition-colors">
-                            <i class="fab fa-google mr-2"></i>Sign in with Google
-                        </button>
-                        <button
-                            class="flex items-center justify-center px-4 py-2 border border-gray-600 rounded-lg text-gray-300 hover:bg-gray-800 transition-colors">
-                            <i class="fab fa-facebook-f mr-2"></i>Sign in with Facebook
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Tutorial Modal -->
-    <div id="tutorial-modal" class="modal fixed inset-0 z-50 hidden">
-        <div class="modal-content max-w-4xl mx-auto mt-8 bg-gray-900 rounded-2xl shadow-2xl border border-gray-700">
-            <div class="p-8">
-                <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-3xl font-bold text-white">
-                        <i class="fas fa-play-circle text-green-400 mr-3"></i>Video Tutorial
-                    </h2>
-                    <button id="close-tutorial-modal" class="text-gray-400 hover:text-white text-2xl">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-
-                <div class="relative" style="padding-top: 56.25%;">
-                    <iframe id="tutorial-video-iframe" src="" frameborder="0"
-                        class="absolute top-0 left-0 w-full h-full rounded-2xl shadow-md"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                         allowfullscreen></iframe>
                 </div>
@@ -1326,4 +1349,25 @@
                             <span class="text-gray-300">01. Introduction to AI Story Studio</span>
                             <i class="fas fa-play-circle text-green-400"></i>
                         </button>
-                        <button class="text-left w-full flex items-center justify-between px-4 py
+                        <button class="text-left w-full flex items-center justify-between px-4 py-2 rounded-lg bg-gray-800 hover:bg-gray-700 transition-colors">
+                            <span class="text-gray-300">02. Text-to-Video: Create Your First Video</span>
+                            <i class="fas fa-play-circle text-green-400"></i>
+                        </button>
+                        <button class="text-left w-full flex items-center justify-between px-4 py-2 rounded-lg bg-gray-800 hover:bg-gray-700 transition-colors">
+                            <span class="text-gray-300">03. AI Tools: Music and Editing Suggestions</span>
+                            <i class="fas fa-play-circle text-green-400"></i>
+                        </button>
+                        <button class="text-left w-full flex items-center justify-between px-4 py-2 rounded-lg bg-gray-800 hover:bg-gray-700 transition-colors">
+                            <span class="text-gray-300">04. Media Library: Uploading and Using Assets</span>
+                            <i class="fas fa-play-circle text-green-400"></i>
+                        </button>
+                        <button class="text-left w-full flex items-center justify-between px-4 py-2 rounded-lg bg-gray-800 hover:bg-gray-700 transition-colors">
+                            <span class="text-gray-300">05. Saving and Exporting Your Video</span>
+                            <i class="fas fa-play-circle text-green-400"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</html>

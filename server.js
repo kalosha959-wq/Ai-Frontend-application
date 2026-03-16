@@ -235,6 +235,25 @@ app.post('/call-gemini', async (req, res) => {
     }
 });
 
+// Helper to decide env mode based on configuration
+function getEnvMode() {
+  const apiKey = process.env.GEMINI_API_KEY || '';
+  const projectId = process.env.GCP_PROJECT_ID || '';
+
+  const isDemoKey =
+    !apiKey || apiKey === 'demo-mode' || apiKey === 'YOUR_GEMINI_API_KEY_HERE';
+  const isDemoProject =
+    !projectId ||
+    projectId === 'demo-project' ||
+    projectId === 'YOUR_GCP_PROJECT_ID_HERE';
+
+  return isDemoKey || isDemoProject ? 'demo' : 'production';
+}
+
+app.get('/env-mode', (_req, res) => {
+  res.json({ mode: getEnvMode() });
+});
+
 // 5. Start the server
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
