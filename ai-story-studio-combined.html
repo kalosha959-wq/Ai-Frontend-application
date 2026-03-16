@@ -292,6 +292,23 @@
                             <strong class="text-indigo-300">Gemini 2.5 Pro</strong> to generate a complete, full-sensory
                             video plan.
                         </p>
+
+                        <!-- Preset templates -->
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <button id="preset-youtube-short"
+                                class="tool-btn px-3 py-1 rounded-full text-xs font-medium text-gray-200 border border-gray-600">
+                                YouTube Short (15s)
+                            </button>
+                            <button id="preset-trailer"
+                                class="tool-btn px-3 py-1 rounded-full text-xs font-medium text-gray-200 border border-gray-600">
+                                Trailer (60s)
+                            </button>
+                            <button id="preset-ad-spot"
+                                class="tool-btn px-3 py-1 rounded-full text-xs font-medium text-gray-200 border border-gray-600">
+                                Ad Spot (30s)
+                            </button>
+                        </div>
+
                         <label for="text-to-video-prompt" class="block text-sm font-medium text-gray-300 mb-2">Video
                             Description</label>
                         <textarea id="text-to-video-prompt" rows="6"
@@ -303,25 +320,6 @@
                                     id="duration-display" class="font-bold text-indigo-300">120s</span></label>
                             <input type="range" id="video-duration-slider" min="10" max="600" value="120"
                                 class="w-full">
-                        </div>
-
-                        <!-- New: Quick Templates -->
-                        <div class="mt-4">
-                            <p class="block text-sm font-medium text-gray-300 mb-2">Quick Templates</p>
-                            <div class="flex flex-wrap gap-2">
-                                <button type="button" id="template-youtube-short"
-                                    class="tool-btn px-3 py-2 rounded-md text-xs font-semibold text-gray-100 border border-gray-600">
-                                    YouTube Short (15s)
-                                </button>
-                                <button type="button" id="template-trailer"
-                                    class="tool-btn px-3 py-2 rounded-md text-xs font-semibold text-gray-100 border border-gray-600">
-                                    Movie Trailer (60s)
-                                </button>
-                                <button type="button" id="template-ad-spot"
-                                    class="tool-btn px-3 py-2 rounded-md text-xs font-semibold text-gray-100 border border-gray-600">
-                                    Ad Spot (30s)
-                                </button>
-                            </div>
                         </div>
                         <button id="generate-text-to-video-btn"
                             class="generate-video-btn w-full mt-4 p-4 rounded-lg flex items-center justify-center text-lg font-bold">
@@ -367,6 +365,17 @@
                             <div id="media-bin-grid" class="grid grid-cols-3 gap-2"></div>
                         </div>
                     </section>
+
+                    <!-- Project History -->
+                    <section class="glass-panel p-6 rounded-2xl">
+                        <h2 class="text-2xl font-bold mb-4 border-b border-gray-600 pb-2 flex items-center">
+                            <i class="fas fa-clock-rotate-left mr-3"></i>Recent Projects
+                        </h2>
+                        <p class="text-sm text-gray-300 mb-3">Your last few generated videos and plans are saved locally
+                            on this device.</p>
+                        <div id="project-history-empty" class="text-gray-500 text-sm">No projects yet. Generate a video plan to see it here.</div>
+                        <ul id="project-history-list" class="mt-2 space-y-2 text-sm max-h-48 overflow-y-auto"></ul>
+                    </section>
                 </div>
 
                 <!-- Right Panel: Video Preview & Timeline -->
@@ -399,22 +408,79 @@
                         </div>
                     </div>
                     <div id="video-plan-container" class="mt-6 hidden">
-                        <h3 class="text-xl font-bold text-white mb-2">AI Video Generation Plan:</h3>
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="text-xl font-bold text-white">AI Video Generation Plan:</h3>
+                            <button id="copy-video-plan-btn" class="text-xs px-3 py-1 rounded-md border border-gray-600 text-gray-200 hover:bg-gray-700">
+                                <i class="fas fa-copy mr-1"></i>Copy Plan
+                            </button>
+                        </div>
                         <div id="video-plan-result"
                             class="p-4 bg-gray-900/70 rounded-lg prose prose-invert max-w-none border border-gray-700 h-64 overflow-y-auto">
                         </div>
                     </div>
-
-                    <!-- New: Project History Panel -->
-                    <div id="project-history-container" class="mt-6">
-                        <div class="flex items-center justify-between mb-2">
-                            <h3 class="text-lg font-bold text-white">Recent Projects</h3>
-                            <button id="clear-history-btn" class="text-xs text-gray-400 hover:text-red-400">Clear</button>
-                        </div>
-                        <div id="project-history-list" class="space-y-2 max-h-56 overflow-y-auto text-sm">
-                            <p class="text-gray-500" id="project-history-empty">No recent projects yet. Generate a video to see it here.</p>
+                    <div id="storyboard-generator"
+                        class="mb-12 p-6 sm:p-8 rounded-2xl shadow-lg border border-slate-200">
+                        <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 text-center mb-2">Storyboard & Video Idea
+                            Generator</h2>
+                        <p class="text-center text-slate-600 mb-6">Powered by Gemini & Flow AI</p>
+                        <div class="max-w-3xl mx-auto">
+                            <div class="mb-4">
+                                <label for="idea-input" class="block text-lg font-semibold text-slate-700 mb-2">Enter your
+                                    video or story idea:</label>
+                                <textarea id="idea-input" rows="4"
+                                    class="w-full p-3 border border-slate-300 rounded-lg shadow-sm focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition"
+                                    placeholder="e.g., A detective discovers a secret society in a futuristic city."></textarea>
+                            </div>
+                            <button id="generate-storyboard-btn"
+                                class="w-full cta-button text-white font-bold text-lg py-3 px-6 rounded-lg shadow-md hover:shadow-lg flex items-center justify-center">
+                                Generate Storyboard & Ideas
+                            </button>
+                            <div id="storyboard-result-container" class="mt-8 hidden">
+                                <div class="flex items-center justify-between mb-2">
+                                    <h3 class="text-xl font-bold text-slate-800">Generated Concept:</h3>
+                                    <button id="copy-storyboard-btn" class="text-xs px-3 py-1 rounded-md border border-slate-300 text-slate-700 hover:bg-slate-100">
+                                        <i class="fas fa-copy mr-1"></i>Copy
+                                    </button>
+                                </div>
+                                <div id="storyboard-result"
+                                    class="p-4 sm:p-6 bg-slate-50 rounded-lg prose prose-slate max-w-none border border-slate-200">
+                                </div>
+                            </div>
                         </div>
                     </div>
+
+                    <!-- NEW: AI Character Generator -->
+                    <section id="character-generator"
+                        class="mb-12 p-6 sm:p-8 rounded-2xl shadow-lg border border-slate-200">
+                        <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 text-center mb-2">AI Character Generator
+                        </h2>
+                        <p class="text-center text-slate-600 mb-6">Create detailed character profiles from a simple idea.
+                        </p>
+                        <div class="max-w-3xl mx-auto">
+                            <div class="mb-4">
+                                <label for="character-input" class="block text-lg font-semibold text-slate-700 mb-2">Enter
+                                    your character concept:</label>
+                                <textarea id="character-input" rows="3"
+                                    class="w-full p-3 border border-slate-300 rounded-lg shadow-sm focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition"
+                                    placeholder="e.g., A grizzled space detective who has lost their partner."></textarea>
+                            </div>
+                            <button id="generate-character-btn"
+                                class="w-full cta-button text-white font-bold text-lg py-3 px-6 rounded-lg shadow-md hover:shadow-lg flex items-center justify-center">
+                                ✨ Generate Character Profile
+                            </button>
+                            <div id="character-result-container" class="mt-8 hidden">
+                                <div class="flex items-center justify-between mb-2">
+                                    <h3 class="text-xl font-bold text-slate-800">Generated Profile:</h3>
+                                    <button id="copy-character-btn" class="text-xs px-3 py-1 rounded-md border border-slate-300 text-slate-700 hover:bg-slate-100">
+                                        <i class="fas fa-copy mr-1"></i>Copy
+                                    </button>
+                                </div>
+                                <div id="character-result"
+                                    class="p-4 sm:p-6 bg-slate-50 rounded-lg prose prose-slate max-w-none border border-slate-200">
+                                </div>
+                            </div>
+                        </div>
+                    </section>
                 </div>
             </div>
         </section>
@@ -440,7 +506,12 @@
                             Generate Storyboard & Ideas
                         </button>
                         <div id="storyboard-result-container" class="mt-8 hidden">
-                            <h3 class="text-xl font-bold text-slate-800 mb-4">Generated Concept:</h3>
+                            <div class="flex items-center justify-between mb-2">
+                                <h3 class="text-xl font-bold text-slate-800">Generated Concept:</h3>
+                                <button id="copy-storyboard-btn" class="text-xs px-3 py-1 rounded-md border border-slate-300 text-slate-700 hover:bg-slate-100">
+                                    <i class="fas fa-copy mr-1"></i>Copy
+                                </button>
+                            </div>
                             <div id="storyboard-result"
                                 class="p-4 sm:p-6 bg-slate-50 rounded-lg prose prose-slate max-w-none border border-slate-200">
                             </div>
@@ -468,7 +539,12 @@
                             ✨ Generate Character Profile
                         </button>
                         <div id="character-result-container" class="mt-8 hidden">
-                            <h3 class="text-xl font-bold text-slate-800 mb-4">Generated Profile:</h3>
+                            <div class="flex items-center justify-between mb-2">
+                                <h3 class="text-xl font-bold text-slate-800">Generated Profile:</h3>
+                                <button id="copy-character-btn" class="text-xs px-3 py-1 rounded-md border border-slate-300 text-slate-700 hover:bg-slate-100">
+                                    <i class="fas fa-copy mr-1"></i>Copy
+                                </button>
+                            </div>
                             <div id="character-result"
                                 class="p-4 sm:p-6 bg-slate-50 rounded-lg prose prose-slate max-w-none border border-slate-200">
                             </div>
@@ -543,13 +619,19 @@
             const suggestMusicBtn = document.getElementById('suggest-music-btn');
             const suggestEditsBtn = document.getElementById('suggest-edits-btn');
 
-            // New: Template buttons & project history elements
-            const templateYouTubeShortBtn = document.getElementById('template-youtube-short');
-            const templateTrailerBtn = document.getElementById('template-trailer');
-            const templateAdSpotBtn = document.getElementById('template-ad-spot');
+            // Preset buttons
+            const presetYoutubeShortBtn = document.getElementById('preset-youtube-short');
+            const presetTrailerBtn = document.getElementById('preset-trailer');
+            const presetAdSpotBtn = document.getElementById('preset-ad-spot');
+
+            // Project history DOM
             const projectHistoryList = document.getElementById('project-history-list');
             const projectHistoryEmpty = document.getElementById('project-history-empty');
-            const clearHistoryBtn = document.getElementById('clear-history-btn');
+
+            // Copy/export buttons
+            const copyVideoPlanBtn = document.getElementById('copy-video-plan-btn');
+            const copyStoryboardBtn = document.getElementById('copy-storyboard-btn');
+            const copyCharacterBtn = document.getElementById('copy-character-btn');
 
             // --- DOM Elements (Showcase) ---
             const ideaInput = document.getElementById('idea-input');
@@ -692,7 +774,7 @@
                 return content;
             };
 
-            const pollJobStatus = (jobId) => {
+            const pollJobStatus = (jobId, projectMeta) => {
                 const statusElement = document.getElementById('generation-status');
                 statusElement.textContent = 'Step 2/3: Job sent to render engine...';
                 pollingInterval = setInterval(async () => {
@@ -705,6 +787,17 @@
                             statusElement.textContent = 'Step 3/3: Render Complete!';
                             const videoUrl = data.videoUrl || `https://placehold.co/1920x1080.mp4?text=Render_Complete!`;
                             videoPreviewContainer.innerHTML = `<video id="video-preview" class="w-full h-full rounded-lg" controls autoplay><source src="${videoUrl}" type="video/mp4"></video>`;
+
+                            // Save project to history when completed
+                            if (projectMeta) {
+                                saveProjectToHistory({
+                                    ...projectMeta,
+                                    videoUrl,
+                                    completedAt: new Date().toISOString()
+                                });
+                            }
+                        } else if (typeof data.progress === 'number') {
+                            statusElement.textContent = `Step 2/3: Rendering... ${data.progress}%`;
                         }
                     } catch (error) {
                         console.error('Polling error:', error);
@@ -714,6 +807,66 @@
                 }, 15000);
             };
 
+            const saveProjectToHistory = (project) => {
+                try {
+                    const key = 'aiStoryStudioHistory';
+                    const existing = JSON.parse(localStorage.getItem(key) || '[]');
+                    const updated = [project, ...existing].slice(0, 10); // keep last 10
+                    localStorage.setItem(key, JSON.stringify(updated));
+                    renderProjectHistory(updated);
+                } catch (e) {
+                    console.error('Failed to save project history', e);
+                }
+            };
+
+            const renderProjectHistory = (items) => {
+                projectHistoryList.innerHTML = '';
+                if (!items || items.length === 0) {
+                    projectHistoryEmpty.classList.remove('hidden');
+                    return;
+                }
+                projectHistoryEmpty.classList.add('hidden');
+                items.forEach((item, index) => {
+                    const li = document.createElement('li');
+                    li.className = 'flex items-center justify-between bg-gray-900/40 border border-gray-700 rounded-lg px-3 py-2';
+                    li.innerHTML = `
+                        <div class="mr-2">
+                            <div class="text-xs text-gray-400">#${index + 1} • ${new Date(item.createdAt || item.completedAt || Date.now()).toLocaleString()}</div>
+                            <div class="text-sm font-medium text-gray-100 truncate max-w-[180px]" title="${item.prompt}">${item.prompt}</div>
+                            <div class="text-xs text-gray-400">${item.duration || 'N/A'}s</div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button class="text-xs px-2 py-1 rounded border border-gray-600 text-gray-200 hover:bg-gray-800" data-history-action="viewPlan" data-index="${index}">
+                                Plan
+                            </button>
+                            <button class="text-xs px-2 py-1 rounded border border-gray-600 text-gray-200 hover:bg-gray-800" data-history-action="viewVideo" data-index="${index}">
+                                Video
+                            </button>
+                        </div>
+                    `;
+                    projectHistoryList.appendChild(li);
+                });
+            };
+
+            const loadProjectHistory = () => {
+                try {
+                    const key = 'aiStoryStudioHistory';
+                    const existing = JSON.parse(localStorage.getItem(key) || '[]');
+                    renderProjectHistory(existing);
+                } catch {
+                    renderProjectHistory([]);
+                }
+            };
+
+            const getHistoryItems = () => {
+                try {
+                    return JSON.parse(localStorage.getItem('aiStoryStudioHistory') || '[]');
+                } catch {
+                    return [];
+                }
+            };
+
+            // --- Event Handlers ---
             const handleTextToVideo = async () => {
                 const userInput = textToVideoPrompt.value;
                 const duration = durationSlider.value;
@@ -724,6 +877,11 @@
                 videoPlanContainer.classList.remove('hidden');
                 videoPlanResult.innerHTML = '<div class="flex justify-center items-center p-4"><div class="loader"></div></div>';
                 videoPreviewContainer.innerHTML = `<div class="w-full h-full flex flex-col items-center justify-center bg-black rounded-lg"><div class="loader"></div><p id="generation-status" class="mt-4 text-lg">Step 1/3: Generating plan...</p></div>`;
+                const projectMeta = {
+                    prompt: userInput.trim(),
+                    duration: duration,
+                    createdAt: new Date().toISOString()
+                };
                 try {
                     const response = await fetch(`${BACKEND_URL}/generate-video-plan`, {
                         method: 'POST',
@@ -733,24 +891,7 @@
                     if (!response.ok) throw new Error((await response.json()).error || 'Backend error.');
                     const data = await response.json();
                     videoPlanResult.innerHTML = data.plan;
-                    pollJobStatus(data.jobId);
-
-                    // Save to project history
-                    try {
-                        const historyItem = {
-                            id: data.jobId,
-                            prompt: userInput,
-                            duration,
-                            createdAt: new Date().toISOString()
-                        };
-                        const existing = JSON.parse(localStorage.getItem('aiStoryStudioHistory') || '[]');
-                        existing.unshift(historyItem);
-                        const trimmed = existing.slice(0, 10); // keep last 10
-                        localStorage.setItem('aiStoryStudioHistory', JSON.stringify(trimmed));
-                        renderProjectHistory(trimmed);
-                    } catch (e) {
-                        console.warn('Failed to store project history', e);
-                    }
+                    pollJobStatus(data.jobId, projectMeta);
                 } catch (error) {
                     console.error("Text-to-Video failed:", error);
                     const errorMessage = error instanceof TypeError ? '<strong>Connection Failed.</strong><br>Could not connect to the backend server. Please ensure your Node.js server is running.' : error.message;
@@ -858,93 +999,9 @@
                 generateCharacterBtn.disabled = false;
             };
 
-            // New: Project history helpers
-            const renderProjectHistory = (items) => {
-                projectHistoryList.innerHTML = '';
-                if (!items || items.length === 0) {
-                    projectHistoryEmpty.classList.remove('hidden');
-                    projectHistoryList.appendChild(projectHistoryEmpty);
-                    return;
-                }
-                projectHistoryEmpty.classList.add('hidden');
-                items.forEach((item) => {
-                    const el = document.createElement('button');
-                    el.type = 'button';
-                    el.className = 'w-full text-left p-2 rounded-lg bg-gray-800/70 hover:bg-gray-700 transition flex justify-between items-center';
-                    const labelPrompt = item.prompt.length > 60 ? item.prompt.slice(0, 57) + '…' : item.prompt;
-                    const created = new Date(item.createdAt);
-                    const timeLabel = isNaN(created.getTime()) ? '' : created.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                    el.innerHTML = `<div class="mr-2"><div class="font-semibold text-gray-100 text-xs">${item.duration}s • ${timeLabel}</div><div class="text-gray-300 line-clamp-2 text-xs">${labelPrompt}</div></div><i class="fas fa-rotate-left text-indigo-400 text-sm"></i>`;
-                    el.addEventListener('click', () => {
-                        textToVideoPrompt.value = item.prompt;
-                        durationSlider.value = item.duration;
-                        durationDisplay.textContent = `${item.duration}s`;
-                        videoPlanContainer.classList.remove('hidden');
-                        videoPlanResult.innerHTML = '<p class="text-gray-400 text-sm">Re-opened from history. Click "Generate 4K Video" to regenerate.</p>';
-                    });
-                    projectHistoryList.appendChild(el);
-                });
-            };
-
-            const loadInitialHistory = () => {
-                try {
-                    const items = JSON.parse(localStorage.getItem('aiStoryStudioHistory') || '[]');
-                    renderProjectHistory(items);
-                } catch (e) {
-                    console.warn('Failed to load project history', e);
-                }
-            };
-
-            // Template button handlers
-            const applyTemplate = (promptText, durationSeconds) => {
-                textToVideoPrompt.value = promptText;
-                durationSlider.value = durationSeconds;
-                durationDisplay.textContent = `${durationSeconds}s`;
-            };
-
-            // --- Event Listeners ---
-            generateTextToVideoBtn.addEventListener('click', handleTextToVideo);
-            durationSlider.addEventListener('input', (e) => { durationDisplay.textContent = `${e.target.value}s`; });
-            uploadDeviceBtn.addEventListener('click', () => videoUploadInput.click());
-            videoUploadInput.addEventListener('change', (e) => { for (const file of e.target.files) addMediaToBin(file); });
-            browseAiLibraryBtn.addEventListener('click', () => {
-                const content = createAiLibraryContent();
-                openModal('Browse AI Media Library', `<div class="modal-backdrop absolute inset-0"></div><div class="modal-content relative glass-panel rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto transform scale-95"><div class="p-6 sm:p-8"><button class="modal-close-btn absolute top-4 right-4 text-gray-400 hover:text-white transition-colors"><i class="fas fa-times text-2xl"></i></button><h2 class="modal-title text-2xl font-bold mb-4 text-white">Browse AI Media Library</h2><div class="modal-body">${content}</div></div></div>`);
-            });
-            suggestMusicBtn.addEventListener('click', handleMusicSuggestion);
-            suggestEditsBtn.addEventListener('click', handleEditSuggestion);
-            suggestIdeaBtn.addEventListener('click', handleSuggestIdea);
-
-            generateStoryboardBtn.addEventListener('click', generateStoryboard);
-            generateCharacterBtn.addEventListener('click', handleCharacterGeneration); // New listener
-
-            // New: Template events
-            if (templateYouTubeShortBtn) {
-                templateYouTubeShortBtn.addEventListener('click', () => {
-                    applyTemplate('A vertical YouTube Short showing a quick, dynamic montage of a day in the life of a creator, shot in 9:16 format.', 15);
-                });
-            }
-            if (templateTrailerBtn) {
-                templateTrailerBtn.addEventListener('click', () => {
-                    applyTemplate('A cinematic movie trailer for an epic sci-fi adventure, with rising tension, dramatic music, and key character moments.', 60);
-                });
-            }
-            if (templateAdSpotBtn) {
-                templateAdSpotBtn.addEventListener('click', () => {
-                    applyTemplate('A fast-paced 30-second product ad highlighting key features, testimonials, and a strong call-to-action at the end.', 30);
-                });
-            }
-
-            if (clearHistoryBtn) {
-                clearHistoryBtn.addEventListener('click', () => {
-                    localStorage.removeItem('aiStoryStudioHistory');
-                    renderProjectHistory([]);
-                });
-            }
-
             // --- Initial Render ---
             renderCards();
-            loadInitialHistory();
+            loadProjectHistory();
         });
     </script>
 
@@ -1134,11 +1191,11 @@
                     <div class="grid grid-cols-2 gap-3">
                         <button
                             class="flex items-center justify-center px-4 py-2 border border-gray-600 rounded-lg text-gray-300 hover:bg-gray-800 transition-colors">
-                            <i class="fab fa-google mr-2"></i>Google
+                            <i class="fab fa-google mr-2"></i>Sign in with Google
                         </button>
                         <button
                             class="flex items-center justify-center px-4 py-2 border border-gray-600 rounded-lg text-gray-300 hover:bg-gray-800 transition-colors">
-                            <i class="fab fa-github mr-2"></i>GitHub
+                            <i class="fab fa-facebook-f mr-2"></i>Sign in with Facebook
                         </button>
                     </div>
                 </div>
@@ -1146,175 +1203,100 @@
         </div>
     </div>
 
-    <!-- Features Modal -->
-    <div id="features-modal" class="modal fixed inset-0 z-50 hidden">
-        <div
-            class="modal-content max-w-4xl mx-auto mt-8 bg-gray-900 rounded-2xl shadow-2xl border border-gray-700 max-h-[90vh] overflow-y-auto">
+    <!-- Tutorial Modal -->
+    <div id="tutorial-modal" class="modal fixed inset-0 z-50 hidden">
+        <div class="modal-content max-w-4xl mx-auto mt-8 bg-gray-900 rounded-2xl shadow-2xl border border-gray-700">
             <div class="p-8">
                 <div class="flex justify-between items-center mb-6">
                     <h2 class="text-3xl font-bold text-white">
-                        <i class="fas fa-star text-yellow-400 mr-3"></i>Exclusive Features
+                        <i class="fas fa-play-circle text-green-400 mr-3"></i>Video Tutorial
                     </h2>
-                    <button id="close-features-modal" class="text-gray-400 hover:text-white text-2xl">
+                    <button id="close-tutorial-modal" class="text-gray-400 hover:text-white text-2xl">
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div
-                        class="bg-gradient-to-br from-purple-900/30 to-indigo-900/30 p-6 rounded-xl border border-purple-500/30">
-                        <div class="text-center mb-4">
-                            <i class="fas fa-brain text-purple-400 text-3xl mb-3"></i>
-                            <h3 class="text-xl font-bold text-white">AI-Powered Creativity</h3>
-                        </div>
-                        <ul class="space-y-2 text-gray-300">
-                            <li><i class="fas fa-check text-green-400 mr-2"></i>Gemini 2.5 Pro Integration</li>
-                            <li><i class="fas fa-check text-green-400 mr-2"></i>Smart Scene Generation</li>
-                            <li><i class="fas fa-check text-green-400 mr-2"></i>Automated Storyboarding</li>
-                            <li><i class="fas fa-check text-green-400 mr-2"></i>Character Development AI</li>
-                        </ul>
+                <div class="relative" style="padding-top: 56.25%;">
+                    <iframe id="tutorial-video-iframe" src="" frameborder="0"
+                        class="absolute top-0 left-0 w-full h-full rounded-2xl shadow-md"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope;
+                        <button
+                            class="flex items-center justify-center px-4 py-2 border border-gray-600 rounded-lg text-gray-300 hover:bg-gray-800 transition-colors">
+                            <i class="fab fa-google mr-2"></i>Sign in with Google
+                        </button>
+                        <button
+                            class="flex items-center justify-center px-4 py-2 border border-gray-600 rounded-lg text-gray-300 hover:bg-gray-800 transition-colors">
+                            <i class="fab fa-facebook-f mr-2"></i>Sign in with Facebook
+                        </button>
                     </div>
-
-                    <div
-                        class="bg-gradient-to-br from-green-900/30 to-teal-900/30 p-6 rounded-xl border border-green-500/30">
-                        <div class="text-center mb-4">
-                            <i class="fas fa-video text-green-400 text-3xl mb-3"></i>
-                            <h3 class="text-xl font-bold text-white">Professional Video Tools</h3>
-                        </div>
-                        <ul class="space-y-2 text-gray-300">
-                            <li><i class="fas fa-check text-green-400 mr-2"></i>4K Resolution Output</li>
-                            <li><i class="fas fa-check text-green-400 mr-2"></i>Advanced Timeline Editor</li>
-                            <li><i class="fas fa-check text-green-400 mr-2"></i>Multi-track Audio</li>
-                            <li><i class="fas fa-check text-green-400 mr-2"></i>Real-time Rendering</li>
-                        </ul>
-                    </div>
-
-                    <div
-                        class="bg-gradient-to-br from-blue-900/30 to-cyan-900/30 p-6 rounded-xl border border-blue-500/30">
-                        <div class="text-center mb-4">
-                            <i class="fas fa-palette text-blue-400 text-3xl mb-3"></i>
-                            <h3 class="text-xl font-bold text-white">Creative Assets</h3>
-                        </div>
-                        <ul class="space-y-2 text-gray-300">
-                            <li><i class="fas fa-check text-green-400 mr-2"></i>Premium Template Library</li>
-                            <li><i class="fas fa-check text-green-400 mr-2"></i>Royalty-free Music</li>
-                            <li><i class="fas fa-check text-green-400 mr-2"></i>Stock Video Collection</li>
-                            <li><i class="fas fa-check text-green-400 mr-2"></i>Advanced Effects</li>
-                        </ul>
-                    </div>
-
-                    <div
-                        class="bg-gradient-to-br from-orange-900/30 to-red-900/30 p-6 rounded-xl border border-orange-500/30">
-                        <div class="text-center mb-4">
-                            <i class="fas fa-rocket text-orange-400 text-3xl mb-3"></i>
-                            <h3 class="text-xl font-bold text-white">Performance & Export</h3>
-                        </div>
-                        <ul class="space-y-2 text-gray-300">
-                            <li><i class="fas fa-check text-green-400 mr-2"></i>Cloud Rendering</li>
-                            <li><i class="fas fa-check text-green-400 mr-2"></i>Multiple Export Formats</li>
-                            <li><i class="fas fa-check text-green-400 mr-2"></i>Direct Social Sharing</li>
-                            <li><i class="fas fa-check text-green-400 mr-2"></i>Collaboration Tools</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="mt-8 text-center">
-                    <button id="features-upgrade-btn"
-                        class="bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-8 py-3 rounded-lg font-bold hover:from-purple-700 hover:to-indigo-700 transition-all">
-                        <i class="fas fa-crown mr-2"></i>Unlock All Features - Upgrade Now
-                    </button>
                 </div>
             </div>
         </div>
     </div>
 
-    <script>
-        // Modal functionality
-        const modals = {
-            pricing: document.getElementById('pricing-modal'),
-            signin: document.getElementById('signin-modal'),
-            features: document.getElementById('features-modal')
-        };
+    <!-- Tutorial Modal -->
+    <div id="tutorial-modal" class="modal fixed inset-0 z-50 hidden">
+        <div class="modal-content max-w-4xl mx-auto mt-8 bg-gray-900 rounded-2xl shadow-2xl border border-gray-700">
+            <div class="p-8">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-3xl font-bold text-white">
+                        <i class="fas fa-play-circle text-green-400 mr-3"></i>Video Tutorial
+                    </h2>
+                    <button id="close-tutorial-modal" class="text-gray-400 hover:text-white text-2xl">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
 
-        // Button event listeners
-        document.getElementById('pricing-btn').addEventListener('click', () => showModal('pricing'));
-        document.getElementById('signin-btn').addEventListener('click', () => showModal('signin'));
-        document.getElementById('features-btn').addEventListener('click', () => showModal('features'));
-        document.getElementById('tutorial-btn').addEventListener('click', () => {
-            document.getElementById('tutorial-section').scrollIntoView({ behavior: 'smooth' });
-        });
+                <div class="relative" style="padding-top: 56.25%;">
+                    <iframe id="tutorial-video-iframe" src="" frameborder="0"
+                        class="absolute top-0 left-0 w-full h-full rounded-2xl shadow-md"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen></iframe>
+                </div>
 
-        // Close modal buttons
-        document.getElementById('close-pricing-modal').addEventListener('click', () => hideModal('pricing'));
-        document.getElementById('close-signin-modal').addEventListener('click', () => hideModal('signin'));
-        document.getElementById('close-features-modal').addEventListener('click', () => hideModal('features'));
+                <div class="mt-6">
+                    <h3 class="text-xl font-bold text-white mb-4">What You'll Learn</h3>
+                    <ul class="list-disc list-inside text-gray-300 space-y-2">
+                        <li>How to generate videos from text prompts using AI</li>
+                        <li>Customizing video elements: duration, style, and more</li>
+                        <li>Using AI tools for music and editing suggestions</li>
+                        <li>Exploring the AI Media Library for assets</li>
+                        <li>Saving and exporting your video projects</li>
+                    </ul>
+                </div>
 
-        // Features upgrade button
-        document.getElementById('features-upgrade-btn').addEventListener('click', () => {
-            hideModal('features');
-            showModal('pricing');
-        });
-
-        // Mobile menu toggle
-        document.getElementById('mobile-menu-btn').addEventListener('click', () => {
-            const mobileMenu = document.getElementById('mobile-menu');
-            mobileMenu.classList.toggle('hidden');
-        });
-
-        // Tutorial video functionality
-        document.getElementById('play-tutorial-btn').addEventListener('click', () => {
-            const placeholder = document.getElementById('tutorial-video-placeholder');
-            placeholder.innerHTML = `
-                <div class="w-full h-full bg-gray-900 flex items-center justify-center">
-                    <div class="text-center">
-                        <div class="loader mb-4"></div>
-                        <p class="text-white">Loading tutorial video...</p>
+                <div class="mt-6">
+                    <h3 class="text-xl font-bold text-white mb-4">Video Chapters</h3>
+                    <div class="space-y-2">
+                        <button class="text-left w-full flex items-center justify-between px-4 py-2 rounded-lg bg-gray-800 hover:bg-gray-700 transition-colors">
+                            <span class="text-gray-300">01. Introduction to AI Story Studio</span>
+                            <i class="fas fa-play-circle text-green-400"></i>
+                        </button>
+                        <button class="text-left w-full flex items-center justify-between px-4 py-2 rounded-lg bg-gray-800 hover:bg-gray-700 transition-colors">
+                            <span class="text-gray-300">02. Generating Your First Video</span>
+                            <i class="fas fa-play-circle text-green-400"></i>
+                        </button>
+                        <button class="text-left w-full flex items-center justify-between px-4 py-2 rounded-lg bg-gray-800 hover:bg-gray-700 transition-colors">
+                            <span class="text-gray-300">03. Customizing Video Settings</span>
+                            <i class="fas fa-play-circle text-green-400"></i>
+                        </button>
+                        <button class="text-left w-full flex items-center justify-between px-4 py-2 rounded-lg bg-gray-800 hover:bg-gray-700 transition-colors">
+                            <span class="text-gray-300">04. AI Music and Editing Tools</span>
+                            <i class="fas fa-play-circle text-green-400"></i>
+                        </button>
+                        <button class="text-left w-full flex items-center justify-between px-4 py-2 rounded-lg bg-gray-800 hover:bg-gray-700 transition-colors">
+                            <span class="text-gray-300">05. Exploring the AI Media Library</span>
+                            <i class="fas fa-play-circle text-green-400"></i>
+                        </button>
+                        <button class="text-left w-full flex items-center justify-between px-4 py-2 rounded-lg bg-gray-800 hover:bg-gray-700 transition-colors">
+                            <span class="text-gray-300">06. Saving and Exporting Your Video</span>
+                            <i class="fas fa-play-circle text-green-400"></i>
+                        </button>
                     </div>
                 </div>
-            `;
-
-            // Simulate video loading
-            setTimeout(() => {
-                placeholder.innerHTML = `
-                    <div class="w-full h-full bg-gradient-to-br from-purple-900 to-indigo-900 flex items-center justify-center">
-                        <div class="text-center">
-                            <i class="fas fa-play-circle text-6xl text-white mb-4"></i>
-                            <h3 class="text-xl font-bold text-white mb-2">Tutorial Video Playing</h3>
-                            <p class="text-gray-300">Learn how to create amazing AI videos step by step</p>
-                            <div class="mt-4 bg-gray-800 rounded-full h-2 w-64 mx-auto">
-                                <div class="bg-gradient-to-r from-purple-500 to-indigo-500 h-2 rounded-full w-1/3"></div>
-                            </div>
-                            <p class="text-sm text-gray-400 mt-2">1:00 / 3:00</p>
-                        </div>
-                    </div>
-                `;
-            }, 2000);
-        });
-
-        function showModal(modalName) {
-            if (modals[modalName]) {
-                modals[modalName].classList.remove('hidden');
-                document.body.style.overflow = 'hidden';
-            }
-        }
-
-        function hideModal(modalName) {
-            if (modals[modalName]) {
-                modals[modalName].classList.add('hidden');
-                document.body.style.overflow = 'auto';
-            }
-        }
-
-        // Close modals when clicking outside
-        Object.values(modals).forEach(modal => {
-            modal.addEventListener('click', (e) => {
-                if (e.target === modal) {
-                    modal.classList.add('hidden');
-                    document.body.style.overflow = 'auto';
-                               }
-            });
-        });
-    </script>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>
