@@ -171,6 +171,45 @@ app.get('/check-job-status/:jobId', async (req, res) => {
     }
 });
 
+// Backend proxy endpoint for Gemini (centralized, respects demo mode)
+app.post('/call-gemini', async (req, res) => {
+    try {
+        const { prompt } = req.body || {};
+        if (!prompt || !String(prompt).trim()) {
+            return res.status(400).json({ error: 'Prompt is required.' });
+        }
+
+        const geminiApiKey = process.env.GEMINI_API_KEY;
+
+        // Demo mode: return a professional-looking fake response
+        if (!geminiApiKey || geminiApiKey === 'demo-mode' || geminiApiKey === 'YOUR_SECRET_GEMINI_API_KEY_GOES_HERE') {
+            const demoHtml = `
+                <h4>Demo Response</h4>
+                <p>Generated content for prompt: ${String(prompt).slice(0, 300)}</p>
+                <p><em>This is a demo response. Configure your GEMINI_API_KEY to use real Gemini API calls.</em></p>
+            `;
+            return res.json({ html: demoHtml });
+        }
+
+        // Production: proxy the request to Gemini via server-side call (keeps key secret)
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent?key=${geminiApiKey}`;
+        const payload = { contents: [{ role: 'user', parts: [{ text: prompt }] }] };
+
+        const apiResp = await axios.post(apiUrl, payload, {
+            headers: { 'Content-Type': 'application/json' },
+            timeout: 20000,
+        });
+
+        const text = apiResp?.data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+        const html = text || `<p>No content returned from Gemini.</p>`;
+
+        return res.json({ html });
+    } catch (err) {
+        console.error('Gemini proxy error:', err?.message || err);
+        return res.status(500).json({ error: 'Gemini proxy failed.' });
+    }
+});
+
 // 5. Start the server
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);

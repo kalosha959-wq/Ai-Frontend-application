@@ -20,9 +20,10 @@ class ButtonTester {
         console.log(chalk.blue('🚀 Starting AI Story Studio Button Tests...'));
 
         this.browser = await puppeteer.launch({
-            headless: false, // Set to true for headless testing
+            headless: process.env.CI ? true : false,
             defaultViewport: { width: 1280, height: 720 },
-            slowMo: 100 // Slow down for visual debugging
+            slowMo: process.env.CI ? 0 : 50,
+            args: ['--no-sandbox', '--disable-setuid-sandbox']
         });
 
         this.page = await this.browser.newPage();

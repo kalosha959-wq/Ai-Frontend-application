@@ -1,9 +1,85 @@
 # AI Story Studio - Main Branch Version
 
-Description: "AI Story Studio Frontend Application with comprehensive test automation"
+AI Story Studio is a dual-mode AI video generation platform (demo + production) with a single-file frontend and an Express backend integrating Gemini and Vertex AI (Veo 3).
 
-## Features - Main Branch
+## Quick Start (Demo Mode)
 
-- Comprehensive testing framework
-- Security enhancements  
-- Accessibility improvements
+1. Install dependencies
+
+```bash
+npm ci
+```
+
+2. Copy `.env.example` to `.env` (optional for demo)
+
+```bash
+cp .env.example .env
+```
+
+3. Start server in demo mode
+
+```bash
+GEMINI_API_KEY="demo-mode" GCP_PROJECT_ID="demo-project" npm start
+```
+
+4. Open `http://localhost:3000` in your browser
+
+## Environment Variables
+
+- `GEMINI_API_KEY` - set to `demo-mode` for local testing or provide your Gemini API key
+- `GCP_PROJECT_ID` - set to `demo-project` for demo mode or your real GCP project id
+- `GCP_LOCATION` - default `us-central1`
+- `PORT` - server port
+
+Ensure you never commit `.env` with secrets.
+
+## Release Checklist
+
+- [ ] Set production `GEMINI_API_KEY` and `GCP_PROJECT_ID` in CI or server environment
+- [ ] Run `npm ci` and smoke-test `/generate-video-plan`
+- [ ] Ensure CSP in `ai-story-studio-combined.html` allows your backend/CDN for video assets
+- [ ] Tag release and push GitHub release notes (update `CHANGELOG.md`)
+
+## CI
+
+A GitHub Actions workflow is included at `.github/workflows/ci.yml` which:
+- Installs deps
+- Starts the server in demo mode
+- Runs lint and tests (UI tests using Puppeteer)
+
+## Docker
+
+Build and run with Docker:
+
+```bash
+docker build -t ai-story-studio .
+docker run -p 3000:3000 -e GEMINI_API_KEY=demo-mode -e GCP_PROJECT_ID=demo-project ai-story-studio
+```
+
+Or use docker-compose:
+
+```bash
+docker-compose up --build
+```
+
+## Content Security Policy (CSP)
+
+The frontend includes a CSP meta tag in `ai-story-studio-combined.html`. Before deploying to production, update it to include your backend origin and CDN domains for `connect-src`, `img-src` and `media-src`.
+
+## Security Checklist
+
+- Do not commit `.env` files with secrets
+- Use separate GCP projects for staging and production
+- Restrict CORS to trusted origins in production
+- Rotate API keys regularly
+- Monitor server health and enable alerting for failures
+
+## Development Notes
+
+- Frontend is a single HTML file `ai-story-studio-combined.html` — all JS is inline for simplicity
+- Server serves static file and provides demo-mode logic for safe local testing
+- Tests: `test-buttons.js` performs interactive UI tests using Puppeteer
+
+## Changelog
+
+See `CHANGELOG.md` for recent changes.
