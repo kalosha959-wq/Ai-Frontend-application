@@ -304,6 +304,25 @@
                             <input type="range" id="video-duration-slider" min="10" max="600" value="120"
                                 class="w-full">
                         </div>
+
+                        <!-- New: Quick Templates -->
+                        <div class="mt-4">
+                            <p class="block text-sm font-medium text-gray-300 mb-2">Quick Templates</p>
+                            <div class="flex flex-wrap gap-2">
+                                <button type="button" id="template-youtube-short"
+                                    class="tool-btn px-3 py-2 rounded-md text-xs font-semibold text-gray-100 border border-gray-600">
+                                    YouTube Short (15s)
+                                </button>
+                                <button type="button" id="template-trailer"
+                                    class="tool-btn px-3 py-2 rounded-md text-xs font-semibold text-gray-100 border border-gray-600">
+                                    Movie Trailer (60s)
+                                </button>
+                                <button type="button" id="template-ad-spot"
+                                    class="tool-btn px-3 py-2 rounded-md text-xs font-semibold text-gray-100 border border-gray-600">
+                                    Ad Spot (30s)
+                                </button>
+                            </div>
+                        </div>
                         <button id="generate-text-to-video-btn"
                             class="generate-video-btn w-full mt-4 p-4 rounded-lg flex items-center justify-center text-lg font-bold">
                             <i class="fas fa-video mr-2"></i>Generate 4K Video
@@ -383,6 +402,17 @@
                         <h3 class="text-xl font-bold text-white mb-2">AI Video Generation Plan:</h3>
                         <div id="video-plan-result"
                             class="p-4 bg-gray-900/70 rounded-lg prose prose-invert max-w-none border border-gray-700 h-64 overflow-y-auto">
+                        </div>
+                    </div>
+
+                    <!-- New: Project History Panel -->
+                    <div id="project-history-container" class="mt-6">
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="text-lg font-bold text-white">Recent Projects</h3>
+                            <button id="clear-history-btn" class="text-xs text-gray-400 hover:text-red-400">Clear</button>
+                        </div>
+                        <div id="project-history-list" class="space-y-2 max-h-56 overflow-y-auto text-sm">
+                            <p class="text-gray-500" id="project-history-empty">No recent projects yet. Generate a video to see it here.</p>
                         </div>
                     </div>
                 </div>
@@ -513,6 +543,14 @@
             const suggestMusicBtn = document.getElementById('suggest-music-btn');
             const suggestEditsBtn = document.getElementById('suggest-edits-btn');
 
+            // New: Template buttons & project history elements
+            const templateYouTubeShortBtn = document.getElementById('template-youtube-short');
+            const templateTrailerBtn = document.getElementById('template-trailer');
+            const templateAdSpotBtn = document.getElementById('template-ad-spot');
+            const projectHistoryList = document.getElementById('project-history-list');
+            const projectHistoryEmpty = document.getElementById('project-history-empty');
+            const clearHistoryBtn = document.getElementById('clear-history-btn');
+
             // --- DOM Elements (Showcase) ---
             const ideaInput = document.getElementById('idea-input');
             const generateStoryboardBtn = document.getElementById('generate-storyboard-btn');
@@ -561,7 +599,7 @@
             const openShowcaseModal = async (item) => {
                 const modalHtml = `
                     <div class="modal-backdrop absolute inset-0"></div>
-                    <div class="modal-content relative bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto transform scale-95 text-slate-800">
+                    <div class="modal-content relative bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
                         <div class="p-6 sm:p-8">
                             <button class="modal-close-btn absolute top-4 right-4 text-slate-500 hover:text-slate-800 transition-colors">
                                 <i class="fas fa-times text-2xl"></i>
@@ -696,6 +734,23 @@
                     const data = await response.json();
                     videoPlanResult.innerHTML = data.plan;
                     pollJobStatus(data.jobId);
+
+                    // Save to project history
+                    try {
+                        const historyItem = {
+                            id: data.jobId,
+                            prompt: userInput,
+                            duration,
+                            createdAt: new Date().toISOString()
+                        };
+                        const existing = JSON.parse(localStorage.getItem('aiStoryStudioHistory') || '[]');
+                        existing.unshift(historyItem);
+                        const trimmed = existing.slice(0, 10); // keep last 10
+                        localStorage.setItem('aiStoryStudioHistory', JSON.stringify(trimmed));
+                        renderProjectHistory(trimmed);
+                    } catch (e) {
+                        console.warn('Failed to store project history', e);
+                    }
                 } catch (error) {
                     console.error("Text-to-Video failed:", error);
                     const errorMessage = error instanceof TypeError ? '<strong>Connection Failed.</strong><br>Could not connect to the backend server. Please ensure your Node.js server is running.' : error.message;
@@ -803,6 +858,50 @@
                 generateCharacterBtn.disabled = false;
             };
 
+            // New: Project history helpers
+            const renderProjectHistory = (items) => {
+                projectHistoryList.innerHTML = '';
+                if (!items || items.length === 0) {
+                    projectHistoryEmpty.classList.remove('hidden');
+                    projectHistoryList.appendChild(projectHistoryEmpty);
+                    return;
+                }
+                projectHistoryEmpty.classList.add('hidden');
+                items.forEach((item) => {
+                    const el = document.createElement('button');
+                    el.type = 'button';
+                    el.className = 'w-full text-left p-2 rounded-lg bg-gray-800/70 hover:bg-gray-700 transition flex justify-between items-center';
+                    const labelPrompt = item.prompt.length > 60 ? item.prompt.slice(0, 57) + '…' : item.prompt;
+                    const created = new Date(item.createdAt);
+                    const timeLabel = isNaN(created.getTime()) ? '' : created.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                    el.innerHTML = `<div class="mr-2"><div class="font-semibold text-gray-100 text-xs">${item.duration}s • ${timeLabel}</div><div class="text-gray-300 line-clamp-2 text-xs">${labelPrompt}</div></div><i class="fas fa-rotate-left text-indigo-400 text-sm"></i>`;
+                    el.addEventListener('click', () => {
+                        textToVideoPrompt.value = item.prompt;
+                        durationSlider.value = item.duration;
+                        durationDisplay.textContent = `${item.duration}s`;
+                        videoPlanContainer.classList.remove('hidden');
+                        videoPlanResult.innerHTML = '<p class="text-gray-400 text-sm">Re-opened from history. Click "Generate 4K Video" to regenerate.</p>';
+                    });
+                    projectHistoryList.appendChild(el);
+                });
+            };
+
+            const loadInitialHistory = () => {
+                try {
+                    const items = JSON.parse(localStorage.getItem('aiStoryStudioHistory') || '[]');
+                    renderProjectHistory(items);
+                } catch (e) {
+                    console.warn('Failed to load project history', e);
+                }
+            };
+
+            // Template button handlers
+            const applyTemplate = (promptText, durationSeconds) => {
+                textToVideoPrompt.value = promptText;
+                durationSlider.value = durationSeconds;
+                durationDisplay.textContent = `${durationSeconds}s`;
+            };
+
             // --- Event Listeners ---
             generateTextToVideoBtn.addEventListener('click', handleTextToVideo);
             durationSlider.addEventListener('input', (e) => { durationDisplay.textContent = `${e.target.value}s`; });
@@ -819,27 +918,33 @@
             generateStoryboardBtn.addEventListener('click', generateStoryboard);
             generateCharacterBtn.addEventListener('click', handleCharacterGeneration); // New listener
 
-            filterContainer.addEventListener('click', (e) => {
-                if (e.target.tagName === 'BUTTON' && e.target.dataset.filter) {
-                    document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-                    e.target.classList.add('active');
-                    renderCards(e.target.dataset.filter);
-                }
-            });
+            // New: Template events
+            if (templateYouTubeShortBtn) {
+                templateYouTubeShortBtn.addEventListener('click', () => {
+                    applyTemplate('A vertical YouTube Short showing a quick, dynamic montage of a day in the life of a creator, shot in 9:16 format.', 15);
+                });
+            }
+            if (templateTrailerBtn) {
+                templateTrailerBtn.addEventListener('click', () => {
+                    applyTemplate('A cinematic movie trailer for an epic sci-fi adventure, with rising tension, dramatic music, and key character moments.', 60);
+                });
+            }
+            if (templateAdSpotBtn) {
+                templateAdSpotBtn.addEventListener('click', () => {
+                    applyTemplate('A fast-paced 30-second product ad highlighting key features, testimonials, and a strong call-to-action at the end.', 30);
+                });
+            }
 
-            videoEditorModalContainer.addEventListener('click', (e) => {
-                if (e.target.closest('.modal-close-btn') || e.target.classList.contains('modal-backdrop')) closeModal();
-                if (e.target.closest('.media-thumbnail')) {
-                    const clipTitle = e.target.closest('.media-thumbnail').dataset.aiClip;
-                    if (clipTitle) {
-                        addMediaToBin({ name: `${clipTitle}.mp4` });
-                        closeModal();
-                    }
-                }
-            });
+            if (clearHistoryBtn) {
+                clearHistoryBtn.addEventListener('click', () => {
+                    localStorage.removeItem('aiStoryStudioHistory');
+                    renderProjectHistory([]);
+                });
+            }
 
             // --- Initial Render ---
             renderCards();
+            loadInitialHistory();
         });
     </script>
 
@@ -1206,7 +1311,7 @@
                 if (e.target === modal) {
                     modal.classList.add('hidden');
                     document.body.style.overflow = 'auto';
-                }
+                               }
             });
         });
     </script>
