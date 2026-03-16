@@ -10,19 +10,19 @@ AI Story Studio is a dual-mode AI video generation platform (demo + production) 
 npm ci
 ```
 
-2. Copy `.env.example` to `.env` (optional for demo)
+1. Copy `.env.example` to `.env` (optional for demo)
 
 ```bash
 cp .env.example .env
 ```
 
-3. Start server in demo mode
+1. Start server in demo mode
 
 ```bash
 GEMINI_API_KEY="demo-mode" GCP_PROJECT_ID="demo-project" npm start
 ```
 
-4. Open `http://localhost:3000` in your browser
+1. Open `http://localhost:3000` in your browser
 
 ## Environment Variables
 
@@ -43,6 +43,7 @@ Ensure you never commit `.env` with secrets.
 ## CI
 
 A GitHub Actions workflow is included at `.github/workflows/ci.yml` which:
+
 - Installs deps
 - Starts the server in demo mode
 - Runs lint and tests (UI tests using Puppeteer)
