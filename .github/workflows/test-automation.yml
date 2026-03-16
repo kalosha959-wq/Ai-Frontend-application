@@ -46,7 +46,7 @@ jobs:
         
     - name: Wait for server to be ready
       run: |
-        timeout 30 bash -c 'until curl -f http://localhost:3000; do sleep 2; done'
+        timeout 60 bash -c 'until curl -fsS -X POST http://localhost:3000/generate-video-plan -H "Content-Type: application/json" -d "{\"prompt\":\"CI healthcheck\",\"duration\":\"5\"}"; do sleep 2; done'
         
     - name: Run Simple Button Tests
       run: node simple-button-test.js
@@ -138,26 +138,25 @@ jobs:
       
     - name: Start server for performance testing
       run: |
-        echo "GEMINI_API_KEY=demo-mode" > .env
-        echo "GCP_PROJECT_ID=demo-project" >> .env
+        echo "GEMINI_API_KEY=demo-mode" > .
+        echo "GCP_PROJECT_ID=demo-project" >> .
+        echo "GCP_LOCATION=us-central1" >> .
+        echo "PORT=3000" >> .
         npm start &
         sleep 10
         
     - name: Install Lighthouse CI
       run: npm install -g @lhci/cli@0.12.x
       
-    - name: Run Lighthouse CI
-      run: |
-        if [ -n "$LHCI_GITHUB_APP_TOKEN" ]; then
-          echo "Running Lighthouse CI with GitHub integration..."
-          lhci autorun --upload.target=temporary-public-storage
-        else
-          echo "Running Lighthouse CI without GitHub integration (no token provided)..."
-          lhci autorun --upload.target=filesystem --outputDir=./lighthouse-reports
-        fi
+    - name: Run Lighthouse CI (with GitHub token)
+      if: ${{ secrets.LHCI_GITHUB_APP_TOKEN != '' }}
       env:
         LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
-        
+      run: |
+        echo "Running Lighthouse CI with GitHub integration..."
+        lhci autorun --upload.target=temporary-public-storage
+ 
+       
     - name: Upload Lighthouse reports
       uses: actions/upload-artifact@v4
       if: always()
