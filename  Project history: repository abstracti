@@ -66,3 +66,4 @@ async function pollJobStatus(jobId, projectMeta) {
   }
 
   // ...existing code for pending /
+}

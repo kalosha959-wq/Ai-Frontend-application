@@ -617,11 +617,48 @@ const BACKEND_URL = 'http://localhost:3000';
         <!-- Modal content will be dynamically injected -->
     </div>
 
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="fixed bottom-4 right-4 space-y-2 z-50"></div>
+
     <script>
+        // Global backend URL used by functions outside DOMContentLoaded
+        const BACKEND_URL = 'http://localhost:3000';
+
         document.addEventListener('DOMContentLoaded', () => {
             // --- Global Variables ---
-            const BACKEND_URL = 'http://localhost:3000';
             let pollingInterval = null;
+
+            // --- Toast Notification System ---
+            function showToast(message, type = 'info', timeout = 3000) {
+                const container = document.getElementById('toast-container');
+                if (!container) return;
+
+                const baseClasses = 'px-4 py-2 rounded shadow-lg text-sm flex items-center gap-2 transition-all duration-300 transform';
+                let colorClasses = 'bg-slate-800 text-slate-50';
+
+                if (type === 'success') colorClasses = 'bg-emerald-500 text-emerald-950';
+                if (type === 'error') colorClasses = 'bg-rose-500 text-rose-50';
+                if (type === 'warning') colorClasses = 'bg-amber-400 text-amber-950';
+
+                const toast = document.createElement('div');
+                toast.className = `${baseClasses} ${colorClasses} opacity-0 translate-y-4`;
+                toast.textContent = message;
+
+                container.appendChild(toast);
+
+                // Animate in
+                setTimeout(() => {
+                    toast.classList.remove('opacity-0', 'translate-y-4');
+                }, 10);
+
+                // Animate out
+                setTimeout(() => {
+                    toast.classList.add('opacity-0', 'translate-y-4');
+                    setTimeout(() => {
+                        toast.remove();
+                    }, 300);
+                }, timeout);
+            }
 
             // --- DOM Elements (Editor) ---
             const videoEditorModalContainer = document.getElementById('modal-container');
@@ -907,7 +944,10 @@ const BACKEND_URL = 'http://localhost:3000';
             const handleTextToVideo = async () => {
                 const userInput = textToVideoPrompt.value;
                 const duration = durationSlider.value;
-                if (!userInput.trim()) return alert("Please enter a video description.");
+                if (!userInput.trim()) {
+                    showToast("Please enter a video description.", "warning");
+                    return;
+                }
                 if (pollingInterval) clearInterval(pollingInterval);
                 generateTextToVideoBtn.innerHTML = '<div class="loader"></div><span class="ml-3">Generating...</span>';
                 generateTextToVideoBtn.disabled = true;
@@ -959,8 +999,9 @@ const BACKEND_URL = 'http://localhost:3000';
                     };
                     const newCard = createCard(newItem);
                     grid.prepend(newCard);
+                    showToast("New AI idea added to showcase!", "success");
                 } else {
-                    alert("The AI returned an unexpected format. Please try again.");
+                    showToast("The AI returned an unexpected format. Please try again.", "error");
                 }
 
                 suggestIdeaBtn.innerHTML = originalText;
@@ -1324,33 +1365,4 @@ const BACKEND_URL = 'http://localhost:3000';
                     <div class="space-y-2">
                         <button
                             class="text-left w-full flex items-center justify-between px-4 py-2 rounded-lg bg-gray-800 hover:bg-gray-700 transition-colors">
-                            <span class="text-gray-300">01. Introduction to AI Story Studio</span>
-                            <i class="fas fa-play-circle text-green-400"></i>
-                        </button>
-                        <button
-                            class="text-left w-full flex items-center justify-between px-4 py-2 rounded-lg bg-gray-800 hover:bg-gray-700 transition-colors">
-                            <span class="text-gray-300">02. Text-to-Video: Create Your First Video</span>
-                            <i class="fas fa-play-circle text-green-400"></i>
-                        </button>
-                        <button
-                            class="text-left w-full flex items-center justify-between px-4 py-2 rounded-lg bg-gray-800 hover:bg-gray-700 transition-colors">
-                            <span class="text-gray-300">03. AI Tools: Music and Editing Suggestions</span>
-                            <i class="fas fa-play-circle text-green-400"></i>
-                        </button>
-                        <button
-                            class="text-left w-full flex items-center justify-between px-4 py-2 rounded-lg bg-gray-800 hover:bg-gray-700 transition-colors">
-                            <span class="text-gray-300">04. Media Library: Uploading and Using Assets</span>
-                            <i class="fas fa-play-circle text-green-400"></i>
-                        </button>
-                        <button
-                            class="text-left w-full flex items-center justify-between px-4 py-2 rounded-lg bg-gray-800 hover:bg-gray-700 transition-colors">
-                            <span class="text-gray-300">05. Saving and Exporting Your Video</span>
-                            <i class="fas fa-play-circle text-green-400"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-</html>
+                            <span class="text-gray-300">01. Introduction to AI Story
