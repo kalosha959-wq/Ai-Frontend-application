@@ -628,10 +628,79 @@
             const projectHistoryList = document.getElementById('project-history-list');
             const projectHistoryEmpty = document.getElementById('project-history-empty');
 
-            // Copy/export buttons
-            const copyVideoPlanBtn = document.getElementById('copy-video-plan-btn');
-            const copyStoryboardBtn = document.getElementById('copy-storyboard-btn');
-            const copyCharacterBtn = document.getElementById('copy-character-btn');
+            // Key for local cache
+            const HISTORY_KEY = 'aiStoryStudioHistory';
+
+            // Future‑friendly repository for project history (localStorage now, backend later)
+            const ProjectHistoryRepo = {
+                async list() {
+                    // Later: replace with backend call, e.g. GET /api/history
+                    try {
+                        return JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
+                    } catch {
+                        return [];
+                    }
+                },
+                async save(project) {
+                    // Later: also POST /api/history to persist in DB
+                    const existing = await this.list();
+                    const updated = [project, ...existing].slice(0, 10);
+                    localStorage.setItem(HISTORY_KEY, JSON.stringify(updated));
+                    return updated;
+                }
+            };
+
+            const renderProjectHistory = (items) => {
+                projectHistoryList.innerHTML = '';
+                if (!items || items.length === 0) {
+                    projectHistoryEmpty.classList.remove('hidden');
+                    return;
+                }
+                projectHistoryEmpty.classList.add('hidden');
+                items.forEach((item, index) => {
+                    const li = document.createElement('li');
+                    li.className = 'flex items-center justify-between bg-gray-900/40 border border-gray-700 rounded-lg px-3 py-2';
+                    li.innerHTML = `
+                        <div class="mr-2">
+                            <div class="text-xs text-gray-400">#${index + 1} • ${new Date(item.createdAt || item.completedAt || Date.now()).toLocaleString()}</div>
+                            <div class="text-sm font-medium text-gray-100 truncate max-w-[180px]" title="${item.prompt}">${item.prompt}</div>
+                            <div class="text-xs text-gray-400">${item.duration || 'N/A'}s</div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button class="text-xs px-2 py-1 rounded border border-gray-600 text-gray-200 hover:bg-gray-800" data-history-action="viewPlan" data-index="${index}">
+                                Plan
+                            </button>
+                            <button class="text-xs px-2 py-1 rounded border border-gray-600 text-gray-200 hover:bg-gray-800" data-history-action="viewVideo" data-index="${index}">
+                                Video
+                            </button>
+                        </div>
+                    `;
+                    projectHistoryList.appendChild(li);
+                });
+            };
+
+            const loadProjectHistory = async () => {
+                const items = await ProjectHistoryRepo.list();
+                renderProjectHistory(items);
+            };
+
+            const saveProjectToHistory = async (project) => {
+                try {
+                    const updated = await ProjectHistoryRepo.save(project);
+                    renderProjectHistory(updated);
+                } catch (e) {
+                    console.error('Failed to save project history', e);
+                }
+            };
+
+            const getHistoryItems = () => {
+                // For now, read from local cache; later this could read from an in-memory copy
+                try {
+                    return JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
+                } catch {
+                    return [];
+                }
+            };
 
             // --- DOM Elements (Showcase) ---
             const ideaInput = document.getElementById('idea-input');
@@ -793,7 +862,8 @@
                                 saveProjectToHistory({
                                     ...projectMeta,
                                     videoUrl,
-                                    completedAt: new Date().toISOString()
+                                    completedAt: new Date().toISOString(),
+                                    planHtml: videoPlanResult.innerHTML
                                 });
                             }
                         } else if (typeof data.progress === 'number') {
@@ -807,12 +877,9 @@
                 }, 15000);
             };
 
-            const saveProjectToHistory = (project) => {
+            const saveProjectToHistory = async (project) => {
                 try {
-                    const key = 'aiStoryStudioHistory';
-                    const existing = JSON.parse(localStorage.getItem(key) || '[]');
-                    const updated = [project, ...existing].slice(0, 10); // keep last 10
-                    localStorage.setItem(key, JSON.stringify(updated));
+                    const updated = await ProjectHistoryRepo.save(project);
                     renderProjectHistory(updated);
                 } catch (e) {
                     console.error('Failed to save project history', e);
@@ -848,22 +915,9 @@
                 });
             };
 
-            const loadProjectHistory = () => {
-                try {
-                    const key = 'aiStoryStudioHistory';
-                    const existing = JSON.parse(localStorage.getItem(key) || '[]');
-                    renderProjectHistory(existing);
-                } catch {
-                    renderProjectHistory([]);
-                }
-            };
-
-            const getHistoryItems = () => {
-                try {
-                    return JSON.parse(localStorage.getItem('aiStoryStudioHistory') || '[]');
-                } catch {
-                    return [];
-                }
+            const loadProjectHistory = async () => {
+                const items = await ProjectHistoryRepo.list();
+                renderProjectHistory(items);
             };
 
             // --- Event Handlers ---
@@ -1272,31 +1326,4 @@
                             <span class="text-gray-300">01. Introduction to AI Story Studio</span>
                             <i class="fas fa-play-circle text-green-400"></i>
                         </button>
-                        <button class="text-left w-full flex items-center justify-between px-4 py-2 rounded-lg bg-gray-800 hover:bg-gray-700 transition-colors">
-                            <span class="text-gray-300">02. Generating Your First Video</span>
-                            <i class="fas fa-play-circle text-green-400"></i>
-                        </button>
-                        <button class="text-left w-full flex items-center justify-between px-4 py-2 rounded-lg bg-gray-800 hover:bg-gray-700 transition-colors">
-                            <span class="text-gray-300">03. Customizing Video Settings</span>
-                            <i class="fas fa-play-circle text-green-400"></i>
-                        </button>
-                        <button class="text-left w-full flex items-center justify-between px-4 py-2 rounded-lg bg-gray-800 hover:bg-gray-700 transition-colors">
-                            <span class="text-gray-300">04. AI Music and Editing Tools</span>
-                            <i class="fas fa-play-circle text-green-400"></i>
-                        </button>
-                        <button class="text-left w-full flex items-center justify-between px-4 py-2 rounded-lg bg-gray-800 hover:bg-gray-700 transition-colors">
-                            <span class="text-gray-300">05. Exploring the AI Media Library</span>
-                            <i class="fas fa-play-circle text-green-400"></i>
-                        </button>
-                        <button class="text-left w-full flex items-center justify-between px-4 py-2 rounded-lg bg-gray-800 hover:bg-gray-700 transition-colors">
-                            <span class="text-gray-300">06. Saving and Exporting Your Video</span>
-                            <i class="fas fa-play-circle text-green-400"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</body>
-
-</html>
+                        <button class="text-left w-full flex items-center justify-between px-4 py

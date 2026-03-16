@@ -1,0 +1,21 @@
+// Key for local cache
+const HISTORY_KEY = 'aiStoryStudioHistory';
+
+// Future‑friendly repository for project history (localStorage now, backend later)
+const ProjectHistoryRepo = {
+    async list() {
+        // Later: replace with backend call, e.g. GET /api/history
+        try {
+            return JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
+        } catch {
+            return [];
+        }
+    },
+    async save(project) {
+        // Later: also POST /api/history to persist in DB
+        const existing = await this.list();
+        const updated = [project, ...existing].slice(0, 10);
+        localStorage.setItem(HISTORY_KEY, JSON.stringify(updated));
+        return updated;
+    }
+};

@@ -1,0 +1,8 @@
+const saveProjectToHistory = async (project) => {
+    try {
+        const updated = await ProjectHistoryRepo.save(project);
+        renderProjectHistory(updated);
+    } catch (e) {
+        console.error('Failed to save project history', e);
+    }
+};

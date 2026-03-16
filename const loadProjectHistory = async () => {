@@ -1,0 +1,4 @@
+const loadProjectHistory = async () => {
+    const items = await ProjectHistoryRepo.list();
+    renderProjectHistory(items);
+};

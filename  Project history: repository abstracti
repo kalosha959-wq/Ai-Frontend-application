@@ -1,0 +1,68 @@
+// Project history: repository abstraction so we can swap localStorage for backend later
+const HISTORY_KEY = 'aiStoryStudioProjectHistory';
+
+const ProjectHistoryRepo = {
+  async list() {
+    // For now, use localStorage; later, this can call a backend API instead.
+    try {
+      const raw = localStorage.getItem(HISTORY_KEY);
+      if (!raw) return [];
+      const parsed = JSON.parse(raw);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (err) {
+      console.error('Failed to read history from localStorage', err);
+      return [];
+    }
+  },
+
+  async save(newItem) {
+    // newItem: { id, prompt, duration, createdAt, completedAt?, videoUrl?, planHtml? }
+    try {
+      const existing = await this.list();
+      const withoutDup = existing.filter(item => item.id !== newItem.id);
+      const updated = [newItem, ...withoutDup].slice(0, 20); // keep last 20
+      localStorage.setItem(HISTORY_KEY, JSON.stringify(updated));
+      return updated;
+    } catch (err) {
+      console.error('Failed to save history to localStorage', err);
+      return [];
+    }
+  }
+};
+
+async function loadProjectHistory() {
+  const historyItems = await ProjectHistoryRepo.list();
+  renderProjectHistory(historyItems);
+}
+
+async function saveProjectToHistory(projectMeta) {
+  const updatedItems = await ProjectHistoryRepo.save(projectMeta);
+  renderProjectHistory(updatedItems);
+}
+
+// Helper for click handlers that just need the latest list
+async function getHistoryItems() {
+  return await ProjectHistoryRepo.list();
+}
+
+// In your polling logic, only the “on completed” part needs to change to call saveProjectToHistory:
+async function pollJobStatus(jobId, projectMeta) {
+  // ...existing polling setup / retries / fetch logic...
+
+  if (data.status === 'completed') {
+    // ...existing code updating the UI with the final video...
+
+    const completedAt = new Date().toISOString();
+    const planHtml = videoPlanResult.innerHTML;
+
+    await saveProjectToHistory({
+      ...projectMeta,
+      completedAt,
+      videoUrl: data.videoUrl,
+      planHtml
+    });
+
+    return;
+  }
+
+  // ...existing code for pending /
