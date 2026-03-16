@@ -4,6 +4,7 @@ const express = require('express');
 const axios = require('axios');
 const cors = require('cors');
 const { VertexAI } = require('@google-cloud/vertexai');
+const helmet = require('helmet');
 require('dotenv').config();
 
 // 2. Initialize the Express app and Vertex AI client
@@ -29,10 +30,17 @@ if (allowedOriginsEnv) {
             callback(new Error('CORS policy: Origin not allowed'));
         }
     }));
+} else if (process.env.NODE_ENV === 'production') {
+    // In production, DENY CORS by default unless ALLOWED_ORIGINS is explicitly set.
+    // This prevents accidental open CORS in production environments.
+    app.use(cors({ origin: false }));
 } else {
     // Default permissive CORS in development/demo. Override in production by setting ALLOWED_ORIGINS.
     app.use(cors());
 }
+
+// Use Helmet to set secure HTTP headers
+app.use(helmet());
 
 app.use(express.json());
 
