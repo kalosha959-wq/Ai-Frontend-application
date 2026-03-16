@@ -353,3 +353,19 @@ curl -f http://localhost:3000/generate-video-plan \
 - **Development**: Use demo mode for rapid iteration without API costs
 - **Staging**: Test with real APIs but separate GCP project
 - **Production**: Full API integration with monitoring and error handling
+
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Launch Server (server.js)",
+      "program": "${workspaceFolder}/server.js",
+      "envFile": "${workspaceFolder}/.env",
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "runtimeExecutable": "node"
+    }
+  ]
+}
