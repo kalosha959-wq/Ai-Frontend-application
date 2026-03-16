@@ -166,13 +166,10 @@
 </head>
 
 <body class="bg-slate-900 text-slate-50">
-  <!-- Environment Mode Banner -->
-  <div
-    id="env-mode-banner"
-    class="hidden w-full text-center text-sm py-2"
-  ></div>
+    <!-- Environment Mode Banner -->
+    <div id="env-mode-banner" class="hidden w-full text-center text-sm py-2"></div>
 
-  <!-- Navigation Bar -->
+    <!-- Navigation Bar -->
     <nav class="bg-gray-900/95 backdrop-blur-md border-b border-gray-700 sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
@@ -315,6 +312,12 @@
                             </button>
                         </div>
 
+                        <!-- My Templates (user-defined) -->
+                        <div id="custom-templates-section" class="mt-3 mb-4">
+                            <h3 class="text-xs font-semibold text-gray-400 mb-2">My Templates</h3>
+                            <div id="custom-templates-list" class="flex flex-wrap gap-2"></div>
+                        </div>
+
                         <label for="text-to-video-prompt" class="block text-sm font-medium text-gray-300 mb-2">Video
                             Description</label>
                         <textarea id="text-to-video-prompt" rows="6"
@@ -379,7 +382,8 @@
                         </h2>
                         <p class="text-sm text-gray-300 mb-3">Your last few generated videos and plans are saved locally
                             on this device.</p>
-                        <div id="project-history-empty" class="text-gray-500 text-sm">No projects yet. Generate a video plan to see it here.</div>
+                        <div id="project-history-empty" class="text-gray-500 text-sm">No projects yet. Generate a video
+                            plan to see it here.</div>
                         <ul id="project-history-list" class="mt-2 space-y-2 text-sm max-h-48 overflow-y-auto"></ul>
                     </section>
                 </div>
@@ -416,7 +420,8 @@
                     <div id="video-plan-container" class="mt-6 hidden">
                         <div class="flex items-center justify-between mb-2">
                             <h3 class="text-xl font-bold text-white">AI Video Generation Plan:</h3>
-                            <button id="copy-video-plan-btn" class="text-xs px-3 py-1 rounded-md border border-gray-600 text-gray-200 hover:bg-gray-700">
+                            <button id="copy-video-plan-btn"
+                                class="text-xs px-3 py-1 rounded-md border border-gray-600 text-gray-200 hover:bg-gray-700">
                                 <i class="fas fa-copy mr-1"></i>Copy Plan
                             </button>
                         </div>
@@ -426,12 +431,14 @@
                     </div>
                     <div id="storyboard-generator"
                         class="mb-12 p-6 sm:p-8 rounded-2xl shadow-lg border border-slate-200">
-                        <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 text-center mb-2">Storyboard & Video Idea
+                        <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 text-center mb-2">Storyboard & Video
+                            Idea
                             Generator</h2>
                         <p class="text-center text-slate-600 mb-6">Powered by Gemini & Flow AI</p>
                         <div class="max-w-3xl mx-auto">
                             <div class="mb-4">
-                                <label for="idea-input" class="block text-lg font-semibold text-slate-700 mb-2">Enter your
+                                <label for="idea-input" class="block text-lg font-semibold text-slate-700 mb-2">Enter
+                                    your
                                     video or story idea:</label>
                                 <textarea id="idea-input" rows="4"
                                     class="w-full p-3 border border-slate-300 rounded-lg shadow-sm focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition"
@@ -444,7 +451,8 @@
                             <div id="storyboard-result-container" class="mt-8 hidden">
                                 <div class="flex items-center justify-between mb-2">
                                     <h3 class="text-xl font-bold text-slate-800">Generated Concept:</h3>
-                                    <button id="copy-storyboard-btn" class="text-xs px-3 py-1 rounded-md border border-slate-300 text-slate-700 hover:bg-slate-100">
+                                    <button id="copy-storyboard-btn"
+                                        class="text-xs px-3 py-1 rounded-md border border-slate-300 text-slate-700 hover:bg-slate-100">
                                         <i class="fas fa-copy mr-1"></i>Copy
                                     </button>
                                 </div>
@@ -458,13 +466,16 @@
                     <!-- NEW: AI Character Generator -->
                     <section id="character-generator"
                         class="mb-12 p-6 sm:p-8 rounded-2xl shadow-lg border border-slate-200">
-                        <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 text-center mb-2">AI Character Generator
+                        <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 text-center mb-2">AI Character
+                            Generator
                         </h2>
-                        <p class="text-center text-slate-600 mb-6">Create detailed character profiles from a simple idea.
+                        <p class="text-center text-slate-600 mb-6">Create detailed character profiles from a simple
+                            idea.
                         </p>
                         <div class="max-w-3xl mx-auto">
                             <div class="mb-4">
-                                <label for="character-input" class="block text-lg font-semibold text-slate-700 mb-2">Enter
+                                <label for="character-input"
+                                    class="block text-lg font-semibold text-slate-700 mb-2">Enter
                                     your character concept:</label>
                                 <textarea id="character-input" rows="3"
                                     class="w-full p-3 border border-slate-300 rounded-lg shadow-sm focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition"
@@ -477,7 +488,8 @@
                             <div id="character-result-container" class="mt-8 hidden">
                                 <div class="flex items-center justify-between mb-2">
                                     <h3 class="text-xl font-bold text-slate-800">Generated Profile:</h3>
-                                    <button id="copy-character-btn" class="text-xs px-3 py-1 rounded-md border border-slate-300 text-slate-700 hover:bg-slate-100">
+                                    <button id="copy-character-btn"
+                                        class="text-xs px-3 py-1 rounded-md border border-slate-300 text-slate-700 hover:bg-slate-100">
                                         <i class="fas fa-copy mr-1"></i>Copy
                                     </button>
                                 </div>
@@ -514,7 +526,8 @@
                         <div id="storyboard-result-container" class="mt-8 hidden">
                             <div class="flex items-center justify-between mb-2">
                                 <h3 class="text-xl font-bold text-slate-800">Generated Concept:</h3>
-                                <button id="copy-storyboard-btn" class="text-xs px-3 py-1 rounded-md border border-slate-300 text-slate-700 hover:bg-slate-100">
+                                <button id="copy-storyboard-btn"
+                                    class="text-xs px-3 py-1 rounded-md border border-slate-300 text-slate-700 hover:bg-slate-100">
                                     <i class="fas fa-copy mr-1"></i>Copy
                                 </button>
                             </div>
@@ -547,7 +560,8 @@
                         <div id="character-result-container" class="mt-8 hidden">
                             <div class="flex items-center justify-between mb-2">
                                 <h3 class="text-xl font-bold text-slate-800">Generated Profile:</h3>
-                                <button id="copy-character-btn" class="text-xs px-3 py-1 rounded-md border border-slate-300 text-slate-700 hover:bg-slate-100">
+                                <button id="copy-character-btn"
+                                    class="text-xs px-3 py-1 rounded-md border border-slate-300 text-slate-700 hover:bg-slate-100">
                                     <i class="fas fa-copy mr-1"></i>Copy
                                 </button>
                             </div>
@@ -634,56 +648,59 @@
             const projectHistoryList = document.getElementById('project-history-list');
             const projectHistoryEmpty = document.getElementById('project-history-empty');
 
-            // Key for local cache
-            const HISTORY_KEY = 'aiStoryStudioHistory';
+            // Custom templates (power feature)
+            const CUSTOM_TEMPLATES_KEY = 'aiStoryStudioCustomTemplates';
+            const customTemplatesList = document.getElementById('custom-templates-list');
 
-            // Future‑friendly repository for project history (localStorage now, backend later)
-            const ProjectHistoryRepo = {
-                async list() {
-                    // Later: replace with backend call, e.g. GET /api/history
-                    try {
-                        return JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
-                    } catch {
-                        return [];
-                    }
-                },
-                async save(project) {
-                    // Later: also POST /api/history to persist in DB
-                    const existing = await this.list();
-                    const updated = [project, ...existing].slice(0, 10);
-                    localStorage.setItem(HISTORY_KEY, JSON.stringify(updated));
-                    return updated;
+            const textToVideoPromptInput = textToVideoPrompt;
+            const textToVideoDurationInput = durationSlider;
+
+            function loadCustomTemplates() {
+                try {
+                    const raw = localStorage.getItem(CUSTOM_TEMPLATES_KEY);
+                    if (!raw) return [];
+                    const parsed = JSON.parse(raw);
+                    return Array.isArray(parsed) ? parsed : [];
+                } catch (e) {
+                    console.error('Failed to parse custom templates', e);
+                    return [];
                 }
-            };
+            }
 
-            const renderProjectHistory = (items) => {
-                projectHistoryList.innerHTML = '';
-                if (!items || items.length === 0) {
-                    projectHistoryEmpty.classList.remove('hidden');
+            function saveCustomTemplates(templates) {
+                try {
+                    localStorage.setItem(CUSTOM_TEMPLATES_KEY, JSON.stringify(templates));
+                } catch (e) {
+                    console.error('Failed to save custom templates', e);
+                }
+            }
+
+            function renderCustomTemplates(templates) {
+                if (!customTemplatesList) return;
+                customTemplatesList.innerHTML = '';
+
+                if (!templates.length) {
+                    customTemplatesList.innerHTML = '<p class="text-xs text-gray-500">No custom templates yet. Save your video plans as templates to see them here.</p>';
                     return;
                 }
-                projectHistoryEmpty.classList.add('hidden');
-                items.forEach((item, index) => {
-                    const li = document.createElement('li');
-                    li.className = 'flex items-center justify-between bg-gray-900/40 border border-gray-700 rounded-lg px-3 py-2';
-                    li.innerHTML = `
-                        <div class="mr-2">
-                            <div class="text-xs text-gray-400">#${index + 1} • ${new Date(item.createdAt || item.completedAt || Date.now()).toLocaleString()}</div>
-                            <div class="text-sm font-medium text-gray-100 truncate max-w-[180px]" title="${item.prompt}">${item.prompt}</div>
-                            <div class="text-xs text-gray-400">${item.duration || 'N/A'}s</div>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <button class="text-xs px-2 py-1 rounded border border-gray-600 text-gray-200 hover:bg-gray-800" data-history-action="viewPlan" data-index="${index}">
-                                Plan
-                            </button>
-                            <button class="text-xs px-2 py-1 rounded border border-gray-600 text-gray-200 hover:bg-gray-800" data-history-action="viewVideo" data-index="${index}">
-                                Video
-                            </button>
-                        </div>
-                    `;
-                    projectHistoryList.appendChild(li);
+
+                templates.forEach((tpl, index) => {
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = 'tool-btn px-3 py-1 rounded-full text-xs font-medium text-gray-200 border border-gray-600';
+                    btn.textContent = tpl && tpl.name ? tpl.name : `Template ${index + 1}`;
+                    btn.addEventListener('click', () => {
+                        const t = templates[index];
+                        if (!t) return;
+                        textToVideoPromptInput.value = t.prompt || '';
+                        if (t.duration) {
+                            textToVideoDurationInput.value = String(t.duration);
+                            durationDisplay.textContent = `${textToVideoDurationInput.value}s`;
+                        }
+                    });
+                    customTemplatesList.appendChild(btn);
                 });
-            };
+            }
 
             const loadProjectHistory = async () => {
                 const items = await ProjectHistoryRepo.list();
@@ -1304,23 +1321,28 @@
                 <div class="mt-6">
                     <h3 class="text-xl font-bold text-white mb-4">Video Chapters</h3>
                     <div class="space-y-2">
-                        <button class="text-left w-full flex items-center justify-between px-4 py-2 rounded-lg bg-gray-800 hover:bg-gray-700 transition-colors">
+                        <button
+                            class="text-left w-full flex items-center justify-between px-4 py-2 rounded-lg bg-gray-800 hover:bg-gray-700 transition-colors">
                             <span class="text-gray-300">01. Introduction to AI Story Studio</span>
                             <i class="fas fa-play-circle text-green-400"></i>
                         </button>
-                        <button class="text-left w-full flex items-center justify-between px-4 py-2 rounded-lg bg-gray-800 hover:bg-gray-700 transition-colors">
+                        <button
+                            class="text-left w-full flex items-center justify-between px-4 py-2 rounded-lg bg-gray-800 hover:bg-gray-700 transition-colors">
                             <span class="text-gray-300">02. Text-to-Video: Create Your First Video</span>
                             <i class="fas fa-play-circle text-green-400"></i>
                         </button>
-                        <button class="text-left w-full flex items-center justify-between px-4 py-2 rounded-lg bg-gray-800 hover:bg-gray-700 transition-colors">
+                        <button
+                            class="text-left w-full flex items-center justify-between px-4 py-2 rounded-lg bg-gray-800 hover:bg-gray-700 transition-colors">
                             <span class="text-gray-300">03. AI Tools: Music and Editing Suggestions</span>
                             <i class="fas fa-play-circle text-green-400"></i>
                         </button>
-                        <button class="text-left w-full flex items-center justify-between px-4 py-2 rounded-lg bg-gray-800 hover:bg-gray-700 transition-colors">
+                        <button
+                            class="text-left w-full flex items-center justify-between px-4 py-2 rounded-lg bg-gray-800 hover:bg-gray-700 transition-colors">
                             <span class="text-gray-300">04. Media Library: Uploading and Using Assets</span>
                             <i class="fas fa-play-circle text-green-400"></i>
                         </button>
-                        <button class="text-left w-full flex items-center justify-between px-4 py-2 rounded-lg bg-gray-800 hover:bg-gray-700 transition-colors">
+                        <button
+                            class="text-left w-full flex items-center justify-between px-4 py-2 rounded-lg bg-gray-800 hover:bg-gray-700 transition-colors">
                             <span class="text-gray-300">05. Saving and Exporting Your Video</span>
                             <i class="fas fa-play-circle text-green-400"></i>
                         </button>
@@ -1329,4 +1351,5 @@
             </div>
         </div>
     </div>
+
 </html>
