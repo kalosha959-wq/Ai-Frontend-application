@@ -6,8 +6,9 @@
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
-    "lint": "npx eslint . --ext .js,.html || true",
-    "test": "node enhanced-test-suite.js || true",
+    "lint": "npx eslint . --ext .js,.html",
+    "format": "npx prettier --write .",
+    "test": "jest --runInBand",
     "audit": "npm audit || true",
     "docker:build": "docker build -t ai-story-studio .",
     "docker:run": "docker run -p 3000:3000 -e GEMINI_API_KEY=demo-mode -e GCP_PROJECT_ID=demo-project ai-story-studio",
@@ -25,7 +26,11 @@
     "puppeteer": "^24.15.0"
   },
   "devDependencies": {
-    "nodemon": "^3.1.10"
+    "nodemon": "^3.1.10",
+    "eslint": "^8.47.0",
+    "prettier": "^2.10.0",
+    "jest": "^29.6.0",
+    "supertest": "^6.4.0"
   },
   "engines": {
     "node": ">=14.0.0"
