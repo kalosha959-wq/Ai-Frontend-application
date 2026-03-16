@@ -1,4 +1,4 @@
-// server.js    
+// server.js
 // 1. Import necessary packages
 const express = require('express');
 const axios = require('axios');
