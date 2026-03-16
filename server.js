@@ -16,7 +16,24 @@ const vertex_ai = new VertexAI({
 });
 
 // 3. Configure middleware
-app.use(cors());
+
+// Configure CORS with optional allowed origins (comma-separated list in ALLOWED_ORIGINS)
+const allowedOriginsEnv = process.env.ALLOWED_ORIGINS || '';
+if (allowedOriginsEnv) {
+    const allowedOrigins = allowedOriginsEnv.split(',').map(s => s.trim()).filter(Boolean);
+    app.use(cors({
+        origin: function (origin, callback) {
+            // allow non-browser requests like curl or server-to-server if origin is undefined
+            if (!origin) return callback(null, true);
+            if (allowedOrigins.indexOf(origin) !== -1) return callback(null, true);
+            callback(new Error('CORS policy: Origin not allowed'));
+        }
+    }));
+} else {
+    // Default permissive CORS in development/demo. Override in production by setting ALLOWED_ORIGINS.
+    app.use(cors());
+}
+
 app.use(express.json());
 
 // Serve the frontend HTML file
@@ -295,7 +312,7 @@ module.exports = app;
 // GCP_VIDEO_OUTPUT_WEBHOOK_SUCCESS_NOTIFICATION_PUSHOVER_TIMEOUT=5000 (or your preferred timeout for success notifications)
 // GCP_VIDEO_OUTPUT_WEBHOOK_FAILURE_NOTIFICATION_PUSHOVER_RETRIES=3 (or your preferred number of retries for Pushover notifications)
 // GCP_VIDEO_OUTPUT_WEBHOOK_SUCCESS_NOTIFICATION_PUSHOVER_RETRIES=3 (or your preferred number of retries for success notifications)
-// GCP_VIDEO_OUTPUT_WEBHOOK_FAILURE_NOTIFICATION_PUSHOVER_RETRY_DELAY=1000 (or your preferred delay between retries for Pushover notifications)
+// GCP_VIDEO_OUTPUT_WEBHOOK_FAILURE_NOTIFICATION_PUSHOVER_RETRY_DELAY=1000 (or your preferred delay between retries for failure notifications)
 // GCP_VIDEO_OUTPUT_WEBHOOK_SUCCESS_NOTIFICATION_PUSHOVER_RETRY_DELAY=1000 (or your preferred delay between retries for success notifications)
 // GCP_VIDEO_OUTPUT_WEBHOOK_FAILURE_NOTIFICATION_PUSHOVER_SUCCESS_CODES=[200, 201] (or your preferred success HTTP status codes for Pushover notifications)
 // GCP_VIDEO_OUTPUT_WEBHOOK_SUCCESS_NOTIFICATION_PUSHOVER_SUCCESS_CODES=[200, 201] (or your preferred success HTTP status codes for success notifications)
@@ -304,21 +321,7 @@ module.exports = app;
 // GCP_VIDEO_OUTPUT_WEBHOOK_FAILURE_NOTIFICATION_PUSHOVER_FAILURE_ACTION="retry" (or your preferred action on failure for Pushover notifications, e.g., "retry", "abort", "notify")
 // GCP_VIDEO_OUTPUT_WEBHOOK_SUCCESS_NOTIFICATION_PUSHOVER_FAILURE_ACTION="notify" (or your preferred action on failure for success notifications, e.g., "notify", "store", "log")
 // GCP_VIDEO_OUTPUT_WEBHOOK_FAILURE_NOTIFICATION_PUSHOVER_RETRY_DELAY=1000 (or your preferred delay between retries for failure notifications)
-// GCP_VIDEO_OUTPUT_WEBHOOK_SUCCESS_NOTIFICATION_PUSHOVER_RETRY_DELAY=1000 (or your preferred delay between retries for success notifications)  
-// GCP_VIDEO_OUTPUT_WEBHOOK_FAILURE_NOTIFICATION_PUSHOVER_TIMEOUT=5000 (or your preferred timeout for failure notifications)
-// GCP_VIDEO_OUTPUT_WEBHOOK_SUCCESS_NOTIFICATION_PUSHOVER_TIMEOUT=5000 (or your preferred timeout for success notifications)
-// GCP_VIDEO_OUTPUT_WEBHOOK_FAILURE_NOTIFICATION_PUSHOVER_RETRIES=3 (or your preferred number of retries for failure notifications)
-// GCP_VIDEO_OUTPUT_WEBHOOK_SUCCESS_NOTIFICATION_PUSHOVER_RETRIES=3 (or your preferred number of retries for success notifications)
-// GCP_VIDEO_OUTPUT_WEBHOOK_FAILURE_NOTIFICATION_PUSHOVER_RETRY_DELAY=1000 (or your preferred delay between retries for failure notifications)
 // GCP_VIDEO_OUTPUT_WEBHOOK_SUCCESS_NOTIFICATION_PUSHOVER_RETRY_DELAY=1000 (or your preferred delay between retries for success notifications)
-// GCP_VIDEO_OUTPUT_WEBHOOK_FAILURE_NOTIFICATION_PUSHOVER_SUCCESS_CODES=[200, 201] (or your preferred success HTTP status codes for failure notifications)
-// GCP_VIDEO_OUTPUT_WEBHOOK_SUCCESS_NOTIFICATION_PUSHOVER_SUCCESS_CODES=[200, 201] (or your preferred success HTTP status codes for success notifications)
-// GCP_VIDEO_OUTPUT_WEBHOOK_FAILURE_NOTIFICATION_PUSHOVER_FAILURE_CODES=[400, 500] (or your preferred failure HTTP status codes for failure notifications)
-// GCP_VIDEO_OUTPUT_WEBHOOK_SUCCESS_NOTIFICATION_PUSHOVER_FAILURE_CODES=[400, 500] (or your preferred failure HTTP status codes for success notifications)
-// GCP_VIDEO_OUTPUT_WEBHOOK_FAILURE_NOTIFICATION_PUSHOVER_FAILURE_ACTION="retry" (or your preferred action on failure for Pushover notifications, e.g., "retry", "abort", "notify")
-// GCP_VIDEO_OUTPUT_WEBHOOK_SUCCESS_NOTIFICATION_PUSHOVER_FAILURE_ACTION="notify" (or your preferred action on failure for success notifications, e.g., "notify", "store", "log")
-// GCP_VIDEO_OUTPUT_WEBHOOK_FAILURE_NOTIFICATION_PUSHOVER_RETRY_DELAY=1000 (or your preferred delay between retries for failure notifications)
-// GCP_VIDEO_OUTPUT_WEBHOOK_SUCCESS_NOTIFICATION_PUSHOVER_RETRY_DELAY=1000 (or your preferred delay between retries for success notifications
 
 
 
