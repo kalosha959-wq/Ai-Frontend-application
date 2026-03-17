@@ -1,10 +1,25 @@
 // Project history: repository abstraction so we can swap localStorage for backend later
 const HISTORY_KEY = 'aiStoryStudioProjectHistory';
 
+// Helper: generate a stable-ish id if caller didn't provide one
+function generateId() {
+  // simple timestamp + random suffix
+  return `proj-${Date.now()}-${Math.floor(Math.random() * 1e6)}`;
+}
+
+function hasLocalStorage() {
+  try {
+    return typeof localStorage !== 'undefined' && localStorage !== null;
+  } catch (err) {
+    return false;
+  }
+}
+
 const ProjectHistoryRepo = {
   async list() {
     // For now, use localStorage; later, this can call a backend API instead.
     try {
+      if (!hasLocalStorage()) return [];
       const raw = localStorage.getItem(HISTORY_KEY);
       if (!raw) return [];
       const parsed = JSON.parse(raw);
@@ -18,10 +33,29 @@ const ProjectHistoryRepo = {
   async save(newItem) {
     // newItem: { id, prompt, duration, createdAt, completedAt?, videoUrl?, planHtml? }
     try {
-      const existing = await this.list();
-      const withoutDup = existing.filter(item => item.id !== newItem.id);
-      const updated = [newItem, ...withoutDup].slice(0, 20); // keep last 20
-      localStorage.setItem(HISTORY_KEY, JSON.stringify(updated));
+      if (!newItem) throw new Error('No item provided to save');
+
+      // Ensure an id and createdAt exist
+      const itemToSave = {
+        ...newItem,
+        id: newItem.id || generateId(),
+        createdAt: newItem.createdAt || new Date().toISOString()
+      };
+
+      // Use direct reference to ProjectHistoryRepo.list to avoid `this` binding issues
+      const existing = await ProjectHistoryRepo.list();
+      const withoutDup = existing.filter(item => item && item.id !== itemToSave.id);
+      const updated = [itemToSave, ...withoutDup].slice(0, 20); // keep last 20
+
+      if (hasLocalStorage()) {
+        try {
+          localStorage.setItem(HISTORY_KEY, JSON.stringify(updated));
+        } catch (err) {
+          console.error('Failed to write history to localStorage', err);
+          // still return updated in-memory result
+        }
+      }
+
       return updated;
     } catch (err) {
       console.error('Failed to save history to localStorage', err);
@@ -35,7 +69,7 @@ async function loadProjectHistory() {
   renderProjectHistory(historyItems);
 }
 
-async function saveProjectToHistory(projectMeta) {
+async function saveProjectHistory(projectMeta) {
   const updatedItems = await ProjectHistoryRepo.save(projectMeta);
   renderProjectHistory(updatedItems);
 }
@@ -45,17 +79,82 @@ async function getHistoryItems() {
   return await ProjectHistoryRepo.list();
 }
 
+// Renders project history into an element with id="projectHistory" if present,
+// otherwise logs the items; safe DOM creation to avoid XSS and undefined symbols.
+function renderProjectHistory(items) {
+  try {
+    const el = (typeof document !== 'undefined') && document.getElementById('projectHistory');
+    if (!el) {
+      // No DOM target available (e.g., server-side or tests), just log for visibility.
+      console.debug('renderProjectHistory:', items);
+      return;
+    }
+
+    el.innerHTML = '';
+
+    if (!Array.isArray(items) || items.length === 0) {
+      const p = document.createElement('p');
+      p.textContent = 'No projects yet.';
+      el.appendChild(p);
+      return;
+    }
+
+    items.forEach(it => {
+      const itemEl = document.createElement('div');
+      itemEl.className = 'history-item';
+      if (it && it.id) itemEl.dataset.id = it.id;
+
+      const title = document.createElement('div');
+      title.className = 'history-title';
+      title.textContent = (it && it.prompt) ? it.prompt : 'Untitled';
+
+      const meta = document.createElement('div');
+      meta.className = 'history-meta';
+      meta.textContent = (it && it.createdAt) ? new Date(it.createdAt).toLocaleString() : '';
+
+      itemEl.appendChild(title);
+      itemEl.appendChild(meta);
+      el.appendChild(itemEl);
+    });
+  } catch (err) {
+    console.error('Failed to render project history', err);
+  }
+}
+
 // In your polling logic, only the “on completed” part needs to change to call saveProjectToHistory:
-async function pollJobStatus(jobId, projectMeta) {
+async function pollJobStatus(jobId, projectMeta, data) {
   // ...existing polling setup / retries / fetch logic...
 
-  if (data.status === 'completed') {
+  // Example fetch/result handling pseudocode:
+  // const data = await fetch(`/check-job-status/${jobId}`).then(r => r.json());
+
+  // For the purpose of robustness here, assume `data` is available when this block runs.
+  // Replace this comment with your existing polling loop and when you detect completion, use the block below.
+
+  // ...existing polling code...
+
+  // When job completes, use robust planHtml extraction and save history.
+  // (This snippet assumes `data` and UI update logic are present in the original polling flow.)
+  if (data && data.status === 'completed') {
     // ...existing code updating the UI with the final video...
 
     const completedAt = new Date().toISOString();
-    const planHtml = videoPlanResult.innerHTML;
 
-    await saveProjectToHistory({
+    // Prefer planHtml from projectMeta if present; otherwise try to find a DOM element safely.
+    let planHtml = '';
+    if (projectMeta && typeof projectMeta.planHtml === 'string' && projectMeta.planHtml.trim()) {
+      planHtml = projectMeta.planHtml;
+    } else {
+      try {
+        // Avoid referencing variables that may not exist in this scope (e.g., videoPlanResult).
+        const el = typeof document !== 'undefined' && (document.getElementById('videoPlanResult') || document.querySelector('.video-plan'));
+        planHtml = el && el.innerHTML ? el.innerHTML : '';
+      } catch (err) {
+        planHtml = '';
+      }
+    }
+
+    await saveProjectHistory({
       ...projectMeta,
       completedAt,
       videoUrl: data.videoUrl,
@@ -66,4 +165,5 @@ async function pollJobStatus(jobId, projectMeta) {
   }
 
   // ...existing code for pending /
+
 }
