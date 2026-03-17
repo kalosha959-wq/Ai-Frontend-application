@@ -5,4 +5,8 @@ import cv2
 def add_ai_effects(video_path):
     clip = VideoFileClip(video_path)
     # Add AI-generated effects, transitions, etc.
-    return enhanced_clip
+    # Overlay a simple text-based effect and return the composed clip
+    txt = TextClip("AI Generated Effect", fontsize=48, color='white', stroke_color='black', stroke_width=2)
+    txt = txt.set_duration(clip.duration).set_pos(("center", "bottom"))
+    enhanced_clip = CompositeVideoClip([clip, txt])
+    return enhanced_clip    

@@ -11,4 +11,4 @@ class VideoRequest(BaseModel):
 @app.post("/generate-video")
 async def generate_video(request: VideoRequest):
     # AI video generation logic
-    return {"status": "success", "job_id": "..."}
+    return {"status": "success", "job_id": "..."}   

@@ -6,4 +6,4 @@ def generate_enhanced_script(prompt):
         model="gpt-4",
         messages=[{"role": "user", "content": f"Create a video script: {prompt}"}]
     )
-    return response.choices[0].message.content
+    return response.choices[0].message.content  

@@ -7,3 +7,4 @@ async def video_progress_handler(websocket, path):
     for progress in range(0, 101, 10):
         await websocket.send(f"Rendering: {progress}%")
         await asyncio.sleep(1)  
+    await websocket.send("Rendering complete!") 
