@@ -42,11 +42,7 @@ Ensure you never commit `.env` with secrets.
 
 ## CI
 
-A GitHub Actions workflow is included at `.github/workflows/ci.yml` which:
-
-- Installs deps
-- Starts the server in demo mode
-- Runs lint and tests (UI tests using Puppeteer)
+GitHub Actions workflows live under `.github/workflows/` and include CI, fuller validation, release, and test automation flows.
 
 ## Docker
 
@@ -77,9 +73,9 @@ The frontend includes a CSP meta tag in `ai-story-studio-combined.html`. Before 
 
 ## Development Notes
 
-- Frontend is a single HTML file `ai-story-studio-combined.html` — all JS is inline for simplicity
-- Server serves static file and provides demo-mode logic for safe local testing
-- Tests: `test-buttons.js` performs interactive UI tests using Puppeteer
+- Frontend is a single HTML file `ai-story-studio-combined.html` and `project-history.js`
+- Server serves the static app and provides demo-mode logic for safe local testing
+- Maintained automated coverage is documented in `TESTING.md`
 
 ## Changelog
 
