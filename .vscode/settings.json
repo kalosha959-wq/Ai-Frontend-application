@@ -1,3 +1,5 @@
 {
-    "cmake.sourceDirectory": "/workspaces/Ai-Frontend-application/node_modules/bare-fs"
+    "cmake.sourceDirectory": "/workspaces/Ai-Frontend-application/node_modules/bare-fs",
+    "python-envs.defaultEnvManager": "ms-python.python:system",
+    "python-envs.pythonProjects": []
 }

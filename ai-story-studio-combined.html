@@ -102,10 +102,10 @@ const BACKEND_URL = 'http://localhost:3000';
 
         .loader {
             border: 4px solid #4b5563;
-            border-top: 4px solid #6366f1;
+            border-block-start: 4px solid #6366f1;
             border-radius: 50%;
-            width: 32px;
-            height: 32px;
+            inline-size: 32px;
+            block-size: 32px;
             animation: spin 1s linear infinite;
         }
 
@@ -620,6 +620,9 @@ const BACKEND_URL = 'http://localhost:3000';
     <!-- Toast Notification Container -->
     <div id="toast-container" class="fixed bottom-4 right-4 space-y-2 z-50"></div>
 
+    <!-- Load project history module -->
+    <script src="/project-history.js"></script>
+
     <script>
         // Global backend URL used by functions outside DOMContentLoaded
         const BACKEND_URL = 'http://localhost:3000';
@@ -906,7 +909,7 @@ const BACKEND_URL = 'http://localhost:3000';
 
             const pollJobStatus = (jobId, projectMeta) => {
                 const statusElement = document.getElementById('generation-status');
-                statusElement.textContent = 'Step 2/3: Job sent to render engine...';
+                if (statusElement) statusElement.textContent = 'Step 2/3: Job sent to render engine...';
                 pollingInterval = setInterval(async () => {
                     try {
                         const response = await fetch(`${BACKEND_URL}/check-job-status/${jobId}`);
@@ -914,26 +917,26 @@ const BACKEND_URL = 'http://localhost:3000';
                         const data = await response.json();
                         if (data.status === 'completed') {
                             clearInterval(pollingInterval);
-                            statusElement.textContent = 'Step 3/3: Render Complete!';
+                            if (statusElement) statusElement.textContent = 'Step 3/3: Render Complete!';
                             const videoUrl = data.videoUrl || `https://placehold.co/1920x1080.mp4?text=Render_Complete!`;
-                            videoPreviewContainer.innerHTML = `<video id="video-preview" class="w-full h-full rounded-lg" controls autoplay><source src="${videoUrl}" type="video/mp4"></video>`;
+                            if (videoPreviewContainer) videoPreviewContainer.innerHTML = `<video id="video-preview" class="w-full h-full rounded-lg" controls autoplay><source src="${videoUrl}" type="video/mp4"></video>`;
 
                             // Save project to history when completed
-                            if (projectMeta) {
-                                saveProjectToHistory({
+                            if (projectMeta && typeof window.saveProjectToHistory === 'function') {
+                                window.saveProjectToHistory({
                                     ...projectMeta,
                                     videoUrl,
                                     completedAt: new Date().toISOString(),
-                                    planHtml: videoPlanResult.innerHTML
+                                    planHtml: (videoPlanResult && videoPlanResult.innerHTML) ? videoPlanResult.innerHTML : ''
                                 });
                             }
-                        } else if (typeof data.progress === 'number') {
+                        } else if (typeof data.progress === 'number' && statusElement) {
                             statusElement.textContent = `Step 2/3: Rendering... ${data.progress}%`;
                         }
                     } catch (error) {
                         console.error('Polling error:', error);
                         clearInterval(pollingInterval);
-                        statusElement.textContent = 'Error checking job status.';
+                        if (statusElement) statusElement.textContent = 'Error checking job status.';
                     }
                 }, 15000);
             };
@@ -982,7 +985,7 @@ const BACKEND_URL = 'http://localhost:3000';
 
             const handleSuggestIdea = async () => {
                 const originalText = suggestIdeaBtn.innerHTML;
-                suggestIdeaBtn.innerHTML = '<div class="loader" style="border-top-color: #fff; width: 20px; height: 20px;"></div>';
+                suggestIdeaBtn.innerHTML = '<div class="loader" style="border-block-start-color: #fff; inline-size: 20px; block-size: 20px;"></div>';
                 suggestIdeaBtn.disabled = true;
                 const prompt = "You are a creative director. Generate a single, compelling, and concise concept for a short video or virtual experience. Provide a title and a short description. Format it exactly like this: Title: [Your Title Here]\nDescription: [Your Description Here]";
                 const responseText = await callGeminiApi(prompt);
@@ -1037,7 +1040,7 @@ const BACKEND_URL = 'http://localhost:3000';
             const generateStoryboard = async () => {
                 const idea = ideaInput.value;
                 if (!idea.trim()) return;
-                generateStoryboardBtn.innerHTML = '<div class="loader" style="border-top-color: #fff;"></div><span class="ml-2">Generating...</span>';
+                generateStoryboardBtn.innerHTML = '<div class="loader" style="border-block-start-color: #fff;"></div><span class="ml-2">Generating...</span>';
                 generateStoryboardBtn.disabled = true;
                 storyboardResultContainer.classList.remove('hidden');
                 storyboardResult.innerHTML = '<div class="flex justify-center items-center p-4"><div class="loader"></div></div>';
@@ -1055,7 +1058,7 @@ const BACKEND_URL = 'http://localhost:3000';
                     characterResultContainer.classList.remove('hidden');
                     return;
                 }
-                generateCharacterBtn.innerHTML = '<div class="loader" style="border-top-color: #fff;"></div><span class="ml-2">Generating...</span>';
+                generateCharacterBtn.innerHTML = '<div class="loader" style="border-block-start-color: #fff;"></div><span class="ml-2">Generating...</span>';
                 generateCharacterBtn.disabled = true;
                 characterResultContainer.classList.remove('hidden');
                 characterResult.innerHTML = '<div class="flex justify-center items-center p-4"><div class="loader"></div></div>';
@@ -1079,7 +1082,7 @@ const BACKEND_URL = 'http://localhost:3000';
 
             // --- Initial Render ---
             renderCards();
-            loadProjectHistory();
+            if (typeof window.loadProjectHistory === 'function') window.loadProjectHistory();
         });
 
         async function detectEnvModeAndShowBanner() {
@@ -1132,15 +1135,17 @@ const BACKEND_URL = 'http://localhost:3000';
     </script>
 
     <!-- Subscription Plans Modal -->
-    <div id="pricing-modal" class="modal fixed inset-0 z-50 hidden">
+    <div id="pricing-modal" class="modal fixed inset-0 z-50 hidden" role="dialog" aria-modal="true"
+        aria-labelledby="pricing-title">
         <div
             class="modal-content max-w-6xl mx-auto mt-8 bg-gray-900 rounded-2xl shadow-2xl border border-gray-700 max-h-[90vh] overflow-y-auto">
             <div class="p-8">
                 <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-3xl font-bold text-white">
+                    <h2 id="pricing-title" class="text-3xl font-bold text-white">
                         <i class="fas fa-crown text-yellow-400 mr-3"></i>Choose Your Plan
                     </h2>
-                    <button id="close-pricing-modal" class="text-gray-400 hover:text-white text-2xl">
+                    <button id="close-pricing-modal" class="text-gray-400 hover:text-white text-2xl"
+                        aria-label="Close pricing dialog">
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
@@ -1154,21 +1159,21 @@ const BACKEND_URL = 'http://localhost:3000';
                                     class="text-sm text-gray-400">/month</span></div>
                             <p class="text-gray-400">Perfect for getting started</p>
                         </div>
-                        <ul class="space-y-3 mb-6">
+                        <ul class="space-y-3 mb-6" aria-hidden="false">
                             <li class="flex items-center text-gray-300">
-                                <i class="fas fa-check text-green-400 mr-3"></i>
+                                <i class="fas fa-check text-green-400 mr-3" aria-hidden="true"></i>
                                 3 videos per month
                             </li>
                             <li class="flex items-center text-gray-300">
-                                <i class="fas fa-check text-green-400 mr-3"></i>
+                                <i class="fas fa-check text-green-400 mr-3" aria-hidden="true"></i>
                                 720p resolution
                             </li>
                             <li class="flex items-center text-gray-300">
-                                <i class="fas fa-check text-green-400 mr-3"></i>
+                                <i class="fas fa-check text-green-400 mr-3" aria-hidden="true"></i>
                                 Basic AI tools
                             </li>
                             <li class="flex items-center text-gray-300">
-                                <i class="fas fa-check text-green-400 mr-3"></i>
+                                <i class="fas fa-check text-green-400 mr-3" aria-hidden="true"></i>
                                 Community support
                             </li>
                         </ul>
@@ -1342,7 +1347,7 @@ const BACKEND_URL = 'http://localhost:3000';
                     </button>
                 </div>
 
-                <div class="relative" style="padding-top: 56.25%;">
+                <div class="relative" style="padding-block-start: 56.25%;">
                     <iframe id="tutorial-video-iframe" src="" frameborder="0"
                         class="absolute top-0 left-0 w-full h-full rounded-2xl shadow-md"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -1365,4 +1370,34 @@ const BACKEND_URL = 'http://localhost:3000';
                     <div class="space-y-2">
                         <button
                             class="text-left w-full flex items-center justify-between px-4 py-2 rounded-lg bg-gray-800 hover:bg-gray-700 transition-colors">
-                            <span class="text-gray-300">01. Introduction to AI Story
+                            <span class="text-gray-300">01. Introduction to AI Story Studio</span>
+                            <i class="fas fa-chevron-right text-gray-400"></i>
+                        </button>
+                        <button
+                            class="text-left w-full flex items-center justify-between px-4 py-2 rounded-lg bg-gray-800 hover:bg-gray-700 transition-colors">
+                            <span class="text-gray-300">02. Generating Your First Video</span>
+                            <i class="fas fa-chevron-right text-gray-400"></i>
+                        </button>
+                        <button
+                            class="text-left w-full flex items-center justify-between px-4 py-2 rounded-lg bg-gray-800 hover:bg-gray-700 transition-colors">
+                            <span class="text-gray-300">03. Using AI Tools for Enhancement</span>
+                            <i class="fas fa-chevron-right text-gray-400"></i>
+                        </button>
+                        <button
+                            class="text-left w-full flex items-center justify-between px-4 py-2 rounded-lg bg-gray-800 hover:bg-gray-700 transition-colors">
+                            <span class="text-gray-300">04. Exploring the Media Library</span>
+                            <i class="fas fa-chevron-right text-gray-400"></i>
+                        </button>
+                        <button
+                            class="text-left w-full flex items-center justify-between px-4 py-2 rounded-lg bg-gray-800 hover:bg-gray-700 transition-colors">
+                            <span class="text-gray-300">05. Saving and Exporting Your Project</span>
+                            <i class="fas fa-chevron-right text-gray-400"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
