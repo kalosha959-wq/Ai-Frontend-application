@@ -1,7 +1,0 @@
-const getHistoryItems = () => {
-    try {
-        return JSON.parse(localStorage.getItem(HISTORY_KEY || 'aiStoryStudioHistory') || '[]');
-    } catch {
-        return [];
-    }
-};
