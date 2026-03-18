@@ -228,8 +228,6 @@ const BACKEND_URL = 'http://localhost:3000';
         </div>
     </nav>
 
-    <script src="/project-history.js"></script>
-
     <main class="min-h-screen">
         <!-- Video Editor Section -->
         <section class="text-white p-4 sm:p-6 lg:p-8">
@@ -622,143 +620,103 @@ const BACKEND_URL = 'http://localhost:3000';
     <!-- Toast Notification Container -->
     <div id="toast-container" class="fixed bottom-4 right-4 space-y-2 z-50"></div>
 
+    <!-- Load project history module -->
+    <script src="/project-history.js"></script>
+
     <script>
-    // @ts-check
-    /* global ProjectHistoryRepo, renderProjectHistory, HISTORY_KEY */
-    /**
-     * @typedef {Object} ProjectMeta
-     * @property {string} [id]
-     * @property {string} prompt
-     * @property {string|number} duration
-     * @property {string} createdAt
-     * @property {string} [completedAt]
-     * @property {string} [videoUrl]
-     * @property {string} [planHtml]
-     */
-    'use strict';
+        // Global backend URL used by functions outside DOMContentLoaded
+        const BACKEND_URL = 'http://localhost:3000';
 
-    // Expose expected globals to the checker (fallbacks for runtime)
-    /** @type {any} */
-    const ProjectHistoryRepo = /** @type {any} */(window.ProjectHistoryRepo);
-    /** @type {(items:any[]) => void} */
-    const renderProjectHistory = /** @type {any} */(window.renderProjectHistory) || (/** @param {any[]} _items */() => {});
-    /** @type {string} */
-    const HISTORY_KEY = /** @type {any} */(window.HISTORY_KEY) || 'aiStoryStudioProjectHistory';
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Global Variables ---
+            let pollingInterval = null;
 
-    // Global backend URL used by functions outside DOMContentLoaded
-    const BACKEND_URL = 'http://localhost:3000';
+            // --- Toast Notification System ---
+            function showToast(message, type = 'info', timeout = 3000) {
+                const container = document.getElementById('toast-container');
+                if (!container) return;
 
-    document.addEventListener('DOMContentLoaded', () => {
-        // --- Global Variables ---
-        let pollingInterval = null;
+                const baseClasses = 'px-4 py-2 rounded shadow-lg text-sm flex items-center gap-2 transition-all duration-300 transform';
+                let colorClasses = 'bg-slate-800 text-slate-50';
 
-        // --- Toast Notification System ---
-        function showToast(message, type = 'info', timeout = 3000) {
-            const container = /** @type {HTMLElement | null} */(document.getElementById('toast-container'));
-            if (!container) return;
+                if (type === 'success') colorClasses = 'bg-emerald-500 text-emerald-950';
+                if (type === 'error') colorClasses = 'bg-rose-500 text-rose-50';
+                if (type === 'warning') colorClasses = 'bg-amber-400 text-amber-950';
 
-            const baseClasses = 'px-4 py-2 rounded shadow-lg text-sm flex items-center gap-2 transition-all duration-300 transform';
-            let colorClasses = 'bg-slate-800 text-slate-50';
+                const toast = document.createElement('div');
+                toast.className = `${baseClasses} ${colorClasses} opacity-0 translate-y-4`;
+                toast.textContent = message;
 
-            if (type === 'success') colorClasses = 'bg-emerald-500 text-emerald-950';
-            if (type === 'error') colorClasses = 'bg-rose-500 text-rose-50';
-            if (type === 'warning') colorClasses = 'bg-amber-400 text-amber-950';
+                container.appendChild(toast);
 
-            const toast = document.createElement('div');
-            toast.className = `${baseClasses} ${colorClasses} opacity-0 translate-y-4`;
-            toast.textContent = message;
-
-            container.appendChild(toast);
-
-            // Animate in
-            setTimeout(() => {
-                toast.classList.remove('opacity-0', 'translate-y-4');
-            }, 10);
-
-            // Animate out
-            setTimeout(() => {
-                toast.classList.add('opacity-0', 'translate-y-4');
+                // Animate in
                 setTimeout(() => {
-                    toast.remove();
-                }, 300);
-            }, timeout);
-        }
+                    toast.classList.remove('opacity-0', 'translate-y-4');
+                }, 10);
 
-        // --- DOM Elements (Editor) ---
-        /** @type {HTMLElement | null} */
-        const videoEditorModalContainer = document.getElementById('modal-container');
-        /** @type {HTMLElement | null} */
-        const videoPreviewContainer = document.getElementById('video-preview-container');
-        /** @type {HTMLElement | null} */
-        const videoPlanContainer = document.getElementById('video-plan-container');
-        /** @type {HTMLElement | null} */
-        const videoPlanResult = document.getElementById('video-plan-result');
-        /** @type {HTMLTextAreaElement | null} */
-        const textToVideoPrompt = /** @type {HTMLTextAreaElement | null} */(document.getElementById('text-to-video-prompt'));
-        /** @type {HTMLButtonElement | null} */
-        const generateTextToVideoBtn = /** @type {HTMLButtonElement | null} */(document.getElementById('generate-text-to-video-btn'));
-        /** @type {HTMLInputElement | null} */
-        const durationSlider = /** @type {HTMLInputElement | null} */(document.getElementById('video-duration-slider'));
-        /** @type {HTMLElement | null} */
-        const durationDisplay = document.getElementById('duration-display');
-        /** @type {HTMLElement | null} */
-        const uploadDeviceBtn = document.getElementById('upload-device-btn');
-        /** @type {HTMLInputElement | null} */
-        const videoUploadInput = /** @type {HTMLInputElement | null} */(document.getElementById('video-upload-input'));
-        /** @type {HTMLElement | null} */
-        const browseAiLibraryBtn = document.getElementById('browse-ai-library-btn');
-        /** @type {HTMLElement | null} */
-        const mediaBinGrid = document.getElementById('media-bin-grid');
-        /** @type {HTMLElement | null} */
-        const mediaBinPlaceholder = document.getElementById('media-bin-placeholder');
-        /** @type {HTMLElement | null} */
-        const suggestMusicBtn = document.getElementById('suggest-music-btn');
-        /** @type {HTMLElement | null} */
-        const suggestEditsBtn = document.getElementById('suggest-edits-btn');
-
-        // Preset buttons
-        /** @type {HTMLElement | null} */
-        const presetYoutubeShortBtn = document.getElementById('preset-youtube-short');
-        /** @type {HTMLElement | null} */
-        const presetTrailerBtn = document.getElementById('preset-trailer');
-        /** @type {HTMLElement | null} */
-        const presetAdSpotBtn = document.getElementById('preset-ad-spot');
-
-        // Project history DOM
-        /** @type {HTMLElement | null} */
-        const projectHistoryList = document.getElementById('project-history-list');
-        /** @type {HTMLElement | null} */
-        const projectHistoryEmpty = document.getElementById('project-history-empty');
-
-        // Custom templates (power feature)
-        const CUSTOM_TEMPLATES_KEY = 'aiStoryStudioCustomTemplates';
-        /** @type {HTMLElement | null} */
-        const customTemplatesList = document.getElementById('custom-templates-list');
-
-        const textToVideoPromptInput = textToVideoPrompt;
-        const textToVideoDurationInput = durationSlider;
-
-        function loadCustomTemplates() {
-            try {
-                const raw = localStorage.getItem(CUSTOM_TEMPLATES_KEY);
-                if (!raw) return [];
-                const parsed = JSON.parse(raw);
-                return Array.isArray(parsed) ? parsed : [];
-            } catch (e) {
-                console.error('Failed to parse custom templates', e);
-                return [];
+                // Animate out
+                setTimeout(() => {
+                    toast.classList.add('opacity-0', 'translate-y-4');
+                    setTimeout(() => {
+                        toast.remove();
+                    }, 300);
+                }, timeout);
             }
-        }
 
-        function saveCustomTemplates(templates) {
-            try {
-                localStorage.setItem(CUSTOM_TEMPLATES_KEY, JSON.stringify(templates));
-            } catch (e) {
-                console.error('Failed to save custom templates', e);
+            // --- DOM Elements (Editor) ---
+            const videoEditorModalContainer = document.getElementById('modal-container');
+            const videoPreviewContainer = document.getElementById('video-preview-container');
+            const videoPlanContainer = document.getElementById('video-plan-container');
+            const videoPlanResult = document.getElementById('video-plan-result');
+            const textToVideoPrompt = document.getElementById('text-to-video-prompt');
+            const generateTextToVideoBtn = document.getElementById('generate-text-to-video-btn');
+            const durationSlider = document.getElementById('video-duration-slider');
+            const durationDisplay = document.getElementById('duration-display');
+            const uploadDeviceBtn = document.getElementById('upload-device-btn');
+            const videoUploadInput = document.getElementById('video-upload-input');
+            const browseAiLibraryBtn = document.getElementById('browse-ai-library-btn');
+            const mediaBinGrid = document.getElementById('media-bin-grid');
+            const mediaBinPlaceholder = document.getElementById('media-bin-placeholder');
+            const suggestMusicBtn = document.getElementById('suggest-music-btn');
+            const suggestEditsBtn = document.getElementById('suggest-edits-btn');
+
+            // Preset buttons
+            const presetYoutubeShortBtn = document.getElementById('preset-youtube-short');
+            const presetTrailerBtn = document.getElementById('preset-trailer');
+            const presetAdSpotBtn = document.getElementById('preset-ad-spot');
+
+            // Project history DOM
+            const projectHistoryList = document.getElementById('project-history-list');
+            const projectHistoryEmpty = document.getElementById('project-history-empty');
+
+            // Custom templates (power feature)
+            const CUSTOM_TEMPLATES_KEY = 'aiStoryStudioCustomTemplates';
+            const customTemplatesList = document.getElementById('custom-templates-list');
+
+            const textToVideoPromptInput = textToVideoPrompt;
+            const textToVideoDurationInput = durationSlider;
+
+            function loadCustomTemplates() {
+                try {
+                    const raw = localStorage.getItem(CUSTOM_TEMPLATES_KEY);
+                    if (!raw) return [];
+                    const parsed = JSON.parse(raw);
+                    return Array.isArray(parsed) ? parsed : [];
+                } catch (e) {
+                    console.error('Failed to parse custom templates', e);
+                    return [];
+                }
             }
-        }
 
-        function renderCustomTemplates(templates) {
+            function saveCustomTemplates(templates) {
+                try {
+                    localStorage.setItem(CUSTOM_TEMPLATES_KEY, JSON.stringify(templates));
+                } catch (e) {
+                    console.error('Failed to save custom templates', e);
+                }
+            }
+
+            function renderCustomTemplates(templates) {
                 if (!customTemplatesList) return;
                 customTemplatesList.innerHTML = '';
 
@@ -775,87 +733,85 @@ const BACKEND_URL = 'http://localhost:3000';
                     btn.addEventListener('click', () => {
                         const t = templates[index];
                         if (!t) return;
-                        if (textToVideoPromptInput) textToVideoPromptInput.value = t.prompt || '';
-                        if (textToVideoDurationInput) textToVideoDurationInput.value = String(t.duration);
-                        if (durationDisplay) {
-                            const dur = textToVideoDurationInput ? textToVideoDurationInput.value : (t.duration ? String(t.duration) : '');
-                            durationDisplay.textContent = dur ? `${dur}s` : '';
+                        textToVideoPromptInput.value = t.prompt || '';
+                        if (t.duration) {
+                            textToVideoDurationInput.value = String(t.duration);
+                            durationDisplay.textContent = `${textToVideoDurationInput.value}s`;
                         }
                     });
                     customTemplatesList.appendChild(btn);
                 });
             }
 
-        const loadProjectHistory = async () => {
-            const items = await ProjectHistoryRepo.list();
-            renderProjectHistory(items);
-        };
+            const loadProjectHistory = async () => {
+                const items = await ProjectHistoryRepo.list();
+                renderProjectHistory(items);
+            };
 
-        const saveProjectToHistory = async (project) => {
-            try {
-                const updated = await ProjectHistoryRepo.save(project);
-                renderProjectHistory(updated);
-            } catch (e) {
-                console.error('Failed to save project history', e);
-            }
-        };
+            const saveProjectToHistory = async (project) => {
+                try {
+                    const updated = await ProjectHistoryRepo.save(project);
+                    renderProjectHistory(updated);
+                } catch (e) {
+                    console.error('Failed to save project history', e);
+                }
+            };
 
-        const getHistoryItems = () => {
-            // For now, read from local cache; later this could read from an in-memory copy
-            try {
-                return JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
-            } catch {
-                return [];
-            }
-        };
+            const getHistoryItems = () => {
+                // For now, read from local cache; later this could read from an in-memory copy
+                try {
+                    return JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
+                } catch {
+                    return [];
+                }
+            };
 
-        // --- DOM Elements (Showcase) ---
-        const ideaInput = document.getElementById('idea-input');
-        const generateStoryboardBtn = document.getElementById('generate-storyboard-btn');
-        const storyboardResultContainer = document.getElementById('storyboard-result-container');
-        const storyboardResult = document.getElementById('storyboard-result');
-        const grid = document.getElementById('content-grid');
-        const filterContainer = document.getElementById('filter-container');
-        const suggestIdeaBtn = document.getElementById('suggest-idea-btn');
+            // --- DOM Elements (Showcase) ---
+            const ideaInput = document.getElementById('idea-input');
+            const generateStoryboardBtn = document.getElementById('generate-storyboard-btn');
+            const storyboardResultContainer = document.getElementById('storyboard-result-container');
+            const storyboardResult = document.getElementById('storyboard-result');
+            const grid = document.getElementById('content-grid');
+            const filterContainer = document.getElementById('filter-container');
+            const suggestIdeaBtn = document.getElementById('suggest-idea-btn');
 
-        // --- DOM Elements (Character Generator) ---
-        const characterInput = document.getElementById('character-input');
-        const generateCharacterBtn = document.getElementById('generate-character-btn');
-        const characterResultContainer = document.getElementById('character-result-container');
-        const characterResult = document.getElementById('character-result');
+            // --- DOM Elements (Character Generator) ---
+            const characterInput = document.getElementById('character-input');
+            const generateCharacterBtn = document.getElementById('generate-character-btn');
+            const characterResultContainer = document.getElementById('character-result-container');
+            const characterResult = document.getElementById('character-result');
 
-        // --- Showcase Data & Logic ---
-        const galleryData = [
-            { id: 1, category: 'video', title: "The Lumina Spire's Secret", description: "Opening with a sweeping drone shot over alien flora..." },
-            { id: 2, category: 'video', title: "Whispers of the Quantum Wild", description: "Experience a surreal 4K animated short..." },
-            { id: 3, category: 'video', title: "Urban Echoes: A City's Dream", description: "A gritty, atmospheric 4K film noir piece..." },
-            { id: 4, category: 'video', title: "The Great Coral Symphony", description: "Dive into a vibrant 4K underwater spectacle..." },
-            { id: 5, category: 'pick', title: "The Shifting Sands of Aethelgard", description: "This week's pick is an mesmerizing AI-generated virtual experience...", metadata: { Genre: 'Epic Fantasy', Creator: 'DuneDreamerAI', Rating: '4.9/5 ★' } },
-            { id: 6, category: 'senses', title: 'Subterranean Synth-Lounge', description: "Designed for focused creative flow...", metadata: { Visuals: 'Deep, cavernous underground club...', Auditory: 'Deep, resonant bass lines...', Atmosphere: 'Cool, damp air...' } }
-        ];
+            // --- Showcase Data & Logic ---
+            const galleryData = [
+                { id: 1, category: 'video', title: "The Lumina Spire's Secret", description: "Opening with a sweeping drone shot over alien flora..." },
+                { id: 2, category: 'video', title: "Whispers of the Quantum Wild", description: "Experience a surreal 4K animated short..." },
+                { id: 3, category: 'video', title: "Urban Echoes: A City's Dream", description: "A gritty, atmospheric 4K film noir piece..." },
+                { id: 4, category: 'video', title: "The Great Coral Symphony", description: "Dive into a vibrant 4K underwater spectacle..." },
+                { id: 5, category: 'pick', title: "The Shifting Sands of Aethelgard", description: "This week's pick is an mesmerizing AI-generated virtual experience...", metadata: { Genre: 'Epic Fantasy', Creator: 'DuneDreamerAI', Rating: '4.9/5 ★' } },
+                { id: 6, category: 'senses', title: 'Subterranean Synth-Lounge', description: "Designed for focused creative flow...", metadata: { Visuals: 'Deep, cavernous underground club...', Auditory: 'Deep, resonant bass lines...', Atmosphere: 'Cool, damp air...' } }
+            ];
 
-        const createCard = (item) => {
-            const card = document.createElement('div');
-            card.className = 'content-card bg-white rounded-xl shadow-sm border border-slate-200 p-6 flex flex-col cursor-pointer transition-all duration-200';
-            let badgeHtml = '';
-            if (item.category === 'pick') {
-                badgeHtml = `<div class="pick-of-the-week-badge text-xs font-bold text-white uppercase tracking-wider py-1 px-3 rounded-full mb-3 self-start">Pick of the Week</div>`;
-            } else if (item.category === 'ai') {
-                badgeHtml = `<div class="ai-suggested-badge text-xs font-bold text-white uppercase tracking-wider py-1 px-3 rounded-full mb-3 self-start">AI Suggested</div>`;
-            }
-            card.innerHTML = `${badgeHtml}<h3 class="text-xl font-bold mb-2 text-slate-800">${item.title}</h3><p class="text-slate-600 flex-grow">${item.description.substring(0, 100)}...</p><div class="mt-4 text-sky-600 font-semibold text-sm">View Details &rarr;</div>`;
-            card.addEventListener('click', () => openShowcaseModal(item));
-            return card;
-        };
+            const createCard = (item) => {
+                const card = document.createElement('div');
+                card.className = 'content-card bg-white rounded-xl shadow-sm border border-slate-200 p-6 flex flex-col cursor-pointer transition-all duration-200';
+                let badgeHtml = '';
+                if (item.category === 'pick') {
+                    badgeHtml = `<div class="pick-of-the-week-badge text-xs font-bold text-white uppercase tracking-wider py-1 px-3 rounded-full mb-3 self-start">Pick of the Week</div>`;
+                } else if (item.category === 'ai') {
+                    badgeHtml = `<div class="ai-suggested-badge text-xs font-bold text-white uppercase tracking-wider py-1 px-3 rounded-full mb-3 self-start">AI Suggested</div>`;
+                }
+                card.innerHTML = `${badgeHtml}<h3 class="text-xl font-bold mb-2 text-slate-800">${item.title}</h3><p class="text-slate-600 flex-grow">${item.description.substring(0, 100)}...</p><div class="mt-4 text-sky-600 font-semibold text-sm">View Details &rarr;</div>`;
+                card.addEventListener('click', () => openShowcaseModal(item));
+                return card;
+            };
 
-        const renderCards = (filter = 'all') => {
-                if (!grid) return;
+            const renderCards = (filter = 'all') => {
                 grid.innerHTML = '';
                 const filteredData = filter === 'all' ? galleryData.filter(item => item.category !== 'ai') : galleryData.filter(item => item.category === filter);
                 filteredData.forEach(item => grid.appendChild(createCard(item)));
             };
 
-        const openShowcaseModal = async (item) => {
+            const openShowcaseModal = async (item) => {
                 const modalHtml = `
                     <div class="modal-backdrop absolute inset-0"></div>
                     <div class="modal-content relative bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
@@ -879,15 +835,13 @@ const BACKEND_URL = 'http://localhost:3000';
                 `;
 
                 const fullSensesHtml = await callGeminiApi(prompt);
-                if (!videoEditorModalContainer) return;
                 const modalBodyElement = videoEditorModalContainer.querySelector('.modal-body');
                 if (modalBodyElement) {
                     modalBodyElement.innerHTML = fullSensesHtml;
                 }
             };
 
-        const openModal = (title, content) => {
-                if (!videoEditorModalContainer) return;
+            const openModal = (title, content) => {
                 videoEditorModalContainer.innerHTML = content;
                 const titleEl = videoEditorModalContainer.querySelector('.modal-title');
                 if (titleEl) titleEl.textContent = title;
@@ -899,298 +853,299 @@ const BACKEND_URL = 'http://localhost:3000';
                 }, 10);
             };
 
-        const closeModal = () => {
-                if (!videoEditorModalContainer) return;
+            const closeModal = () => {
                 videoEditorModalContainer.classList.remove('opacity-100');
                 const modalContent = videoEditorModalContainer.querySelector('.modal-content');
                 if (modalContent) modalContent.classList.add('scale-95');
                 setTimeout(() => videoEditorModalContainer.classList.add('hidden'), 300);
             };
 
-        const callGeminiApi = async (prompt) => {
-            try {
-                const response = await fetch(`${BACKEND_URL}/call-gemini`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ prompt })
-                });
-                if (!response.ok) {
-                    const err = await response.json().catch(() => ({}));
-                    throw new Error(err.error || 'Server failed to generate content.');
-                }
-                const data = await response.json();
-                return data.html || 'Could not generate content.';
-            } catch (error) {
-                console.error("Gemini API call failed:", error);
-                return `<p class=\"text-red-500\">Error: Could not generate content.</p>`;
-            }
-        };
-
-        const addMediaToBin = (file) => {
-            mediaBinPlaceholder.classList.add('hidden');
-            const thumb = document.createElement('div');
-            thumb.className = 'media-thumbnail rounded-lg aspect-video bg-black flex items-center justify-center';
-            thumb.title = file.name;
-
-            if (file instanceof Blob) {
-                thumb.innerHTML = `<i class="fas fa-film text-4xl text-gray-500"></i><div class="overlay"><i class="fas fa-play text-white text-2xl"></i></div>`;
-            } else {
-                thumb.innerHTML = `<i class="fas fa-robot text-4xl text-cyan-400"></i><div class="overlay"><i class="fas fa-plus-circle text-white text-3xl"></i></div>`;
-            }
-            mediaBinGrid.appendChild(thumb);
-        };
-
-        const createAiLibraryContent = () => {
-            const aiClips = [
-                { title: 'Cyberpunk Cityscape', thumb: 'https://placehold.co/400x225/1e293b/ffffff?text=Cyberpunk' },
-                { title: 'Enchanted Forest', thumb: 'https://placehold.co/400x225/166534/ffffff?text=Forest' },
-                { title: 'Cosmic Nebula', thumb: 'https://placehold.co/400x225/4c1d95/ffffff?text=Nebula' },
-            ];
-            let content = '<div class="grid grid-cols-2 sm:grid-cols-3 gap-4">';
-            aiClips.forEach(clip => {
-                content += `<div class="media-thumbnail rounded-lg aspect-video" data-ai-clip="${clip.title}"><img src="${clip.thumb}" alt="${clip.title}" class="w-full h-full object-cover rounded-lg"><div class="overlay"><i class="fas fa-plus-circle text-white text-3xl"></i></div></div>`;
-            });
-            content += '</div>';
-            return content;
-        };
-
-        const pollJobStatus = (jobId, projectMeta) => {
-            const statusElement = document.getElementById('generation-status');
-            statusElement.textContent = 'Step 2/3: Job sent to render engine...';
-            pollingInterval = setInterval(async () => {
+            const callGeminiApi = async (prompt) => {
                 try {
-                    const response = await fetch(`${BACKEND_URL}/check-job-status/${jobId}`);
-                    if (!response.ok) throw new Error('Server status check failed.');
-                    const data = await response.json();
-                    if (data.status === 'completed') {
-                        clearInterval(pollingInterval);
-                        statusElement.textContent = 'Step 3/3: Render Complete!';
-                        const videoUrl = data.videoUrl || `https://placehold.co/1920x1080.mp4?text=Render_Complete!`;
-                        videoPreviewContainer.innerHTML = `<video id="video-preview" class="w-full h-full rounded-lg" controls autoplay><source src="${videoUrl}" type="video/mp4"></video>`;
-
-                        // Save project to history when completed
-                        if (projectMeta) {
-                            saveProjectToHistory({
-                                ...projectMeta,
-                                videoUrl,
-                                completedAt: new Date().toISOString(),
-                                planHtml: videoPlanResult.innerHTML
-                            });
-                        }
-                    } else if (typeof data.progress === 'number') {
-                        statusElement.textContent = `Step 2/3: Rendering... ${data.progress}%`;
+                    const response = await fetch(`${BACKEND_URL}/call-gemini`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ prompt })
+                    });
+                    if (!response.ok) {
+                        const err = await response.json().catch(() => ({}));
+                        throw new Error(err.error || 'Server failed to generate content.');
                     }
+                    const data = await response.json();
+                    return data.html || 'Could not generate content.';
                 } catch (error) {
-                    console.error('Polling error:', error);
-                    clearInterval(pollingInterval);
-                    statusElement.textContent = 'Error checking job status.';
+                    console.error("Gemini API call failed:", error);
+                    return `<p class=\"text-red-500\">Error: Could not generate content.</p>`;
                 }
-            }, 15000);
-        };
-
-        // Duplicate project-history helper functions removed; original implementations above are used.
-
-        // --- Event Handlers ---
-        const handleTextToVideo = async () => {
-            const userInput = textToVideoPrompt.value;
-            const duration = durationSlider.value;
-            if (!userInput.trim()) {
-                showToast("Please enter a video description.", "warning");
-                return;
-            }
-            if (pollingInterval) clearInterval(pollingInterval);
-            generateTextToVideoBtn.innerHTML = '<div class="loader"></div><span class="ml-3">Generating...</span>';
-            generateTextToVideoBtn.disabled = true;
-            videoPlanContainer.classList.remove('hidden');
-            videoPlanResult.innerHTML = '<div class="flex justify-center items-center p-4"><div class="loader"></div></div>';
-            videoPreviewContainer.innerHTML = `<div class="w-full h-full flex flex-col items-center justify-center bg-black rounded-lg"><div class="loader"></div><p id="generation-status" class="mt-4 text-lg">Step 1/3: Generating plan...</p></div>`;
-            const projectMeta = {
-                prompt: userInput.trim(),
-                duration: duration,
-                createdAt: new Date().toISOString()
             };
-            try {
-                const response = await fetch(`${BACKEND_URL}/generate-video-plan`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ prompt: userInput, duration: duration }),
+
+            const addMediaToBin = (file) => {
+                mediaBinPlaceholder.classList.add('hidden');
+                const thumb = document.createElement('div');
+                thumb.className = 'media-thumbnail rounded-lg aspect-video bg-black flex items-center justify-center';
+                thumb.title = file.name;
+
+                if (file instanceof Blob) {
+                    thumb.innerHTML = `<i class="fas fa-film text-4xl text-gray-500"></i><div class="overlay"><i class="fas fa-play text-white text-2xl"></i></div>`;
+                } else {
+                    thumb.innerHTML = `<i class="fas fa-robot text-4xl text-cyan-400"></i><div class="overlay"><i class="fas fa-plus-circle text-white text-3xl"></i></div>`;
+                }
+                mediaBinGrid.appendChild(thumb);
+            };
+
+            const createAiLibraryContent = () => {
+                const aiClips = [
+                    { title: 'Cyberpunk Cityscape', thumb: 'https://placehold.co/400x225/1e293b/ffffff?text=Cyberpunk' },
+                    { title: 'Enchanted Forest', thumb: 'https://placehold.co/400x225/166534/ffffff?text=Forest' },
+                    { title: 'Cosmic Nebula', thumb: 'https://placehold.co/400x225/4c1d95/ffffff?text=Nebula' },
+                ];
+                let content = '<div class="grid grid-cols-2 sm:grid-cols-3 gap-4">';
+                aiClips.forEach(clip => {
+                    content += `<div class="media-thumbnail rounded-lg aspect-video" data-ai-clip="${clip.title}"><img src="${clip.thumb}" alt="${clip.title}" class="w-full h-full object-cover rounded-lg"><div class="overlay"><i class="fas fa-plus-circle text-white text-3xl"></i></div></div>`;
                 });
-                if (!response.ok) throw new Error((await response.json()).error || 'Backend error.');
-                const data = await response.json();
-                videoPlanResult.innerHTML = data.plan;
-                pollJobStatus(data.jobId, projectMeta);
-            } catch (error) {
-                console.error("Text-to-Video failed:", error);
-                const errorMessage = error instanceof TypeError ? '<strong>Connection Failed.</strong><br>Could not connect to the backend server. Please ensure your Node.js server is running.' : error.message;
-                videoPlanResult.innerHTML = `<div class="text-red-500 p-4">${errorMessage}</div>`;
-                videoPreviewContainer.innerHTML = `<div class="text-red-500 p-4 text-center">${errorMessage}</div>`;
-            } finally {
-                generateTextToVideoBtn.innerHTML = '<i class="fas fa-video mr-2"></i>Generate 4K Video';
-                generateTextToVideoBtn.disabled = false;
-            }
-        };
+                content += '</div>';
+                return content;
+            };
 
-        const handleSuggestIdea = async () => {
-            const originalText = suggestIdeaBtn.innerHTML;
-            suggestIdeaBtn.innerHTML = '<div class="loader" style="border-block-start-color: #fff; inline-size: 20px; block-size: 20px;"></div>';
-            suggestIdeaBtn.disabled = true;
-            const prompt = "You are a creative director. Generate a single, compelling, and concise concept for a short video or virtual experience. Provide a title and a short description. Format it exactly like this: Title: [Your Title Here]\nDescription: [Your Description Here]";
-            const responseText = await callGeminiApi(prompt);
+            const pollJobStatus = (jobId, projectMeta) => {
+                const statusElement = document.getElementById('generation-status');
+                if (statusElement) statusElement.textContent = 'Step 2/3: Job sent to render engine...';
+                pollingInterval = setInterval(async () => {
+                    try {
+                        const response = await fetch(`${BACKEND_URL}/check-job-status/${jobId}`);
+                        if (!response.ok) throw new Error('Server status check failed.');
+                        const data = await response.json();
+                        if (data.status === 'completed') {
+                            clearInterval(pollingInterval);
+                            if (statusElement) statusElement.textContent = 'Step 3/3: Render Complete!';
+                            const videoUrl = data.videoUrl || `https://placehold.co/1920x1080.mp4?text=Render_Complete!`;
+                            if (videoPreviewContainer) videoPreviewContainer.innerHTML = `<video id="video-preview" class="w-full h-full rounded-lg" controls autoplay><source src="${videoUrl}" type="video/mp4"></video>`;
 
-            const titleMatch = responseText.match(/Title: (.*)/);
-            const descMatch = responseText.match(/Description: (.*)/);
+                            // Save project to history when completed
+                            if (projectMeta && typeof window.saveProjectToHistory === 'function') {
+                                window.saveProjectToHistory({
+                                    ...projectMeta,
+                                    videoUrl,
+                                    completedAt: new Date().toISOString(),
+                                    planHtml: (videoPlanResult && videoPlanResult.innerHTML) ? videoPlanResult.innerHTML : ''
+                                });
+                            }
+                        } else if (typeof data.progress === 'number' && statusElement) {
+                            statusElement.textContent = `Step 2/3: Rendering... ${data.progress}%`;
+                        }
+                    } catch (error) {
+                        console.error('Polling error:', error);
+                        clearInterval(pollingInterval);
+                        if (statusElement) statusElement.textContent = 'Error checking job status.';
+                    }
+                }, 15000);
+            };
 
-            if (titleMatch && descMatch) {
-                const newItem = {
-                    id: Date.now(),
-                    category: 'ai',
-                    title: titleMatch[1],
-                    description: descMatch[1]
+            // Duplicate project-history helper functions removed; original implementations above are used.
+
+            // --- Event Handlers ---
+            const handleTextToVideo = async () => {
+                const userInput = textToVideoPrompt.value;
+                const duration = durationSlider.value;
+                if (!userInput.trim()) {
+                    showToast("Please enter a video description.", "warning");
+                    return;
+                }
+                if (pollingInterval) clearInterval(pollingInterval);
+                generateTextToVideoBtn.innerHTML = '<div class="loader"></div><span class="ml-3">Generating...</span>';
+                generateTextToVideoBtn.disabled = true;
+                videoPlanContainer.classList.remove('hidden');
+                videoPlanResult.innerHTML = '<div class="flex justify-center items-center p-4"><div class="loader"></div></div>';
+                videoPreviewContainer.innerHTML = `<div class="w-full h-full flex flex-col items-center justify-center bg-black rounded-lg"><div class="loader"></div><p id="generation-status" class="mt-4 text-lg">Step 1/3: Generating plan...</p></div>`;
+                const projectMeta = {
+                    prompt: userInput.trim(),
+                    duration: duration,
+                    createdAt: new Date().toISOString()
                 };
-                const newCard = createCard(newItem);
-                grid.prepend(newCard);
-                showToast("New AI idea added to showcase!", "success");
-            } else {
-                showToast("The AI returned an unexpected format. Please try again.", "error");
-            }
+                try {
+                    const response = await fetch(`${BACKEND_URL}/generate-video-plan`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ prompt: userInput, duration: duration }),
+                    });
+                    if (!response.ok) throw new Error((await response.json()).error || 'Backend error.');
+                    const data = await response.json();
+                    videoPlanResult.innerHTML = data.plan;
+                    pollJobStatus(data.jobId, projectMeta);
+                } catch (error) {
+                    console.error("Text-to-Video failed:", error);
+                    const errorMessage = error instanceof TypeError ? '<strong>Connection Failed.</strong><br>Could not connect to the backend server. Please ensure your Node.js server is running.' : error.message;
+                    videoPlanResult.innerHTML = `<div class="text-red-500 p-4">${errorMessage}</div>`;
+                    videoPreviewContainer.innerHTML = `<div class="text-red-500 p-4 text-center">${errorMessage}</div>`;
+                } finally {
+                    generateTextToVideoBtn.innerHTML = '<i class="fas fa-video mr-2"></i>Generate 4K Video';
+                    generateTextToVideoBtn.disabled = false;
+                }
+            };
 
-            suggestIdeaBtn.innerHTML = originalText;
-            suggestIdeaBtn.disabled = false;
-        };
+            const handleSuggestIdea = async () => {
+                const originalText = suggestIdeaBtn.innerHTML;
+                suggestIdeaBtn.innerHTML = '<div class="loader" style="border-block-start-color: #fff; inline-size: 20px; block-size: 20px;"></div>';
+                suggestIdeaBtn.disabled = true;
+                const prompt = "You are a creative director. Generate a single, compelling, and concise concept for a short video or virtual experience. Provide a title and a short description. Format it exactly like this: Title: [Your Title Here]\nDescription: [Your Description Here]";
+                const responseText = await callGeminiApi(prompt);
 
-        const handleMusicSuggestion = async () => {
-            const videoPlan = videoPlanResult.innerText;
-            if (!videoPlan.trim() || videoPlanContainer.classList.contains('hidden')) {
-                openModal('Music & SFX Suggestion', '<div class="modal-backdrop absolute inset-0"></div><div class="modal-content relative glass-panel rounded-2xl shadow-2xl w-full max-w-2xl p-6"><p class="text-amber-400">Please generate a video plan first.</p></div>');
-                return;
-            }
-            const modalContent = `<div class="modal-backdrop absolute inset-0"></div><div class="modal-content relative glass-panel rounded-2xl shadow-2xl w-full max-w-2xl"><div class="p-6 sm:p-8"><button class="modal-close-btn absolute top-4 right-4 text-gray-400 hover:text-white transition-colors"><i class="fas fa-times text-2xl"></i></button><h2 class="modal-title text-2xl font-bold mb-4 text-white">AI Music & SFX Supervisor</h2><div id="music-suggestion-result" class="p-4 bg-gray-900/70 rounded-lg prose prose-invert max-w-none border"><div class="flex justify-center p-4"><div class="loader"></div></div></div></div></div>`;
-            openModal('AI Music & SFX Supervisor', modalContent);
-            const prompt = `You are an expert Music Supervisor... Video Production Plan: --- ${videoPlan} ---`;
-            const musicSuggestionHtml = await callGeminiApi(prompt);
-            document.getElementById('music-suggestion-result').innerHTML = musicSuggestionHtml;
-        };
+                const titleMatch = responseText.match(/Title: (.*)/);
+                const descMatch = responseText.match(/Description: (.*)/);
 
-        const handleEditSuggestion = async () => {
-            const videoPlan = videoPlanResult.innerText;
-            if (!videoPlan.trim() || videoPlanContainer.classList.contains('hidden')) {
-                openModal('Editing Suggestion', '<div class="modal-backdrop absolute inset-0"></div><div class="modal-content relative glass-panel rounded-2xl shadow-2xl w-full max-w-2xl p-6"><p class="text-amber-400">Please generate a video plan first.</p></div>');
-                return;
-            }
-            const modalContent = `<div class="modal-backdrop absolute inset-0"></div><div class="modal-content relative glass-panel rounded-2xl shadow-2xl w-full max-w-2xl"><div class="p-6 sm:p-8"><button class="modal-close-btn absolute top-4 right-4 text-gray-400"><i class="fas fa-times text-2xl"></i></button><h2 class="modal-title text-2xl font-bold mb-4 text-white">AI Editing Assistant</h2><div id="edit-suggestion-result" class="p-4 bg-gray-900/70 rounded-lg prose prose-invert max-w-none border"><div class="flex justify-center p-4"><div class="loader"></div></div></div></div></div>`;
-            openModal('AI Editing Assistant', modalContent);
-            const prompt = `You are an expert Video Editor... Video Production Plan: --- ${videoPlan} ---`;
-            const editSuggestionHtml = await callGeminiApi(prompt);
-            document.getElementById('edit-suggestion-result').innerHTML = editSuggestionHtml;
-        };
+                if (titleMatch && descMatch) {
+                    const newItem = {
+                        id: Date.now(),
+                        category: 'ai',
+                        title: titleMatch[1],
+                        description: descMatch[1]
+                    };
+                    const newCard = createCard(newItem);
+                    grid.prepend(newCard);
+                    showToast("New AI idea added to showcase!", "success");
+                } else {
+                    showToast("The AI returned an unexpected format. Please try again.", "error");
+                }
 
-        const generateStoryboard = async () => {
-            const idea = ideaInput.value;
-            if (!idea.trim()) return;
-            generateStoryboardBtn.innerHTML = '<div class="loader" style="border-block-start-color: #fff;"></div><span class="ml-2">Generating...</span>';
-            generateStoryboardBtn.disabled = true;
-            storyboardResultContainer.classList.remove('hidden');
-            storyboardResult.innerHTML = '<div class="flex justify-center items-center p-4"><div class="loader"></div></div>';
-            const prompt = `As an expert AI Storyboard Assistant... User Idea: "${idea}"`;
-            const resultHtml = await callGeminiApi(prompt);
-            storyboardResult.innerHTML = resultHtml;
-            generateStoryboardBtn.innerHTML = 'Generate Storyboard & Ideas';
-            generateStoryboardBtn.disabled = false;
-        };
+                suggestIdeaBtn.innerHTML = originalText;
+                suggestIdeaBtn.disabled = false;
+            };
 
-        const handleCharacterGeneration = async () => {
-            const concept = characterInput.value;
-            if (!concept.trim()) {
-                characterResult.innerHTML = `<p class="text-amber-600">Please enter a character concept first.</p>`;
+            const handleMusicSuggestion = async () => {
+                const videoPlan = videoPlanResult.innerText;
+                if (!videoPlan.trim() || videoPlanContainer.classList.contains('hidden')) {
+                    openModal('Music & SFX Suggestion', '<div class="modal-backdrop absolute inset-0"></div><div class="modal-content relative glass-panel rounded-2xl shadow-2xl w-full max-w-2xl p-6"><p class="text-amber-400">Please generate a video plan first.</p></div>');
+                    return;
+                }
+                const modalContent = `<div class="modal-backdrop absolute inset-0"></div><div class="modal-content relative glass-panel rounded-2xl shadow-2xl w-full max-w-2xl"><div class="p-6 sm:p-8"><button class="modal-close-btn absolute top-4 right-4 text-gray-400 hover:text-white transition-colors"><i class="fas fa-times text-2xl"></i></button><h2 class="modal-title text-2xl font-bold mb-4 text-white">AI Music & SFX Supervisor</h2><div id="music-suggestion-result" class="p-4 bg-gray-900/70 rounded-lg prose prose-invert max-w-none border"><div class="flex justify-center p-4"><div class="loader"></div></div></div></div></div>`;
+                openModal('AI Music & SFX Supervisor', modalContent);
+                const prompt = `You are an expert Music Supervisor... Video Production Plan: --- ${videoPlan} ---`;
+                const musicSuggestionHtml = await callGeminiApi(prompt);
+                document.getElementById('music-suggestion-result').innerHTML = musicSuggestionHtml;
+            };
+
+            const handleEditSuggestion = async () => {
+                const videoPlan = videoPlanResult.innerText;
+                if (!videoPlan.trim() || videoPlanContainer.classList.contains('hidden')) {
+                    openModal('Editing Suggestion', '<div class="modal-backdrop absolute inset-0"></div><div class="modal-content relative glass-panel rounded-2xl shadow-2xl w-full max-w-2xl p-6"><p class="text-amber-400">Please generate a video plan first.</p></div>');
+                    return;
+                }
+                const modalContent = `<div class="modal-backdrop absolute inset-0"></div><div class="modal-content relative glass-panel rounded-2xl shadow-2xl w-full max-w-2xl"><div class="p-6 sm:p-8"><button class="modal-close-btn absolute top-4 right-4 text-gray-400"><i class="fas fa-times text-2xl"></i></button><h2 class="modal-title text-2xl font-bold mb-4 text-white">AI Editing Assistant</h2><div id="edit-suggestion-result" class="p-4 bg-gray-900/70 rounded-lg prose prose-invert max-w-none border"><div class="flex justify-center p-4"><div class="loader"></div></div></div></div></div>`;
+                openModal('AI Editing Assistant', modalContent);
+                const prompt = `You are an expert Video Editor... Video Production Plan: --- ${videoPlan} ---`;
+                const editSuggestionHtml = await callGeminiApi(prompt);
+                document.getElementById('edit-suggestion-result').innerHTML = editSuggestionHtml;
+            };
+
+            const generateStoryboard = async () => {
+                const idea = ideaInput.value;
+                if (!idea.trim()) return;
+                generateStoryboardBtn.innerHTML = '<div class="loader" style="border-block-start-color: #fff;"></div><span class="ml-2">Generating...</span>';
+                generateStoryboardBtn.disabled = true;
+                storyboardResultContainer.classList.remove('hidden');
+                storyboardResult.innerHTML = '<div class="flex justify-center items-center p-4"><div class="loader"></div></div>';
+                const prompt = `As an expert AI Storyboard Assistant... User Idea: "${idea}"`;
+                const resultHtml = await callGeminiApi(prompt);
+                storyboardResult.innerHTML = resultHtml;
+                generateStoryboardBtn.innerHTML = 'Generate Storyboard & Ideas';
+                generateStoryboardBtn.disabled = false;
+            };
+
+            const handleCharacterGeneration = async () => {
+                const concept = characterInput.value;
+                if (!concept.trim()) {
+                    characterResult.innerHTML = `<p class="text-amber-600">Please enter a character concept first.</p>`;
+                    characterResultContainer.classList.remove('hidden');
+                    return;
+                }
+                generateCharacterBtn.innerHTML = '<div class="loader" style="border-block-start-color: #fff;"></div><span class="ml-2">Generating...</span>';
+                generateCharacterBtn.disabled = true;
                 characterResultContainer.classList.remove('hidden');
-                return;
+                characterResult.innerHTML = '<div class="flex justify-center items-center p-4"><div class="loader"></div></div>';
+
+                const prompt = `
+                    You are a master character designer and writer. Take the following basic concept and generate a detailed character profile.
+
+                    Character Concept: "${concept}"
+
+                    Your output must be structured in HTML with the following sections:
+                    1.  <h4>Appearance:</h4> <p>A detailed physical description.</p>
+                    2.  <h4>Backstory:</h4> <p>A summary of their history and what made them who they are.</p>
+                    3.  <h4>Personality:</h4> <p>Describe their key traits, flaws, and quirks.</p>
+                    4.  <h4>Motivations:</h4> <p>What drives them? What are their primary goals?</p>
+                `;
+                const resultHtml = await callGeminiApi(prompt);
+                characterResult.innerHTML = resultHtml;
+                generateCharacterBtn.innerHTML = '✨ Generate Character Profile';
+                generateCharacterBtn.disabled = false;
+            };
+
+            // --- Initial Render ---
+            renderCards();
+            if (typeof window.loadProjectHistory === 'function') window.loadProjectHistory();
+        });
+
+        async function detectEnvModeAndShowBanner() {
+            const banner = document.getElementById('env-mode-banner');
+            if (!banner) return;
+
+            try {
+                const res = await fetch(BACKEND_URL + '/env-mode');
+                if (!res.ok) throw new Error('Failed to fetch env mode');
+                const data = await res.json();
+                const mode = data && data.mode ? data.mode : 'demo';
+
+                banner.classList.remove('hidden');
+
+                if (mode === 'production') {
+                    banner.textContent = 'Production Mode – real API calls are active.';
+                    banner.className = 'w-full text-center text-sm py-2 bg-emerald-500 text-emerald-950';
+                } else {
+                    banner.textContent = 'Demo Mode – using simulated plans and videos (no real API costs).';
+                    banner.className = 'w-full text-center text-sm py-2 bg-amber-400 text-amber-950';
+                }
+            } catch (err) {
+                console.error('Failed to detect env mode', err);
             }
-            generateCharacterBtn.innerHTML = '<div class="loader" style="border-block-start-color: #fff;"></div><span class="ml-2">Generating...</span>';
-            generateCharacterBtn.disabled = true;
-            characterResultContainer.classList.remove('hidden');
-            characterResult.innerHTML = '<div class="flex justify-center items-center p-4"><div class="loader"></div></div>';
-
-            const prompt = `
-                You are a master character designer and writer. Take the following basic concept and generate a detailed character profile.
-
-                Character Concept: "${concept}"
-
-                Your output must be structured in HTML with the following sections:
-                1.  <h4>Appearance:</h4> <p>A detailed physical description.</p>
-                2.  <h4>Backstory:</h4> <p>A summary of their history and what made them who they are.</p>
-                3.  <h4>Personality:</h4> <p>Describe their key traits, flaws, and quirks.</p>
-                4.  <h4>Motivations:</h4> <p>What drives them? What are their primary goals?</p>
-            `;
-            const resultHtml = await callGeminiApi(prompt);
-            characterResult.innerHTML = resultHtml;
-            generateCharacterBtn.innerHTML = '✨ Generate Character Profile';
-            generateCharacterBtn.disabled = false;
-        };
-
-        // --- Initial Render ---
-        renderCards();
-        loadProjectHistory();
-    });
-
-    async function detectEnvModeAndShowBanner() {
-        const banner = document.getElementById('env-mode-banner');
-        if (!banner) return;
-
-        try {
-            const res = await fetch(BACKEND_URL + '/env-mode');
-            if (!res.ok) throw new Error('Failed to fetch env mode');
-            const data = await res.json();
-            const mode = data && data.mode ? data.mode : 'demo';
-
-            banner.classList.remove('hidden');
-
-            if (mode === 'production') {
-                banner.textContent = 'Production Mode – real API calls are active.';
-                banner.className = 'w-full text-center text-sm py-2 bg-emerald-500 text-emerald-950';
-            } else {
-                banner.textContent = 'Demo Mode – using simulated plans and videos (no real API costs).';
-                banner.className = 'w-full text-center text-sm py-2 bg-amber-400 text-amber-950';
-            }
-        } catch (err) {
-            console.error('Failed to detect env mode', err);
         }
-    }
 
-    // --- Subscription Plans Modal ---
-    const pricingModal = document.getElementById('pricing-modal');
-    const closePricingModalBtn = document.getElementById('close-pricing-modal');
+        // --- Subscription Plans Modal ---
+        const pricingModal = document.getElementById('pricing-modal');
+        const closePricingModalBtn = document.getElementById('close-pricing-modal');
 
-    closePricingModalBtn.addEventListener('click', () => {
-        pricingModal.classList.add('hidden');
-    });
+        closePricingModalBtn.addEventListener('click', () => {
+            pricingModal.classList.add('hidden');
+        });
 
-    // --- Sign In Modal ---
-    const signinModal = document.getElementById('signin-modal');
-    const closeSigninModalBtn = document.getElementById('close-signin-modal');
+        // --- Sign In Modal ---
+        const signinModal = document.getElementById('signin-modal');
+        const closeSigninModalBtn = document.getElementById('close-signin-modal');
 
-    closeSigninModalBtn.addEventListener('click', () => {
-        signinModal.classList.add('hidden');
-    });
+        closeSigninModalBtn.addEventListener('click', () => {
+            signinModal.classList.add('hidden');
+        });
 
-    // --- Tutorial Modal ---
-    const tutorialModal = document.getElementById('tutorial-modal');
-    const closeTutorialModalBtn = document.getElementById('close-tutorial-modal');
+        // --- Tutorial Modal ---
+        const tutorialModal = document.getElementById('tutorial-modal');
+        const closeTutorialModalBtn = document.getElementById('close-tutorial-modal');
 
-    closeTutorialModalBtn.addEventListener('click', () => {
-        tutorialModal.classList.add('hidden');
-    });
+        closeTutorialModalBtn.addEventListener('click', () => {
+            tutorialModal.classList.add('hidden');
+        });
     </script>
 
     <!-- Subscription Plans Modal -->
-    <div id="pricing-modal" class="modal fixed inset-0 z-50 hidden">
+    <div id="pricing-modal" class="modal fixed inset-0 z-50 hidden" role="dialog" aria-modal="true"
+        aria-labelledby="pricing-title">
         <div
             class="modal-content max-w-6xl mx-auto mt-8 bg-gray-900 rounded-2xl shadow-2xl border border-gray-700 max-h-[90vh] overflow-y-auto">
             <div class="p-8">
                 <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-3xl font-bold text-white">
+                    <h2 id="pricing-title" class="text-3xl font-bold text-white">
                         <i class="fas fa-crown text-yellow-400 mr-3"></i>Choose Your Plan
                     </h2>
-                    <button id="close-pricing-modal" class="text-gray-400 hover:text-white text-2xl">
+                    <button id="close-pricing-modal" class="text-gray-400 hover:text-white text-2xl"
+                        aria-label="Close pricing dialog">
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
@@ -1204,21 +1159,21 @@ const BACKEND_URL = 'http://localhost:3000';
                                     class="text-sm text-gray-400">/month</span></div>
                             <p class="text-gray-400">Perfect for getting started</p>
                         </div>
-                        <ul class="space-y-3 mb-6">
+                        <ul class="space-y-3 mb-6" aria-hidden="false">
                             <li class="flex items-center text-gray-300">
-                                <i class="fas fa-check text-green-400 mr-3"></i>
+                                <i class="fas fa-check text-green-400 mr-3" aria-hidden="true"></i>
                                 3 videos per month
                             </li>
                             <li class="flex items-center text-gray-300">
-                                <i class="fas fa-check text-green-400 mr-3"></i>
+                                <i class="fas fa-check text-green-400 mr-3" aria-hidden="true"></i>
                                 720p resolution
                             </li>
                             <li class="flex items-center text-gray-300">
-                                <i class="fas fa-check text-green-400 mr-3"></i>
+                                <i class="fas fa-check text-green-400 mr-3" aria-hidden="true"></i>
                                 Basic AI tools
                             </li>
                             <li class="flex items-center text-gray-300">
-                                <i class="fas fa-check text-green-400 mr-3"></i>
+                                <i class="fas fa-check text-green-400 mr-3" aria-hidden="true"></i>
                                 Community support
                             </li>
                         </ul>
@@ -1420,22 +1375,22 @@ const BACKEND_URL = 'http://localhost:3000';
                         </button>
                         <button
                             class="text-left w-full flex items-center justify-between px-4 py-2 rounded-lg bg-gray-800 hover:bg-gray-700 transition-colors">
-                            <span class="text-gray-300">02. Text-to-Video: Create Your First Video</span>
+                            <span class="text-gray-300">02. Generating Your First Video</span>
                             <i class="fas fa-chevron-right text-gray-400"></i>
                         </button>
                         <button
                             class="text-left w-full flex items-center justify-between px-4 py-2 rounded-lg bg-gray-800 hover:bg-gray-700 transition-colors">
-                            <span class="text-gray-300">03. AI Tools: Music and Editing Suggestions</span>
+                            <span class="text-gray-300">03. Using AI Tools for Enhancement</span>
                             <i class="fas fa-chevron-right text-gray-400"></i>
                         </button>
                         <button
                             class="text-left w-full flex items-center justify-between px-4 py-2 rounded-lg bg-gray-800 hover:bg-gray-700 transition-colors">
-                            <span class="text-gray-300">04. Media Library: Uploading and Using Assets</span>
+                            <span class="text-gray-300">04. Exploring the Media Library</span>
                             <i class="fas fa-chevron-right text-gray-400"></i>
                         </button>
                         <button
                             class="text-left w-full flex items-center justify-between px-4 py-2 rounded-lg bg-gray-800 hover:bg-gray-700 transition-colors">
-                            <span class="text-gray-300">05. Saving and Exporting Your Video</span>
+                            <span class="text-gray-300">05. Saving and Exporting Your Project</span>
                             <i class="fas fa-chevron-right text-gray-400"></i>
                         </button>
                     </div>
